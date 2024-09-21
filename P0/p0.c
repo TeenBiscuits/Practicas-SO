@@ -9,6 +9,9 @@
 
 #define MAX 2048
 #define MAX_ARG 1000
+#ifndef HOST_NAME_MAX
+#define HOST_NAME_MAX 255  // Definir HOST_NAME_MAX si no está declarado
+#endif
 
 void imprimirPrompt();
 
@@ -29,10 +32,18 @@ int main() {
 
 void imprimirPrompt() {
     char cwd[PATH_MAX];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("pablo@ordenador-de-pablo:%s$ ", cwd);
+    char hostname[HOST_NAME_MAX];
+    char *user = getenv("USER");
+   if (user==NULL){
+      user = "usuario";
+   }
+    if (gethostname(hostname, sizeof (hostname))!=0){
+        strcpy(hostname, "maquina");
+    }
+    if (getcwd(cwd, sizeof (cwd))!=NULL){
+        printf("%s@%s:%s$ ", user, hostname, cwd);
     } else {
-        printf("pablo@ordenador-de-pablo$ (getcwd return error) ");
+        printf("%s@%s$ (getcwd return error) ", user, hostname);
     }
 };
 
