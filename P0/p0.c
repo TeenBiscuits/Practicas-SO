@@ -22,6 +22,10 @@ void leerEntrada(char comando[MAX]);
 
 bool procesarEntrada(char comando[MAX]);
 
+void dividir_comando(char *comando, char **args);
+
+void processid();
+
 int main() {
     bool terminado = false;
     char comando[MAX];
@@ -56,12 +60,21 @@ void leerEntrada(char comando[MAX]) {
 };
 
 bool procesarEntrada(char comando[MAX]) {
+    if (strcmp(comando, "pid\0") == 0) {
+        processid();
+        return false;
+    }
     if (strcmp(comando, "exit\0") == 0) {
         printf("Saliendo del shell...\n");
         return true;
     }
+    printf("Comando no reconocido...\n");
     return false;
 };
+
+void processid(){
+
+}
 
 void dividir_comando(char *comando, char **args) {
     char *tokens;
