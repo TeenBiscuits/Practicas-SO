@@ -7,27 +7,38 @@
 # gcc p0.c -o p0.out -Wall && ./p0.out
 # que no es muy largo pero oye tampoco nos sobra el tiempo
 
-# Usar el compilador gcc
+# Usar el compilador gcc con las cflags
 CC = gcc
 CFLAGS = -Wall
 
-# Salida del makefile
-TARGET = p0.out
+# Fuente y Salida del makefile
+SRC = p0.c
+OBJ = p0.out
 
-# Compilación
-$(TARGET): p0.c
-	$(CC) $(CFLAGS) -o $(TARGET) p0.c
-
-# Con "make" Target es la ejecución por defecto (lo compila y luego ejecuta)
-all: $(TARGET)
-	./$(TARGET)
+# Con "make" OBJ es la ejecución por defecto (lo compila y luego ejecuta)
+all: $(OBJ)
+	./$(OBJ)
 
 # Con "make compilar" solo se compila
-compile: $(TARGET)
+compile: $(OBJ)
+
+# Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
+leaks: $(SRC)
+	$(CC) $(CFLAGS) -g -O0 -o $(OBJ) $(SRC)
+	valgrind --leak-check=full --show-reachable=yes ./$(OBJ)
+
+# Con "make debug" se compula y se procede a debuguear con gdb
+debug: $(SRC)
+	$(CC) $(CFLAGS) -g -o $(OBJ) $(SRC)
+	gdb $(OBJ)
 
 # Con "make clean" borrar el archivo
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJ)
+
+# Compilación
+$(OBJ): $(SRC)
+	$(CC) $(CFLAGS) -o $(OBJ) $(SRC)
 
 # Se declara que clean y compile no son archivos
 .PHONY: clean compilar
