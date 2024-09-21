@@ -44,6 +44,7 @@ bool procesarEntrada(char comando[MAX]){
         printf("Saliendo del shell...\n");
         return true;
     }
+    return false;
 };
 
 void dividir_comando(char *comando, char **args){
