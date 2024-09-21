@@ -17,9 +17,9 @@ int main(){
             printf("pablo@ordenador-de-pablo$ (getcwd return error) ");
         }
         fgets(comando,MAX,stdin);
-        comando[strcspn(comando, "\n")]=='\0';
-        if (strcmp(comando, "exit")== '\0'){
-            printf("Saliendo del shell...\n ");
+        comando[strcspn(comando, "\n")] ='\0';
+        if (strcmp(comando, "exit\0") == 0){
+            printf("Saliendo del shell...\n");
             break;
         }
     }
