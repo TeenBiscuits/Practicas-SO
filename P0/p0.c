@@ -11,13 +11,15 @@
 #define MAX_ARG 1000
 
 void imprimirPrompt();
+
 void leerEntrada(char comando[MAX]);
+
 bool procesarEntrada(char comando[MAX]);
 
-int main(){
+int main() {
     bool terminado = false;
     char comando[MAX];
-    while (!terminado){
+    while (!terminado) {
         imprimirPrompt();
         leerEntrada(comando);
         terminado = procesarEntrada(comando);
@@ -25,36 +27,36 @@ int main(){
     return 0;
 }
 
-void imprimirPrompt(){
+void imprimirPrompt() {
     char cwd[PATH_MAX];
-    if (getcwd(cwd,sizeof(cwd)) != NULL){
-        printf("pablo@ordenador-de-pablo:%s$ ",cwd);
-    }else{
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("pablo@ordenador-de-pablo:%s$ ", cwd);
+    } else {
         printf("pablo@ordenador-de-pablo$ (getcwd return error) ");
     }
 };
 
-void leerEntrada(char comando[MAX]){
-    fgets(comando,MAX,stdin);
-    comando[strcspn(comando, "\n")] ='\0';
+void leerEntrada(char comando[MAX]) {
+    fgets(comando, MAX, stdin);
+    comando[strcspn(comando, "\n")] = '\0';
 };
 
-bool procesarEntrada(char comando[MAX]){
-    if (strcmp(comando, "exit\0") == 0){
+bool procesarEntrada(char comando[MAX]) {
+    if (strcmp(comando, "exit\0") == 0) {
         printf("Saliendo del shell...\n");
         return true;
     }
     return false;
 };
 
-void dividir_comando(char *comando, char **args){
+void dividir_comando(char *comando, char **args) {
     char *tokens;
-    int i=0;
+    int i = 0;
 
     tokens = strtok(comando, " ");
-    while (tokens!=NULL){
+    while (tokens != NULL) {
         args[i++] = tokens;
         tokens = strtok(NULL, " ");
     }
-    args[i]=NULL;
+    args[i] = NULL;
 }
