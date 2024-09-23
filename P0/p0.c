@@ -9,6 +9,7 @@
 #include <limits.h>
 // No compilable en mac
 // #include <linux/limits.h>
+#include "list.h"
 
 #define MAX 2048
 #define MAX_ARG 1000
