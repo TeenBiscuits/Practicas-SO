@@ -95,3 +95,7 @@ void dividir_comando(char *comando, char **args) {
     }
     args[i] = NULL;
 }
+
+
+
+
