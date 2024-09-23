@@ -41,16 +41,19 @@ void imprimirPrompt() {
     char cwd[PATH_MAX];
     char hostname[HOST_NAME_MAX];
     char *user = getenv("USER");
-   if (user==NULL){
-      user = "usuario";
-   }
-    if (gethostname(hostname, sizeof (hostname))!=0){
+    if (user == NULL) {
+        printf("Error: Imposible conseguir el nombre de usuario.\n");
+        user = "usuario";
+    }
+    if (gethostname(hostname, sizeof(hostname)) != 0) {
+        printf("Error: Imposible conseguir el nombre de la máquina.\n");
         strcpy(hostname, "maquina");
     }
-    if (getcwd(cwd, sizeof (cwd))!=NULL){
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("%s@%s:%s$ ", user, hostname, cwd);
     } else {
-        printf("%s@%s$ (getcwd return error) ", user, hostname);
+        printf("Error: Imposible conseguir la ruta del directorio.\n");
+        printf("%s@%s$ ", user, hostname);
     }
 };
 
@@ -72,7 +75,7 @@ bool procesarEntrada(char comando[MAX]) {
     return false;
 };
 
-void processid(){
+void processid() {
 
 }
 
