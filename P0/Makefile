@@ -15,12 +15,20 @@ CFLAGS = -Wall
 SRC = p0.c
 OBJ = p0.out
 
+# Librería y archivo dependencia
+LIB = list.c
+DEPE = list.out
+
 # Con "make" OBJ es la ejecución por defecto (lo compila y luego ejecuta)
 all: $(OBJ)
 	./$(OBJ)
 
 # Con "make compilar" solo se compila
 compile: $(OBJ)
+
+# Con "make lib" se compila la librería
+lib: $(LIB)
+	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
 leaks: $(SRC)
@@ -37,9 +45,12 @@ clean:
 	rm -f *.out
 
 # Compilación
-$(OBJ): $(SRC)
-	$(CC) $(CFLAGS) -o $(OBJ) $(SRC)
+$(DEPE): $(LIB)
+	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
 
-# Se declara que clean y compile no son archivos
-.PHONY: clean compilar
+$(OBJ): $(SRC) $(DEPE)
+	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE)
+
+# Se declara que las ejecuciones no son archivos
+.PHONY: all compile lib leaks debug clean
 
