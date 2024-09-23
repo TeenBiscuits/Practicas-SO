@@ -10,6 +10,7 @@
 // No compilable en mac
 // #include <linux/limits.h>
 #include "list.h"
+#include "color.h"
 
 #define MAX 2048
 #define MAX_ARG 1000
@@ -43,18 +44,18 @@ void imprimirPrompt() {
     char hostname[HOST_NAME_MAX];
     char *user = getenv("USER");
     if (user == NULL) {
-        printf("Error: Imposible conseguir el nombre de usuario.\n");
+        printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de usuario.\n" ANSI_COLOR_RESET);
         user = "usuario";
     }
     if (gethostname(hostname, sizeof(hostname)) != 0) {
-        printf("Error: Imposible conseguir el nombre de la máquina.\n");
+        printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de la máquina.\n" ANSI_COLOR_RESET);
         strcpy(hostname, "maquina");
     }
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("%s@%s:%s$ ", user, hostname, cwd);
+        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname, cwd);
     } else {
-        printf("Error: Imposible conseguir la ruta del directorio.\n");
-        printf("%s@%s$ ", user, hostname);
+        printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio.\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET "$ ", user, hostname);
     }
 };
 
@@ -75,7 +76,7 @@ bool procesarEntrada(char comando[MAX]) {
     if (strcmp(comando, "\0") == 0) {
         return false;
     }
-    printf("Comando no reconocido...\n");
+    printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
     return false;
 };
 

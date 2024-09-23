@@ -19,6 +19,9 @@ OBJ = p0.out
 LIB = list.c
 DEPE = list.out
 
+# Literalmente variables colores
+COLORES = color.h
+
 # Con "make" OBJ es la ejecución por defecto (lo compila y luego ejecuta)
 all: $(OBJ)
 	./$(OBJ)
@@ -49,7 +52,7 @@ $(DEPE): $(LIB)
 	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
 
 $(OBJ): $(SRC) $(DEPE)
-	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE)
+	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE) $(COLORES)
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all compile lib leaks debug clean
