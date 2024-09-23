@@ -25,14 +25,12 @@ void leerEntrada(char comando[MAX]);
 
 bool procesarEntrada(char comando[MAX]);
 
-void dividir_comando(char *comando, char **args);
-
-void processid();
+int dividir_comando(char *comando, char **args);
 
 int main() {
     bool terminado = false;
-    char comando[MAX];
     while (!terminado) {
+        char comando[MAX];
         imprimirPrompt();
         leerEntrada(comando);
         terminado = procesarEntrada(comando);
@@ -53,7 +51,8 @@ void imprimirPrompt() {
         strcpy(hostname, "maquina");
     }
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname, cwd);
+        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname,
+               cwd);
     } else {
         printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio.\n" ANSI_COLOR_RESET);
         printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET "$ ", user, hostname);
@@ -66,22 +65,30 @@ void leerEntrada(char comando[MAX]) {
 };
 
 bool procesarEntrada(char comando[MAX]) {
-    if (strcmp(comando, "pid\0") == 0) {
+    int NumeroT;
+    char *Trozos[MAX_ARG];
+    NumeroT = dividir_comando(comando, Trozos);
+
+    if (strcmp(Trozos[0], "authors\0") == 0) {
+        authors(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "pid\0") == 0) {
         pid();
         return false;
     }
-    if (strcmp(comando, "exit\0") == 0) {
+    if (strcmp(Trozos[0], "exit\0") == 0) {
         printf("Saliendo del shell...\n");
         return true;
     }
-    if (strcmp(comando, "\0") == 0) {
+    if (strcmp(Trozos[0], "\0") == 0) {
         return false;
     }
     printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
     return false;
 };
 
-void dividir_comando(char *comando, char **args) {
+int dividir_comando(char *comando, char **args) {
     char *tokens;
     int i = 0;
 
@@ -91,8 +98,5 @@ void dividir_comando(char *comando, char **args) {
         tokens = strtok(NULL, " ");
     }
     args[i] = NULL;
+    return i - 1;
 }
-
-
-
-
