@@ -6,4 +6,6 @@ set(CMAKE_C_STANDARD 99)
 add_executable(P0 p0.c
         list.c
         list.h
-        color.h)
+        color.h
+        comandos.c
+        comandos.h)
