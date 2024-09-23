@@ -1,6 +1,5 @@
-//
-// Created by pablo on 23/09/2024.
-//
+// Pablo Portas López
+// Pablo Míguez Mouiño
 
 #ifndef LIST_H
 #define LIST_H

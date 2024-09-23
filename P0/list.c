@@ -1,5 +1,4 @@
-//
-// Created by pablo on 23/09/2024.
-//
+// Pablo Portas López
+// Pablo Míguez Mouiño
 
 #include "list.h"
