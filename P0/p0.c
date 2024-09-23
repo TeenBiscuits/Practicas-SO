@@ -71,6 +71,9 @@ bool procesarEntrada(char comando[MAX]) {
         printf("Saliendo del shell...\n");
         return true;
     }
+    if (strcmp(comando, "\0") == 0) {
+        return false;
+    }
     printf("Comando no reconocido...\n");
     return false;
 };
