@@ -15,6 +15,10 @@ CFLAGS = -Wall
 SRC = p0.c
 OBJ = p0.out
 
+# Comandos
+COMA = comandos.c
+COMP = comandos.out
+
 # Librería y archivo dependencia
 LIB = list.c
 DEPE = list.out
@@ -32,6 +36,10 @@ compile: $(OBJ)
 # Con "make lib" se compila la librería
 lib: $(LIB)
 	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
+
+# Con "make comandos" se compilan los comandos
+comandos: $(COMA)
+	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
 leaks: $(SRC)
@@ -51,9 +59,12 @@ clean:
 $(DEPE): $(LIB)
 	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
 
-$(OBJ): $(SRC) $(DEPE)
-	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE) $(COLORES)
+$(COMP): $(COMA)
+	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
+
+$(OBJ): $(SRC) $(DEPE) $(COMP)
+	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
 
 # Se declara que las ejecuciones no son archivos
-.PHONY: all compile lib leaks debug clean
+.PHONY: all compile lib comandos leaks debug clean
 

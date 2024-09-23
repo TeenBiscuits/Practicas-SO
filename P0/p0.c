@@ -11,6 +11,7 @@
 // #include <linux/limits.h>
 #include "list.h"
 #include "color.h"
+#include "comandos.h"
 
 #define MAX 2048
 #define MAX_ARG 1000
@@ -66,7 +67,7 @@ void leerEntrada(char comando[MAX]) {
 
 bool procesarEntrada(char comando[MAX]) {
     if (strcmp(comando, "pid\0") == 0) {
-        processid();
+        pid();
         return false;
     }
     if (strcmp(comando, "exit\0") == 0) {
@@ -79,10 +80,6 @@ bool procesarEntrada(char comando[MAX]) {
     printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
     return false;
 };
-
-void processid() {
-
-}
 
 void dividir_comando(char *comando, char **args) {
     char *tokens;
