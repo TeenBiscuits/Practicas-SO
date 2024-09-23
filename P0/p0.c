@@ -65,6 +65,8 @@ void leerEntrada(char comando[MAX]) {
 };
 
 bool procesarEntrada(char comando[MAX]) {
+    if (strcmp(comando, "\0") == 0) return false;
+
     int NumeroT;
     char *Trozos[MAX_ARG];
     NumeroT = dividir_comando(comando, Trozos);
@@ -80,9 +82,6 @@ bool procesarEntrada(char comando[MAX]) {
     if (strcmp(Trozos[0], "exit\0") == 0) {
         printf("Saliendo del shell...\n");
         return true;
-    }
-    if (strcmp(Trozos[0], "\0") == 0) {
-        return false;
     }
     printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
     return false;

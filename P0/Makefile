@@ -30,6 +30,10 @@ COLORES = color.h
 all: $(OBJ)
 	./$(OBJ)
 
+# Con "make flechas" para compilar y ejecutar con rlwrap
+flechas: $(OBJ)
+	rlwrap ./$(OBJ)
+
 # Con "make compilar" solo se compila
 compile: $(OBJ)
 
@@ -42,13 +46,13 @@ comandos: $(COMA)
 	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
-leaks: $(SRC)
-	$(CC) $(CFLAGS) -g -O0 -o $(OBJ) $(SRC)
+leaks: $(SRC) $(DEPE) $(COMP)
+	$(CC) $(CFLAGS) -g -O0 -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
 	valgrind --leak-check=full --show-reachable=yes ./$(OBJ)
 
 # Con "make debug" se compula y se procede a debuguear con gdb
-debug: $(SRC)
-	$(CC) $(CFLAGS) -g -o $(OBJ) $(SRC)
+debug: $(SRC) $(DEPE) $(COMP)
+	$(CC) $(CFLAGS) -g -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
 	gdb $(OBJ)
 
 # Con "make clean" borrar el archivo
@@ -66,5 +70,5 @@ $(OBJ): $(SRC) $(DEPE) $(COMP)
 	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
 
 # Se declara que las ejecuciones no son archivos
-.PHONY: all compile lib comandos leaks debug clean
+.PHONY: all flechas compile lib comandos leaks debug clean
 
