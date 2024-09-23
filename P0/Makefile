@@ -34,7 +34,7 @@ debug: $(SRC)
 
 # Con "make clean" borrar el archivo
 clean:
-	rm -f $(OBJ)
+	rm -f *.out
 
 # Compilación
 $(OBJ): $(SRC)
