@@ -67,9 +67,8 @@ void leerEntrada(char comando[MAX]) {
 bool procesarEntrada(char comando[MAX]) {
     if (strcmp(comando, "\0") == 0) return false;
 
-    int NumeroT;
     char *Trozos[MAX_ARG];
-    NumeroT = dividir_comando(comando, Trozos);
+    const int NumeroT = dividir_comando(comando, Trozos);
 
     if (strcmp(Trozos[0], "authors\0") == 0) {
         authors(NumeroT, Trozos);
@@ -79,7 +78,7 @@ bool procesarEntrada(char comando[MAX]) {
         pid();
         return false;
     }
-    if (strcmp(Trozos[0], "exit\0") == 0) {
+    if (strcmp(Trozos[0], "exit\0") == 0 || strcmp(Trozos[0], "quit\0") == 0 || strcmp(Trozos[0], "bye\0") == 0) {
         printf("Saliendo del shell...\n");
         return true;
     }
