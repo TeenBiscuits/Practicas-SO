@@ -10,6 +10,8 @@ void pid();
 
 void ppid();
 
-void cd (int NumTrozos, char *args[]);
+void Cmd_cd(int NumTrozos, char *trozos[]);
+
+void Cmd_date(int NumTrozos, char *trozos[]);
 
 #endif //COMANDOS_H

@@ -70,12 +70,25 @@ bool procesarEntrada(char comando[MAX]) {
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);
 
+
+    if (strcmp(Trozos[0], "ppid\0") == 0) {
+        ppid();
+        return false;
+    }
+    if (strcmp(Trozos[0], "date\0") == 0) {
+        Cmd_date(NumeroT, Trozos);
+        return false;
+    }
     if (strcmp(Trozos[0], "authors\0") == 0) {
         authors(NumeroT, Trozos);
         return false;
     }
     if (strcmp(Trozos[0], "pid\0") == 0) {
         pid();
+        return false;
+    }
+    if (strcmp(Trozos[0], "cd\0") == 0) {
+        Cmd_cd(NumeroT, Trozos);
         return false;
     }
     if (strcmp(Trozos[0], "exit\0") == 0 || strcmp(Trozos[0], "quit\0") == 0 || strcmp(Trozos[0], "bye\0") == 0) {
