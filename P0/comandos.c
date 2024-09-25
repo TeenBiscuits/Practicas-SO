@@ -269,7 +269,7 @@ void Cmd_dup(int NumTrozos, char *trozos[]){
     }
 }
 
-void Cmd_infosys(int NumTrozos, char *trozos){
+void Cmd_infosys(int NumTrozos, char *trozos[]){
     struct utsname sys_info;
 
     //Llamada al sistema uname para obtener info del sistema
