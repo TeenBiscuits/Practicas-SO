@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <fcntl.h>
-#include <sys/syslimits.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <sys/utsname.h>
 
