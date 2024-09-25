@@ -84,6 +84,14 @@ bool procesarEntrada(char comando[MAX]) {
         Cmd_dup(NumeroT, Trozos);
         return false;
     }
+    if (strcmp(Trozos[0], "help\0") == 0) {
+        Cmd_help(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "infosys\0") == 0) {
+        Cmd_infosys(NumeroT, Trozos);
+        return false;
+    }
     if (strcmp(Trozos[0], "date\0") == 0) {
         Cmd_close(NumeroT, Trozos);
         return false;

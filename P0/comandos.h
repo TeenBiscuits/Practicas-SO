@@ -20,4 +20,8 @@ void Cmd_close(int NumTrozos, char *trozos[]);
 
 void Cmd_dup(int NumTrozos, char *trozos[]);
 
+void Cmd_infosys(int NumTrozos, char *trozos);
+
+void Cmd_help(int NumTrozos, char *trozos[]);
+
 #endif //COMANDOS_H

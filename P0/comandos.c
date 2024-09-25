@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <sys/syslimits.h>
 #include <stdbool.h>
+#include <sys/utsname.h>
 
 #include "comandos.h"
 #include "color.h"
@@ -264,5 +265,84 @@ void Cmd_dup(int NumTrozos, char *trozos[]){
     if (!found) {
         // Si no se encontró el descriptor original, mostramos un mensaje de error
         printf(ANSI_COLOR_RED "Error: No se encontró el descriptor %ld en la lista de archivos abiertos.\n" ANSI_COLOR_RESET, old_desc);
+    }
+}
+
+void Cmd_infosys(int NumTrozos, char *trozos){
+    struct utsname sys_info;
+
+    //Llamada al sistema uname para obtener info del sistema
+    if(uname(&sys_info)== -1){
+        perror(ANSI_COLOR_RED "Error al obtener la información del sistema" ANSI_COLOR_RESET);
+        return;
+    }
+    printf(ANSI_COLOR_GREEN "Información del sistema:\n" ANSI_COLOR_RESET);
+    printf("Sistema Operativo: %s\n", sys_info.sysname);
+    printf("Nombre del Nodo: %s\n", sys_info.nodename);
+    printf("Versión del Sistema: %s\n", sys_info.version);
+    printf("Release del Sistema: %s\n", sys_info.release);
+    printf("Arquitectura de la Máquina: %s\n", sys_info.machine);
+}
+void Cmd_help(int NumTrozos, char *trozos[]){
+
+    if (NumTrozos==0){
+        printf("Lista de comandos disponibles:\n");
+        printf("  authors       Muestra los autores del programa.\n");
+        printf("  cd [dir]      Cambia el directorio de trabajo actual.\n");
+        printf("  close [df]    Cierra un archivo abierto con el descriptor [df].\n");
+        printf("  date [-d|-t]  Muestra la fecha y/o la hora actual.\n");
+        printf("  dup [df]      Duplica el descriptor de archivo [df].\n");
+        printf("  infosys       Muestra información del sistema.\n");
+        printf("  open [file] [mode]  Abre un archivo en el modo especificado.\n");
+        printf("  pid           Muestra el PID del proceso actual.\n");
+        printf("  ppid          Muestra el PID del proceso padre.\n");
+        printf("  help [cmd]    Muestra esta lista o ayuda sobre un comando específico.\n");
+    }
+    else if(NumTrozos== 1){
+        if (strcmp(trozos[1], "authors")==0){
+            printf("authors: Muestra los autores del programa.\n");
+            printf("Uso: authors [-l|-n]\n");
+            printf("  -l  Muestra los logins (correos electrónicos).\n");
+            printf("  -n  Muestra los nombres completos.\n");
+        }
+        else if (strcmp(trozos[1], "cd")==0){
+            printf("cd: Cambia el directorio de trabajo actual.\n");
+            printf("Uso: cd [directorio]\n");
+            printf("  Si no se proporciona un directorio, cambia al directorio HOME.\n");
+        }
+        else if (strcmp(trozos[1], "close") == 0) {
+            printf("close: Cierra un archivo abierto con el descriptor proporcionado.\n");
+            printf("Uso: close [df]\n");
+        } else if (strcmp(trozos[1], "date") == 0) {
+            printf("date: Muestra la fecha y la hora actual.\n");
+            printf("Uso: date [-d|-t]\n");
+            printf("  -d  Muestra solo la fecha.\n");
+            printf("  -t  Muestra solo la hora.\n");
+        } else if (strcmp(trozos[1], "dup") == 0) {
+            printf("dup: Duplica el descriptor de archivo proporcionado.\n");
+            printf("Uso: dup [df]\n");
+        } else if (strcmp(trozos[1], "infosys") == 0) {
+            printf("infosys: Muestra información sobre el sistema actual.\n");
+            printf("Uso: infosys\n");
+        } else if (strcmp(trozos[1], "open") == 0) {
+            printf("open: Abre un archivo con el modo especificado.\n");
+            printf("Uso: open [archivo] [modo]\n");
+            printf("  Modos: cr (crear), ap (append), ex (exclusivo), ro (solo lectura), rw (lectura/escritura), wo (solo escritura), tr (truncar).\n");
+        } else if (strcmp(trozos[1], "pid") == 0) {
+            printf("pid: Muestra el identificador del proceso actual (PID).\n");
+            printf("Uso: pid\n");
+        } else if (strcmp(trozos[1], "ppid") == 0) {
+            printf("ppid: Muestra el identificador del proceso padre (PPID).\n");
+            printf("Uso: ppid\n");
+        } else if (strcmp(trozos[1], "help") == 0) {
+            printf("help: Muestra información de ayuda sobre los comandos disponibles.\n");
+            printf("Uso: help [cmd]\n");
+        } else {
+            // Comando no reconocido
+            printf(ANSI_COLOR_RED "Error: Comando '%s' no reconocido.\n" ANSI_COLOR_RESET, trozos[0]);
+        }
+    } else {
+        // Si se pasan más de 1 argumento, mostramos un mensaje de error
+        printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
     }
 }
