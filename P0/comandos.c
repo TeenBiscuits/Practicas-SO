@@ -1,5 +1,6 @@
 // Pablo Portas López
 // Pablo Míguez Mouiño
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -150,8 +151,8 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         list_open_files();
     }
     else if (NumTrozos == 2) {
-        char *filename = trozos[0];
-        char *mode = trozos[1];
+        char *filename = trozos[1];
+        char *mode = trozos[2];
 
         // Obtener las banderas correctas para el modo
         int flags = get_open_flags(mode);
