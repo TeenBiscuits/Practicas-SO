@@ -14,4 +14,10 @@ void Cmd_cd(int NumTrozos, char *trozos[]);
 
 void Cmd_date(int NumTrozos, char *trozos[]);
 
+void Cmd_open(int NumTrozos, char *trozos[]);
+
+void Cmd_close(int NumTrozos, char *trozos[]);
+
+void Cmd_dup(int NumTrozos, char *trozos[]);
+
 #endif //COMANDOS_H

@@ -13,6 +13,7 @@
 #include "color.h"
 #include "comandos.h"
 
+#define MAX_FILES 100
 #define MAX 2048
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
@@ -77,6 +78,18 @@ bool procesarEntrada(char comando[MAX]) {
     }
     if (strcmp(Trozos[0], "date\0") == 0) {
         Cmd_date(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "dup\0") == 0) {
+        Cmd_dup(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "date\0") == 0) {
+        Cmd_close(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "open\0") == 0) {
+        Cmd_open(NumeroT, Trozos);
         return false;
     }
     if (strcmp(Trozos[0], "authors\0") == 0) {
