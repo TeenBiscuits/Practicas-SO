@@ -28,9 +28,13 @@ bool procesarEntrada(char comando[MAX]);
 
 int dividir_comando(char *comando, char **args);
 
+void borrar_historial(tList *historial);
+
 int main() {
     bool terminado = false;
     tList *historial;
+    historial->contador = -1;
+    historial->start = LNULL;
     createEmptyList(historial);
     while (!terminado) {
         char comando[MAX];
@@ -38,6 +42,7 @@ int main() {
         leerEntrada(comando,historial);
         terminado = procesarEntrada(comando);
     }
+    borrar_historial(historial);
     return 0;
 }
 
@@ -134,4 +139,11 @@ int dividir_comando(char *comando, char **args) {
     }
     args[i] = NULL;
     return i - 1;
+}
+
+void borrar_historial(tList *historial) {
+    if (historial->start == NULL) return;
+    while (!isEmptyList(*historial)) {
+        deleteAtPosition(first(*historial),historial);
+    }
 }
