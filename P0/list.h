@@ -1,5 +1,5 @@
-// Pablo Portas López
-// Pablo Míguez Mouiño
+// Pablo Portas López           pablo.portas
+// Pablo Míguez Mouiño          pablo.miguez.moino
 
 #ifndef LIST_H
 #define LIST_H

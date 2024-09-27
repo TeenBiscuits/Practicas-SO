@@ -1,3 +1,6 @@
+# Pablo Portas López           pablo.portas
+# Pablo Míguez Mouiño          pablo.miguez.moino
+
 # ELIMINAR ESTE COMENTARIO EN EL FUTURO
 # He creado este archivo make, para que sirve te preguntarás.
 # Yo tampoco lo sabía.
