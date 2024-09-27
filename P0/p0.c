@@ -36,8 +36,8 @@ int main() {
     while (!terminado) {
         char comando[MAX];
         imprimirPrompt();
-        leerEntrada(comando,&historial);
-        terminado = procesarEntrada(comando,&historial);
+        leerEntrada(comando, &historial);
+        terminado = procesarEntrada(comando, &historial);
     }
     borrar_historial(&historial);
     return 0;
@@ -97,8 +97,12 @@ bool procesarEntrada(char comando[MAX], tList *historial) {
         Cmd_infosys(NumeroT, Trozos);
         return false;
     }
-    if (strcmp(Trozos[0], "date\0") == 0) {
+    if (strcmp(Trozos[0], "close\0") == 0) {
         Cmd_close(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "date\0") == 0) {
+        Cmd_date(NumeroT, Trozos);
         return false;
     }
     if (strcmp(Trozos[0], "open\0") == 0) {
@@ -145,6 +149,6 @@ int dividir_comando(char *comando, char **args) {
 void borrar_historial(tList *historial) {
     if (historial->start == NULL) return;
     while (!isEmptyList(*historial)) {
-        deleteAtPosition(first(*historial),historial);
+        deleteAtPosition(first(*historial), historial);
     }
 }

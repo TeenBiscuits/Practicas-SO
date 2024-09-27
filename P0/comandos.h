@@ -20,6 +20,12 @@
 
 #define MAX_FILES 100
 
+typedef struct {
+    int desc;
+    char filename[PATH_MAX];
+    char mode[3];
+} OpenFile;
+
 void authors(int NumTrozos, char *trozos[]);
 
 void pid();
