@@ -24,7 +24,7 @@ void imprimirPrompt();
 
 void leerEntrada(char comando[MAX], tList *historial);
 
-bool procesarEntrada(char comando[MAX]);
+bool procesarEntrada(char comando[MAX], tList *historial);
 
 int dividir_comando(char *comando, char **args);
 
@@ -37,7 +37,7 @@ int main() {
         char comando[MAX];
         imprimirPrompt();
         leerEntrada(comando,&historial);
-        terminado = procesarEntrada(comando);
+        terminado = procesarEntrada(comando,&historial);
     }
     borrar_historial(&historial);
     return 0;
@@ -70,7 +70,7 @@ void leerEntrada(char comando[MAX], tList *historial) {
     insertItem(comando,LNULL, historial);
 };
 
-bool procesarEntrada(char comando[MAX]) {
+bool procesarEntrada(char comando[MAX], tList *historial) {
     if (strcmp(comando, "\0") == 0) return false;
 
     char *Trozos[MAX_ARG];
@@ -118,6 +118,7 @@ bool procesarEntrada(char comando[MAX]) {
         return false;
     }
     if (strcmp(Trozos[0], "historic\0") == 0) {
+        Cmd_historic(NumeroT, Trozos, historial);
         return false;
     }
     if (strcmp(Trozos[0], "exit\0") == 0 || strcmp(Trozos[0], "quit\0") == 0 || strcmp(Trozos[0], "bye\0") == 0) {

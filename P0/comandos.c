@@ -1,21 +1,7 @@
 // Pablo Portas López
 // Pablo Míguez Mouiño
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
-#include <limits.h>
-#include <stdbool.h>
-#include <sys/utsname.h>
-
 #include "comandos.h"
-#include "color.h"
-
-
-#define MAX_FILES 100
 
 typedef struct {
     int desc;
@@ -346,4 +332,41 @@ void Cmd_help(int NumTrozos, char *trozos[]){
         // Si se pasan más de 1 argumento, mostramos un mensaje de error
         printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
     }
+}
+
+void Cmd_historic(int NumTrozos, char *trozos[], tList *historial) {
+    if (NumTrozos == 0) {
+        tPosL posaux = first(*historial);
+        for(int i = 1; posaux != LNULL; i++) {
+            printf("%d. %s\n", i, posaux->comando);
+            posaux = next(posaux,*historial);
+        }
+    }
+    if (NumTrozos == 1) {
+        int ncomando = atoi(trozos[1]);
+        if(ncomando <= -1) {
+            tPosL posaux = last(*historial);
+            for(int i = historial->contador; i > historial->contador+ncomando && posaux != LNULL; i--) {
+                printf("%d. %s\n", i+1, posaux->comando);
+                posaux = previous(posaux,*historial);
+            }
+            return;
+        }
+        if(ncomando >= 1 && ncomando <= historial->contador+1) {
+            tPosL posaux = first(*historial);
+            for (int i = ncomando; i > 0; i--) {
+                if(i == 1) {
+                    printf("%d. %s\n", ncomando, posaux->comando);
+                }
+                posaux = next(posaux,*historial);
+            }
+            return;
+        }
+        printf(ANSI_COLOR_RED "Error: Argumento no válido. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
+    }
+    // else printf(ANSI_COLOR_RED "Error: Comando '%s' no reconocido.\n" ANSI_COLOR_RESET, trozos[0]);
+    if (NumTrozos >= 2) {
+        printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
+    }
+
 }
