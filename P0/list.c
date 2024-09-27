@@ -45,9 +45,9 @@ bool insertItem(tItemL item, tPosL posicion, tList *lista) {
     aux1->siguiente = LNULL; // Se le inicializa sin apuntar a ningún nodo
     if (lista->start == LNULL) // Si la lista está vacía el nodo es el primer elemento
         lista->start = aux1;
-    if (posicion == LNULL) {
-        aux1->siguiente = first(*lista);
-        lista->start = aux1;
+    else if (posicion == LNULL) {
+        tPosL aux2 = last(*lista);
+        aux2->siguiente = aux1;
     } else return false;
     lista->contador += 1;
     return true;
