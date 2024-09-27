@@ -22,7 +22,7 @@
 
 void imprimirPrompt();
 
-void leerEntrada(char comando[MAX]);
+void leerEntrada(char comando[MAX], tList *historial);
 
 bool procesarEntrada(char comando[MAX]);
 
@@ -30,10 +30,12 @@ int dividir_comando(char *comando, char **args);
 
 int main() {
     bool terminado = false;
+    tList *historial;
+    createEmptyList(historial);
     while (!terminado) {
         char comando[MAX];
         imprimirPrompt();
-        leerEntrada(comando);
+        leerEntrada(comando,historial);
         terminado = procesarEntrada(comando);
     }
     return 0;
@@ -60,9 +62,10 @@ void imprimirPrompt() {
     }
 };
 
-void leerEntrada(char comando[MAX]) {
+void leerEntrada(char comando[MAX], tList *historial) {
     fgets(comando, MAX, stdin);
     comando[strcspn(comando, "\n")] = '\0';
+    insertItem(comando,LNULL, historial);
 };
 
 bool procesarEntrada(char comando[MAX]) {
