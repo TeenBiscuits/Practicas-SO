@@ -32,17 +32,14 @@ void borrar_historial(tList *historial);
 
 int main() {
     bool terminado = false;
-    tList *historial;
-    historial->contador = -1;
-    historial->start = LNULL;
-    createEmptyList(historial);
+    tList historial = {-1,NULL};
     while (!terminado) {
         char comando[MAX];
         imprimirPrompt();
-        leerEntrada(comando,historial);
+        leerEntrada(comando,&historial);
         terminado = procesarEntrada(comando);
     }
-    borrar_historial(historial);
+    borrar_historial(&historial);
     return 0;
 }
 
@@ -118,6 +115,9 @@ bool procesarEntrada(char comando[MAX]) {
     }
     if (strcmp(Trozos[0], "cd\0") == 0) {
         Cmd_cd(NumeroT, Trozos);
+        return false;
+    }
+    if (strcmp(Trozos[0], "historic\0") == 0) {
         return false;
     }
     if (strcmp(Trozos[0], "exit\0") == 0 || strcmp(Trozos[0], "quit\0") == 0 || strcmp(Trozos[0], "bye\0") == 0) {
