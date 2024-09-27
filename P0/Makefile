@@ -46,7 +46,9 @@ comandos: $(COMA)
 	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
-leaks: $(SRC) $(DEPE) $(COMP)
+leaks: $(SRC) $(LIB) $(COMA)
+	$(CC) $(CFLAGS) -g -O0 -c -o $(DEPE) $(LIB)
+	$(CC) $(CFLAGS) -g -O0 -c -o $(COMP) $(COMA)
 	$(CC) $(CFLAGS) -g -O0 -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
 	valgrind --leak-check=full --show-reachable=yes ./$(OBJ)
 
