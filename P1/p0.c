@@ -56,11 +56,11 @@ void imprimirPrompt() {
         strcpy(hostname, "maquina");
     }
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname,
+        printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname,
                cwd);
     } else {
         printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio.\n" ANSI_COLOR_RESET);
-        printf(ANSI_COLOR_GREEN "%s@%s" ANSI_COLOR_RESET "$ ", user, hostname);
+        printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET "$ ", user, hostname);
     }
 };
 
