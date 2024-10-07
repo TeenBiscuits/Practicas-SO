@@ -70,65 +70,36 @@ void leerEntrada(char comando[MAX], tList *historial) {
     insertItem(comando,LNULL, historial);
 };
 
+struct CMD C[] = {
+    {"authors",Cmd_authors},
+    {"pid",Cmd_pid},
+    {"ppid",Cmd_ppid},
+    {"cd",Cmd_cd},
+    {"date",Cmd_date},
+    {"open",Cmd_open},
+    {"close",Cmd_close},
+    {"dup",Cmd_dup},
+    {"infosys",Cmd_infosys},
+    {"help",Cmd_help},
+    {"historic",Cmd_historic},
+    {"exit",Cmd_exit},
+    {"quit",Cmd_exit},
+    {"bye",Cmd_exit}
+};
+
 bool procesarEntrada(char comando[MAX], tList *historial) {
     if (strcmp(comando, "\0") == 0) return false;
 
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);
 
+    for (int i = 0; i < 13; i++) {
+        if (strcmp(Trozos[0], C[i].comando) == 0) {
+            C[i].funcion(NumeroT, Trozos);
+            return false;
+        }
+    }
 
-    if (strcmp(Trozos[0], "ppid\0") == 0) {
-        ppid();
-        return false;
-    }
-    if (strcmp(Trozos[0], "date\0") == 0) {
-        Cmd_date(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "dup\0") == 0) {
-        Cmd_dup(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "help\0") == 0) {
-        Cmd_help(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "infosys\0") == 0) {
-        Cmd_infosys(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "close\0") == 0) {
-        Cmd_close(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "date\0") == 0) {
-        Cmd_date(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "open\0") == 0) {
-        Cmd_open(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "authors\0") == 0) {
-        authors(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "pid\0") == 0) {
-        pid();
-        return false;
-    }
-    if (strcmp(Trozos[0], "cd\0") == 0) {
-        Cmd_cd(NumeroT, Trozos);
-        return false;
-    }
-    if (strcmp(Trozos[0], "historic\0") == 0) {
-        Cmd_historic(NumeroT, Trozos, historial);
-        return false;
-    }
-    if (strcmp(Trozos[0], "exit\0") == 0 || strcmp(Trozos[0], "quit\0") == 0 || strcmp(Trozos[0], "bye\0") == 0) {
-        printf("Saliendo del shell...\n");
-        return true;
-    }
     printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
     return false;
 };

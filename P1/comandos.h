@@ -26,11 +26,19 @@ typedef struct {
     char mode[3];
 } OpenFile;
 
-void authors(int NumTrozos, char *trozos[]);
+struct CMD{
+    char * comando;
+    void (* funcion) (int, char **);
+};
 
-void pid();
+// Estructura de una función de comandos
+// void comando(int NumTrozos, char *trozos[]);
 
-void ppid();
+void Cmd_authors(int NumTrozos, char *trozos[]);
+
+void Cmd_pid(int NumTrozos, char *trozos[]);
+
+void Cmd_ppid(int NumTrozos, char *trozos[]);
 
 void Cmd_cd(int NumTrozos, char *trozos[]);
 
@@ -47,5 +55,7 @@ void Cmd_infosys(int NumTrozos, char *trozos[]);
 void Cmd_help(int NumTrozos, char *trozos[]);
 
 void Cmd_historic(int NumTrozos, char *trozos[], tList *historial);
+
+void Cmd_exit();
 
 #endif //COMANDOS_H

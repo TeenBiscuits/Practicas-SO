@@ -5,7 +5,7 @@
 
 //COMANDOS_BÁSICOS
 
-void authors(int NumTrozos, char *trozos[]) {
+void Cmd_authors(int NumTrozos, char *trozos[]) {
     printf("%d\n", NumTrozos);
     if (NumTrozos == 0) {
         // Si solo se introduce "authors", imprime ambos nombres y correos
@@ -26,12 +26,12 @@ void authors(int NumTrozos, char *trozos[]) {
     }
 }
 
-void pid() {
+void Cmd_pid(int NumTrozos, char *trozos[]) {
     pid_t process_id = getpid();
     printf("El identificador del proceso es %d\n", process_id);
 }
 
-void ppid() {
+void Cmd_ppid(int NumTrozos, char *trozos[]) {
     pid_t pprocess_id = getppid();
     printf("El identificador del proceso padre es %d\n", pprocess_id);
 }
@@ -368,4 +368,9 @@ void Cmd_historic(int NumTrozos, char *trozos[], tList *historial) {
     if (NumTrozos >= 2) {
         printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
     }
+}
+
+void Cmd_exit() {
+    printf("Saliendo del shell...\n");
+    exit(0);
 }
