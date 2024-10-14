@@ -2,6 +2,7 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
+#include "list.h"
 
 //COMANDOS_BÁSICOS
 
@@ -334,31 +335,33 @@ void Cmd_help(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_historic(int NumTrozos, char *trozos[], tList *historial) {
+tList historial = {-1,NULL};
+
+void Cmd_historic(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        tPosL posaux = first(*historial);
+        tPosL posaux = first(historial);
         for (int i = 1; posaux != LNULL; i++) {
             printf("%d. %s\n", i, posaux->comando);
-            posaux = next(posaux, *historial);
+            posaux = next(posaux, historial);
         }
     }
     if (NumTrozos == 1) {
         int ncomando = atoi(trozos[1]);
         if (ncomando <= -1) {
-            tPosL posaux = last(*historial);
-            for (int i = historial->contador; i > historial->contador + ncomando && posaux != LNULL; i--) {
+            tPosL posaux = last(historial);
+            for (int i = historial.contador; i > historial.contador + ncomando && posaux != LNULL; i--) {
                 printf("%d. %s\n", i + 1, posaux->comando);
-                posaux = previous(posaux, *historial);
+                posaux = previous(posaux, historial);
             }
             return;
         }
-        if (ncomando >= 1 && ncomando <= historial->contador + 1) {
-            tPosL posaux = first(*historial);
+        if (ncomando >= 1 && ncomando <= historial.contador + 1) {
+            tPosL posaux = first(historial);
             for (int i = ncomando; i > 0; i--) {
                 if (i == 1) {
                     printf("%d. %s\n", ncomando, posaux->comando);
                 }
-                posaux = next(posaux, *historial);
+                posaux = next(posaux, historial);
             }
             return;
         }
@@ -370,7 +373,19 @@ void Cmd_historic(int NumTrozos, char *trozos[], tList *historial) {
     }
 }
 
-void Cmd_exit() {
+void add_to_historic(char comando[MAX]) {
+    insertItem(comando,LNULL, &historial);
+}
+
+void delete_historic(tList *historial) {
+    if (historial->start == NULL) return;
+    while (!isEmptyList(*historial)) {
+        deleteAtPosition(first(*historial), historial);
+    }
+}
+
+void Cmd_exit(int NumTrozos, char *trozos[]) {
     printf("Saliendo del shell...\n");
+    delete_historic(&historial);
     exit(0);
 }

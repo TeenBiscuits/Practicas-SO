@@ -22,24 +22,20 @@
 
 void imprimirPrompt();
 
-void leerEntrada(char comando[MAX], tList *historial);
+void leerEntrada(char comando[MAX]);
 
-bool procesarEntrada(char comando[MAX], tList *historial);
+bool procesarEntrada(char comando[MAX]);
 
 int dividir_comando(char *comando, char **args);
 
-void borrar_historial(tList *historial);
-
 int main() {
     bool terminado = false;
-    tList historial = {-1,NULL};
     while (!terminado) {
         char comando[MAX];
         imprimirPrompt();
-        leerEntrada(comando, &historial);
-        terminado = procesarEntrada(comando, &historial);
+        leerEntrada(comando);
+        terminado = procesarEntrada(comando);
     }
-    borrar_historial(&historial);
     return 0;
 }
 
@@ -64,10 +60,10 @@ void imprimirPrompt() {
     }
 };
 
-void leerEntrada(char comando[MAX], tList *historial) {
+void leerEntrada(char comando[MAX]) {
     fgets(comando, MAX, stdin);
     comando[strcspn(comando, "\n")] = '\0';
-    insertItem(comando,LNULL, historial);
+    if (strcmp(comando, "\0") != 0) add_to_historic(comando);
 };
 
 struct CMD C[] = {
@@ -87,7 +83,7 @@ struct CMD C[] = {
     {"bye",Cmd_exit}
 };
 
-bool procesarEntrada(char comando[MAX], tList *historial) {
+bool procesarEntrada(char comando[MAX]) {
     if (strcmp(comando, "\0") == 0) return false;
 
     char *Trozos[MAX_ARG];
@@ -115,11 +111,4 @@ int dividir_comando(char *comando, char **args) {
     }
     args[i] = NULL;
     return i - 1;
-}
-
-void borrar_historial(tList *historial) {
-    if (historial->start == NULL) return;
-    while (!isEmptyList(*historial)) {
-        deleteAtPosition(first(*historial), historial);
-    }
 }

@@ -54,8 +54,12 @@ void Cmd_infosys(int NumTrozos, char *trozos[]);
 
 void Cmd_help(int NumTrozos, char *trozos[]);
 
-void Cmd_historic(int NumTrozos, char *trozos[], tList *historial);
+void Cmd_historic(int NumTrozos, char *trozos[]);
 
 void Cmd_exit();
+
+void add_to_historic();
+
+void delete_historic(tList *historial);
 
 #endif //COMANDOS_H
