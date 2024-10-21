@@ -7,42 +7,41 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <limits.h>
-// No compilable en mac
-// #include <linux/limits.h>
-#include "list.h"
+
 #include "color.h"
 #include "comandos.h"
 
-#define MAX_FILES 100
 #define MAX 2048
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
 #define HOST_NAME_MAX 255  // Definir HOST_NAME_MAX si no está declarado
 #endif
 
+// Imprime el prompt nombre de usuario + nombre de host + directorio actual
 void imprimirPrompt();
 
+// Leer la entrada por teclado del usuario.
 void leerEntrada(char comando[MAX]);
 
-bool procesarEntrada(char comando[MAX]);
+// De no ser nulo el comando recibido, se añade al histórico y se envían los parámetros a la función correcta
+void procesarEntrada(char comando[MAX]);
 
-int dividir_comando(char *comando, char **args);
+// Dado un comando con sus parámetros (ya sean válidos o no) trocearlo en segmentos.
+// El primero es la línea de texto sin procesar y el segundo un array de arrays de chars. Siendo [0] el comando y los siguientes los parámetros
+int dividir_comando(char *input, char **trozos);
 
 int main() {
-    bool terminado = false;
-    while (!terminado) {
+    while (true) {
         char comando[MAX];
         imprimirPrompt();
         leerEntrada(comando);
-        terminado = procesarEntrada(comando);
+        procesarEntrada(comando);
     }
-    return 0;
 }
 
 void imprimirPrompt() {
-    char cwd[PATH_MAX];
-    char hostname[HOST_NAME_MAX];
     char *user = getenv("USER");
+    char cwd[PATH_MAX], hostname[HOST_NAME_MAX];
     if (user == NULL) {
         printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de usuario.\n" ANSI_COLOR_RESET);
         user = "usuario";
@@ -51,40 +50,42 @@ void imprimirPrompt() {
         printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de la máquina.\n" ANSI_COLOR_RESET);
         strcpy(hostname, "maquina");
     }
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user, hostname,
-               cwd);
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio actual.\n" ANSI_COLOR_RESET);
+        strcpy(cwd, "NULL");
     } else {
-        printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio.\n" ANSI_COLOR_RESET);
-        printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET "$ ", user, hostname);
+        printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user,
+               hostname, cwd);
     }
 };
 
 void leerEntrada(char comando[MAX]) {
     fgets(comando, MAX, stdin);
-    comando[strcspn(comando, "\n")] = '\0';
-    if (strcmp(comando, "\0") != 0) add_to_historic(comando);
+    comando[strcspn(comando, "\n")] = '\0'; // Substituimos el salto de línea por el fin de cadena
 };
 
+// Comandos y sus respectivas funciones
 struct CMD C[] = {
-    {"authors",Cmd_authors},
-    {"pid",Cmd_pid},
-    {"ppid",Cmd_ppid},
-    {"cd",Cmd_cd},
-    {"date",Cmd_date},
-    {"open",Cmd_open},
-    {"close",Cmd_close},
-    {"dup",Cmd_dup},
-    {"infosys",Cmd_infosys},
-    {"help",Cmd_help},
-    {"historic",Cmd_historic},
-    {"exit",Cmd_exit},
-    {"quit",Cmd_exit},
-    {"bye",Cmd_exit}
+    {"authors", Cmd_authors},
+    {"pid", Cmd_pid},
+    {"ppid", Cmd_ppid},
+    {"cd", Cmd_cd},
+    {"date", Cmd_date},
+    {"open", Cmd_open},
+    {"close", Cmd_close},
+    {"dup", Cmd_dup},
+    {"infosys", Cmd_infosys},
+    {"help", Cmd_help},
+    {"historic", Cmd_historic},
+    {"exit", Cmd_exit},
+    {"quit", Cmd_exit},
+    {"bye", Cmd_exit}
 };
 
-bool procesarEntrada(char comando[MAX]) {
-    if (strcmp(comando, "\0") == 0) return false;
+void procesarEntrada(char comando[MAX]) {
+    if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
+
+    add_to_historic(comando);
 
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);
@@ -92,23 +93,22 @@ bool procesarEntrada(char comando[MAX]) {
     for (int i = 0; i < 13; i++) {
         if (strcmp(Trozos[0], C[i].comando) == 0) {
             C[i].funcion(NumeroT, Trozos);
-            return false;
+            return;
         }
     }
 
     printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
-    return false;
 };
 
-int dividir_comando(char *comando, char **args) {
-    char *tokens;
+int dividir_comando(char *input, char **trozos) {
+    char *rebanadas;
     int i = 0;
-
-    tokens = strtok(comando, " ");
-    while (tokens != NULL) {
-        args[i++] = tokens;
-        tokens = strtok(NULL, " ");
+    // Partimos el input original, una cadena de texto terminada en '\0'
+    rebanadas = strtok(input, " \t");
+    for (; rebanadas != NULL; i++) {
+        trozos[i] = rebanadas; // Se almacena la rebanada, en la primera iteración el comando
+        rebanadas = strtok(NULL, " \t"); // Se prosigue desde donde dejo el corte anterior
     }
-    args[i] = NULL;
-    return i - 1;
+    trozos[i] = NULL;
+    return i - 1; // Devolvemos el número de parámetros recibido
 }
