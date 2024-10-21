@@ -15,8 +15,8 @@ CC = gcc
 CFLAGS = -Wall
 
 # Fuente y Salida del makefile
-SRC = p0.c
-OBJ = p0.out
+SRC = main.c
+OBJ = shell.out
 
 # Comandos
 COMA = comandos.c
