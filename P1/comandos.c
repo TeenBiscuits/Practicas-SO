@@ -127,41 +127,29 @@ void list_open_files() {
 }
 
 void Cmd_open(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0) {
-        // Si no hay argumentos, listamos los archivos abiertos
-        list_open_files();
-    } else if (NumTrozos == 2) {
-        char *filename = trozos[1];
-        char *mode = trozos[2];
+    if (NumTrozos == 0) { list_open_files(); return; }
+    if (NumTrozos != 2) {
+        printf(ANSI_COLOR_RED "Error: Usa 'open [archivo] [modo]'.\n" ANSI_COLOR_RESET); return;
+    }
 
-        // Obtener las banderas correctas para el modo
-        int flags = get_open_flags(mode);
-        if (flags == -1) {
-            printf(ANSI_COLOR_RED "Error: Modo de apertura no reconocido.\n" ANSI_COLOR_RESET);
-            return;
-        }
+    int flags = get_open_flags(trozos[2]), desc;
+    if (flags == -1) {
+        printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET); return;
+    }
 
-        // Abrir el archivo
-        int desc = open(filename, flags, 0644); // 0644 es el modo de permisos por defecto
-        if (desc == -1) {
-            perror("Error al abrir el archivo");
-            return;
-        }
+    if ((desc = open(trozos[1], flags, 0644)) == -1) {
+        perror("Error al abrir el archivo"); return;
+    }
 
-        // Guardar el archivo en la lista
-        if (open_file_count < MAX_FILES) {
-            open_files[open_file_count].desc = desc;
-            strncpy(open_files[open_file_count].filename, filename, PATH_MAX);
-            strncpy(open_files[open_file_count].mode, mode, 3);
-            open_file_count++;
-            printf("Archivo '%s' abierto con el descriptor %d en modo '%s'.\n", filename, desc, mode);
-        } else {
-            printf(ANSI_COLOR_RED "Error: No se pueden abrir más archivos.\n" ANSI_COLOR_RESET);
-            close(desc); // Cerrar el archivo si no se puede almacenar en la lista
-        }
+    if (open_file_count < MAX_FILES) {
+        open_files[open_file_count].desc = desc;
+        strncpy(open_files[open_file_count].filename, trozos[1], PATH_MAX);
+        strncpy(open_files[open_file_count].mode, trozos[2], 3);
+        open_file_count++;
+        printf("Archivo '%s' abierto con descriptor %d en modo '%s'.\n", trozos[1], desc, trozos[2]);
     } else {
-        printf(
-            ANSI_COLOR_RED "Error: Número incorrecto de argumentos. Usa 'open [archivo] [modo]'.\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Error: No se pueden abrir más archivos.\n" ANSI_COLOR_RESET);
+        close(desc);
     }
 }
 
