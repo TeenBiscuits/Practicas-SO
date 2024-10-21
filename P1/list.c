@@ -41,14 +41,21 @@ bool insertItem(tItemL item, tPosL posicion, tList *lista) {
 
     if (aux1 == NULL) return false;
 
-    strcpy(aux1->comando, item); // Se guarda en el nodo la información del usuario
-    aux1->siguiente = LNULL; // Se le inicializa sin apuntar a ningún nodo
-    if (lista->start == LNULL) // Si la lista está vacía el nodo es el primer elemento
+    strcpy(aux1->comando, item);
+    aux1->siguiente = LNULL;
+    if (lista->start == LNULL)
         lista->start = aux1;
     else if (posicion == LNULL) {
         tPosL aux2 = last(*lista);
         aux2->siguiente = aux1;
-    } else return false;
+    } else if (posicion == first(*lista)) {
+        aux1->siguiente = posicion;
+        lista->start = aux1;
+    } else {
+        tPosL aux2 = previous(posicion, *lista);
+        aux2->siguiente = aux1;
+        aux1->siguiente = posicion;
+    }
     lista->contador += 1;
     return true;
 }
@@ -57,22 +64,18 @@ void deleteAtPosition(tPosL posicion, tList *lista) {
     tPosL aux, anterior;
 
     if (next(posicion, *lista) == LNULL) {
-        // Si la posición a eliminar es la última
         if (posicion == lista->start) {
-            // Si la lista está compuesta por un único item
-            lista->start = LNULL; // La lista se queda sin elementos
+            lista->start = LNULL;
         } else {
-            aux = previous(posicion, *lista); // El elemento anterior a él debe apuntar a NULL
+            aux = previous(posicion, *lista);
             aux->siguiente = LNULL;
         }
     } else {
         if (posicion == lista->start) {
             lista->start = next(posicion, *lista);
-            // Al ser el primer elemento, la lista ahora empieza en el segundo (el siguiente)
         } else {
             anterior = previous(posicion, *lista);
             anterior->siguiente = next(posicion, *lista);
-            // El elemento anterior apunta al siguiente a la posición eliminada
         }
     }
     lista->contador -= 1;

@@ -317,7 +317,7 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
     }
 }
 
-void add_to_historic(char comando[MAX]) {
+void add_to_historic(char comando[MAXITEM]) {
     insertItem(comando,LNULL, &historial);
 }
 

@@ -11,7 +11,6 @@
 #include "color.h"
 #include "comandos.h"
 
-#define MAX 2048
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
 #define HOST_NAME_MAX 255  // Definir HOST_NAME_MAX si no está declarado
@@ -21,10 +20,10 @@
 void imprimirPrompt();
 
 // Leer la entrada por teclado del usuario.
-void leerEntrada(char comando[MAX]);
+void leerEntrada(char comando[MAXITEM]);
 
 // De no ser nulo el comando recibido, se añade al histórico y se envían los parámetros a la función correcta
-void procesarEntrada(char comando[MAX]);
+void procesarEntrada(char comando[MAXITEM]);
 
 // Dado un comando con sus parámetros (ya sean válidos o no) trocearlo en segmentos.
 // El primero es la línea de texto sin procesar y el segundo un array de arrays de chars. Siendo [0] el comando y los siguientes los parámetros
@@ -32,7 +31,7 @@ int dividir_comando(char *input, char **trozos);
 
 int main() {
     while (true) {
-        char comando[MAX];
+        char comando[MAXITEM];
         imprimirPrompt();
         leerEntrada(comando);
         procesarEntrada(comando);
@@ -59,8 +58,8 @@ void imprimirPrompt() {
     }
 };
 
-void leerEntrada(char comando[MAX]) {
-    fgets(comando, MAX, stdin);
+void leerEntrada(char comando[MAXITEM]) {
+    fgets(comando, MAXITEM, stdin);
     comando[strcspn(comando, "\n")] = '\0'; // Substituimos el salto de línea por el fin de cadena
 };
 
@@ -82,7 +81,7 @@ struct CMD C[] = {
     {"bye", Cmd_exit}
 };
 
-void procesarEntrada(char comando[MAX]) {
+void procesarEntrada(char comando[MAXITEM]) {
     if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
 
     add_to_historic(comando);
