@@ -3,6 +3,8 @@
 
 #include "comandos.h"
 
+#include <sys/stat.h>
+
 //COMANDOS_BÁSICOS
 
 void authors(int NumTrozos, char *trozos[]) {
@@ -166,7 +168,6 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
 
 void Cmd_close(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 1) {
-        // Se debe pasar exactamente un argumento: el descriptor del archivo
         printf(
             ANSI_COLOR_RED "Error: Debes proporcionar un descriptor de archivo válido. Usa 'close [df]'.\n"
             ANSI_COLOR_RESET);
@@ -367,5 +368,14 @@ void Cmd_historic(int NumTrozos, char *trozos[], tList *historial) {
     // else printf(ANSI_COLOR_RED "Error: Comando '%s' no reconocido.\n" ANSI_COLOR_RESET, trozos[0]);
     if (NumTrozos >= 2) {
         printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
+    }
+}
+
+
+void Cmd_makedir(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0) {
+        int result = mkdir(trozos[0], 0755);
+    } else if (NumTrozos == 1) {
+
     }
 }

@@ -166,97 +166,53 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_close(int NumTrozos, char *trozos[]) {
-    if (NumTrozos != 1) {
-        // Se debe pasar exactamente un argumento: el descriptor del archivo
-        printf(
-            ANSI_COLOR_RED "Error: Debes proporcionar un descriptor de archivo válido. Usa 'close [df]'.\n"
-            ANSI_COLOR_RESET);
+    if (NumTrozos != 1 || atoi(trozos[1]) < 0) {
+        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'close [df]'.\n" ANSI_COLOR_RESET);
         return;
     }
 
-    // Convertir el argumento a entero (descriptor del archivo)
-    int desc = atoi(trozos[1]);
-
-    // Buscar el archivo con el descriptor proporcionado
-    bool found = false;
-    for (int i = 0; i < open_file_count; i++) {
+    int desc = atoi(trozos[1]), i, j;
+    for (i = 0; i < open_file_count; i++) {
         if (open_files[i].desc == desc) {
-            // Cerrar el archivo
-            if (close(desc) == -1) {
-                perror("Error al cerrar el archivo");
-                return;
-            }
+            if (close(desc) == -1) { perror("Error al cerrar el archivo"); return; }
 
-            // Eliminar el archivo de la lista, desplazando los elementos siguientes
-            for (int j = i; j < open_file_count - 1; j++) {
-                open_files[j] = open_files[j + 1];
-            }
-
-            open_file_count--; // Reducir el número de archivos abiertos
-            printf("El archivo con descriptor %d ha sido cerrado y eliminado de la lista.\n", desc);
-            found = true;
-            break;
+            for (j = i; j < open_file_count - 1; j++) open_files[j] = open_files[j + 1];
+            open_file_count--;
+            printf("El archivo con descriptor %d ha sido cerrado.\n", desc);
+            return;
         }
     }
-
-    if (!found) {
-        // Si no se encontró el descriptor, mostramos un mensaje de error
-        printf(
-            ANSI_COLOR_RED "Error: No se encontró el descriptor %d en la lista de archivos abiertos.\n"
-            ANSI_COLOR_RESET, desc);
-    }
+    printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, desc);
 }
 
+
 void Cmd_dup(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0) {
-        printf(
-            ANSI_COLOR_RED "Error: Debes proporcionar un descriptor de archivo válido. Usa 'dup [df]'.\n"
-            ANSI_COLOR_RESET);
+    if (NumTrozos == 0 || atoi(trozos[1]) < 0) {
+        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'dup [df]'.\n" ANSI_COLOR_RESET);
         return;
     }
-    int old_desc = atoi(trozos[1]);
-
-    if (old_desc < 0) {
-        printf(
-            ANSI_COLOR_RED "Error: Descriptor de archivo no válido. Debe ser un número positivo.\n" ANSI_COLOR_RESET);
-        return;
-    }
-    // Verificar si el descriptor de archivo existe en la lista de archivos abiertos
-    bool found = false;
-    for (int i = 0; i < open_file_count; i++) {
+    int old_desc = atoi(trozos[1]), new_desc, i;
+    for (i = 0; i < open_file_count; i++) {
         if (open_files[i].desc == old_desc) {
-            found = true;
-
-            // Duplicar el descriptor de archivo usando dup
-            int new_desc = dup(old_desc);
-            if (new_desc == -1) {
-                perror("Error al duplicar el descriptor de archivo");
-                return;
+            if ((new_desc = dup(old_desc)) == -1) {
+                perror("Error al duplicar el descriptor"); return;
             }
-
-            // Agregar el nuevo descriptor de archivo a la lista de archivos abiertos
             if (open_file_count < MAX_FILES) {
                 open_files[open_file_count].desc = new_desc;
                 strncpy(open_files[open_file_count].filename, open_files[i].filename, PATH_MAX);
                 strncpy(open_files[open_file_count].mode, open_files[i].mode, 3);
                 open_file_count++;
-                printf("Descriptor %d duplicado exitosamente. Nuevo descriptor: %d\n", old_desc, new_desc);
+                printf("Descriptor %d duplicado. Nuevo descriptor: %d\n", old_desc, new_desc);
             } else {
-                printf(ANSI_COLOR_RED "Error: No se pueden abrir más archivos.\n" ANSI_COLOR_RESET);
-                close(new_desc); // Cerrar el nuevo descriptor si no se puede almacenar en la lista
+                printf(ANSI_COLOR_RED "Error: Límite de archivos alcanzado.\n" ANSI_COLOR_RESET);
+                close(new_desc);
             }
-
-            break;
+            return;
         }
     }
-
-    if (!found) {
-        // Si no se encontró el descriptor original, mostramos un mensaje de error
-        printf(
-            ANSI_COLOR_RED "Error: No se encontró el descriptor %d en la lista de archivos abiertos.\n"
-            ANSI_COLOR_RESET, old_desc);
-    }
+    printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, old_desc);
 }
+
 
 void Cmd_infosys(int NumTrozos, char *trozos[]) {
     struct utsname sys_info;

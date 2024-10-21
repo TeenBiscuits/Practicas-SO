@@ -13,6 +13,8 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <sys/utsname.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "color.h"
 #include "list.h"
@@ -61,5 +63,7 @@ void Cmd_exit();
 void add_to_historic();
 
 void delete_historic(tList *historial);
+
+void Cmd_makedir(int NumTrozos, char *trozos[]);
 
 #endif //COMANDOS_H
