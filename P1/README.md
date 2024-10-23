@@ -19,7 +19,9 @@
 - [ ] help [cmd]
 - [ ] quit, exit, bye
 
-(1) _Hypothetically, there’s a scenario where trying to repeat a historic command could yield an infinite loop or a stack overflow (depending on how it is coded), so students may choose to not store calls to historic N itself in the historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end of this document)_
+(1) _Hypothetically, there’s a scenario where trying to repeat a historic command could yield an infinite loop or a
+stack overflow (depending on how it is coded), so students may choose to not store calls to historic N itself in the
+historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end of this document)_
 
 ### P1
 
@@ -28,20 +30,23 @@
 - [ ] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
 - [ ] cwd
 - [ ] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
-- [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(3)**
+- [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(
+  3)**
 - [ ] revlist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs antes)
 - [ ] erase [name1 name2 ..]
 - [ ] delrec [name1 name2 ..]
 
 (2) -long: listado largo | -acc: acesstime | -link: si es enlace simbolico, el path contenido
 
-(3) -long: listado largo | -hid: incluye los ficheros ocultos | -acc: acesstime | -link: si es enlace simbolico, el path contenido
+(3) -long: listado largo | -hid: incluye los ficheros ocultos | -acc: acesstime | -link: si es enlace simbolico, el path
+contenido
 
 ## Errores
 
 > Los que encontré por ahora
 
 - [ ] El comando "date" provoca un leak de memoria
+- [ ] Warnings varios en Cmd_date
 - [ ] El comando help no ha sido actualizado a todos los comandos
 - [ ] El comando help cuando emite un error imprime el comando help y no el comando mandado
 - [ ] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
