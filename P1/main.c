@@ -70,23 +70,25 @@ struct CMD C[] = {
     {"ppid", Cmd_ppid},
     {"cd", Cmd_cd},
     {"date", Cmd_date},
+    {"historic", Cmd_historic},
     {"open", Cmd_open},
     {"close", Cmd_close},
     {"dup", Cmd_dup},
     {"infosys", Cmd_infosys},
     {"help", Cmd_help},
-    {"historic", Cmd_historic},
-    {"exit", Cmd_exit},
     {"quit", Cmd_exit},
+    {"exit", Cmd_exit},
     {"bye", Cmd_exit},
     {"makefile", Cmd_makefile},
     {"makedir", Cmd_makedir},
     {"listfile", Cmd_listfile},
+    {"ls", Cmd_listfile},
     {"cwd", Cmd_cwd},
     {"listdir", Cmd_listdir},
     {"reclist", Cmd_reclist},
     {"revlist", Cmd_revlist},
-    {"erease", Cmd_erase}
+    {"erease", Cmd_erase},
+    {"delrec", Cmd_delrec},
 };
 
 void procesarEntrada(char comando[MAXITEM]) {
@@ -97,7 +99,7 @@ void procesarEntrada(char comando[MAXITEM]) {
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);
 
-    for (int i = 0; i < sizeof(C) / sizeof(C[0]); i++){
+    for (int i = 0; i < sizeof(C) / sizeof(C[0]); i++) {
         if (strcmp(Trozos[0], C[i].comando) == 0) {
             C[i].funcion(NumeroT, Trozos);
             return;

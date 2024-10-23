@@ -30,9 +30,10 @@ typedef struct {
     char mode[3];
 } OpenFile;
 
-struct CMD{
-    char * comando;
-    void (* funcion) (int, char **);
+struct CMD {
+    char *comando;
+
+    void (*funcion)(int, char **);
 };
 
 #endif
@@ -90,3 +91,5 @@ void recursive_revlist(const char *dirName);
 void Cmd_revlist(int NumTrozos, char *trozos[]);
 
 void Cmd_erase(int NumTrozos, char *trozos[]);
+
+void Cmd_delrec(int NumTrozos, char *trozos[]);

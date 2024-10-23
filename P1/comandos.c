@@ -66,11 +66,11 @@ void Cmd_cd(int NumTrozos, char *trozos[]) {
 
 void Cmd_date(int NumTrozos, char *trozos[]) {
     time_t t;
-    struct tm *tm_info= localtime(&t);
+    struct tm *tm_info = localtime(&t);
     char buffer[80];
 
     // Inicializa t con el tiempo actual
-    time(&t);  // Aquí inicializamos t con la hora act
+    time(&t); // Aquí inicializamos t con la hora act
 
     if (NumTrozos == 0) {
         strftime(buffer, 80, "%d/%m/%Y %H:%M:%S", tm_info);
@@ -127,18 +127,24 @@ void list_open_files() {
 }
 
 void Cmd_open(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0) { list_open_files(); return; }
+    if (NumTrozos == 0) {
+        list_open_files();
+        return;
+    }
     if (NumTrozos != 2) {
-        printf(ANSI_COLOR_RED "Error: Usa 'open [archivo] [modo]'.\n" ANSI_COLOR_RESET); return;
+        printf(ANSI_COLOR_RED "Error: Usa 'open [archivo] [modo]'.\n" ANSI_COLOR_RESET);
+        return;
     }
 
     int flags = get_open_flags(trozos[2]), desc;
     if (flags == -1) {
-        printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET); return;
+        printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET);
+        return;
     }
 
     if ((desc = open(trozos[1], flags, 0644)) == -1) {
-        perror("Error al abrir el archivo"); return;
+        perror("Error al abrir el archivo");
+        return;
     }
 
     if (open_file_count < MAX_FILES) {
@@ -161,9 +167,12 @@ void Cmd_close(int NumTrozos, char *trozos[]) {
 
     int desc = atoi(trozos[1]);
 
-    for (int i = 0; i < open_file_count; i++)  {
+    for (int i = 0; i < open_file_count; i++) {
         if (open_files[i].desc == desc) {
-            if (close(desc) == -1) { perror("Error al cerrar el archivo"); return; }
+            if (close(desc) == -1) {
+                perror("Error al cerrar el archivo");
+                return;
+            }
 
             for (int j = i; j < open_file_count - 1; j++) open_files[j] = open_files[j + 1];
             open_file_count--;
@@ -184,7 +193,8 @@ void Cmd_dup(int NumTrozos, char *trozos[]) {
     for (int i = 0; i < open_file_count; i++) {
         if (open_files[i].desc == old_desc) {
             if ((new_desc = dup(old_desc)) == -1) {
-                perror("Error al duplicar el descriptor"); return;
+                perror("Error al duplicar el descriptor");
+                return;
             }
             if (open_file_count < MAX_FILES) {
                 open_files[open_file_count].desc = new_desc;
@@ -343,12 +353,14 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
 
     int fd = open(trozos[1], O_CREAT | O_EXCL | O_WRONLY, 0644);
     if (fd == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo crear el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo crear el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+               strerror(errno));
     } else {
         printf("Archivo '%s' creado exitosamente.\n", trozos[1]);
         close(fd);
     }
 }
+
 void Cmd_makedir(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 1) {
         printf(ANSI_COLOR_RED "Uso: makedir [nombre_directorio]\n" ANSI_COLOR_RESET);
@@ -356,11 +368,13 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     }
 
     if (mkdir(trozos[1], 0755) == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo crear el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo crear el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+               strerror(errno));
     } else {
         printf("Directorio '%s' creado exitosamente.\n", trozos[1]);
     }
 }
+
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 1) {
         printf(ANSI_COLOR_RED "Uso: listfile [nombre_archivo]\n" ANSI_COLOR_RESET);
@@ -369,15 +383,17 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 
     struct stat fileStat;
     if (stat(trozos[1], &fileStat) == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+               strerror(errno));
         return;
     }
 
     printf("Información de '%s':\n", trozos[1]);
     printf("Tamaño: %ld bytes\n", fileStat.st_size);
     printf("Permisos: %o\n", fileStat.st_mode & 0777);
-    printf("Último acceso: %s", ctime(&fileStat.st_atime));  // No requiere '\n'
+    printf("Último acceso: %s", ctime(&fileStat.st_atime)); // No requiere '\n'
 }
+
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
@@ -386,12 +402,14 @@ void Cmd_cwd(int NumTrozos, char *trozos[]) {
         printf("Directorio actual: %s\n", cwd);
     }
 }
+
 void Cmd_listdir(int NumTrozos, char *trozos[]) {
     const char *dirName = (NumTrozos == 0) ? "." : trozos[1];
 
     DIR *dir = opendir(dirName);
     if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName, strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
         return;
     }
 
@@ -402,10 +420,12 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
     }
     closedir(dir);
 }
+
 void recursive_list(const char *dirName) {
     DIR *dir = opendir(dirName);
     if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName, strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
         return;
     }
 
@@ -418,7 +438,7 @@ void recursive_list(const char *dirName) {
             struct stat info;
             if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
                 printf("Directorio: %s\n", path);
-                recursive_list(path);  // Llamada recursiva para subdirectorios
+                recursive_list(path); // Llamada recursiva para subdirectorios
             } else {
                 printf("Archivo: %s\n", path);
             }
@@ -431,10 +451,12 @@ void Cmd_reclist(int NumTrozos, char *trozos[]) {
     const char *dirName = (NumTrozos == 0) ? "." : trozos[1];
     recursive_list(dirName);
 }
+
 void recursive_revlist(const char *dirName) {
     DIR *dir = opendir(dirName);
     if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName, strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
         return;
     }
 
@@ -446,20 +468,20 @@ void recursive_revlist(const char *dirName) {
 
             struct stat info;
             if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
-                recursive_revlist(path);  // Llamada recursiva primero
+                recursive_revlist(path); // Llamada recursiva primero
                 printf("Directorio: %s\n", path);
             }
         }
     }
 
-    rewinddir(dir);  // Recorremos el directorio nuevamente para listar archivos después
+    rewinddir(dir); // Recorremos el directorio nuevamente para listar archivos después
     while ((ent = readdir(dir)) != NULL) {
         if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
             char path[PATH_MAX];
             snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
 
             struct stat info;
-            if (stat(path, &info) == 0 && S_ISREG(info.st_mode)){
+            if (stat(path, &info) == 0 && S_ISREG(info.st_mode)) {
                 printf("Archivo: %s\n", path);
             }
         }
@@ -471,6 +493,7 @@ void Cmd_revlist(int NumTrozos, char *trozos[]) {
     const char *dirName = (NumTrozos == 0) ? "." : trozos[1];
     recursive_revlist(dirName);
 }
+
 void Cmd_erase(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 1) {
         printf(ANSI_COLOR_RED "Uso: erase [nombre_archivo/directorio]\n" ANSI_COLOR_RESET);
@@ -482,14 +505,16 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     // Intentar obtener información del archivo
     if (stat(trozos[1], &info) == -1) {
         // Mostrar el error si no se pudo obtener información
-        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+               strerror(errno));
         return;
     }
 
     // Si es un archivo regular, intentamos eliminarlo
     if (S_ISREG(info.st_mode)) {
         if (unlink(trozos[1]) == -1) {
-            printf(ANSI_COLOR_RED "Error: No se pudo borrar el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+            printf(ANSI_COLOR_RED "Error: No se pudo borrar el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+                   strerror(errno));
         } else {
             printf("Archivo '%s' borrado exitosamente.\n", trozos[1]);
         }
@@ -499,7 +524,8 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     // Si es un directorio, intentamos eliminarlo
     if (S_ISDIR(info.st_mode)) {
         if (rmdir(trozos[1]) == -1) {
-            printf(ANSI_COLOR_RED "Error: No se pudo borrar el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1], strerror(errno));
+            printf(ANSI_COLOR_RED "Error: No se pudo borrar el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
+                   strerror(errno));
         } else {
             printf("Directorio '%s' borrado exitosamente.\n", trozos[1]);
         }
@@ -510,7 +536,6 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     printf(ANSI_COLOR_RED "Error: '%s' no es ni un archivo ni un directorio válido.\n" ANSI_COLOR_RESET, trozos[1]);
 }
 
+void Cmd_delrec(int NumTrozos, char *trozos[]) {
 
-
-
-
+}
