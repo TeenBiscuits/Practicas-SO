@@ -15,6 +15,8 @@
 #include <sys/utsname.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <errno.h>
+#include <dirent.h>
 
 #include "color.h"
 #include "list.h"
@@ -33,6 +35,7 @@ struct CMD{
     void (* funcion) (int, char **);
 };
 
+#endif
 // Estructura de una función de comandos
 // void comando(int NumTrozos, char *trozos[]);
 
@@ -66,4 +69,24 @@ void delete_historic(tList *historial);
 
 void Cmd_makedir(int NumTrozos, char *trozos[]);
 
-#endif //COMANDOS_H
+void Cmd_makefile(int NumTrozos, char *trozos[]);
+
+void Cmd_makedir(int NumTrozos, char *trozos[]);
+
+void Cmd_listfile(int NumTrozos, char *trozos[]);
+
+void Cmd_cwd(int NumTrozos, char *trozos[]);
+
+void Cmd_listdir(int NumTrozos, char *trozos[]);
+
+void Cmd_listdir(int NumTrozos, char *trozos[]);
+
+void recursive_list(const char *dirName);
+
+void Cmd_reclist(int NumTrozos, char *trozos[]);
+
+void recursive_revlist(const char *dirName);
+
+void Cmd_revlist(int NumTrozos, char *trozos[]);
+
+void Cmd_erase(int NumTrozos, char *trozos[]);

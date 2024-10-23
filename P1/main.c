@@ -79,7 +79,15 @@ struct CMD C[] = {
     {"historic", Cmd_historic},
     {"exit", Cmd_exit},
     {"quit", Cmd_exit},
-    {"bye", Cmd_exit}
+    {"bye", Cmd_exit},
+    {"makefile", Cmd_makefile},
+    {"makedir", Cmd_makedir},
+    {"listfile", Cmd_listfile},
+    {"cwd", Cmd_cwd},
+    {"listdir", Cmd_listdir},
+    {"reclist", Cmd_reclist},
+    {"revlist", Cmd_revlist},
+    {"erease", Cmd_erase}
 };
 
 void procesarEntrada(char comando[MAX]) {
