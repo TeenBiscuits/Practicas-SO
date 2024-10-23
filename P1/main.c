@@ -97,7 +97,7 @@ void procesarEntrada(char comando[MAXITEM]) {
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);
 
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < 21; i++) {
         if (strcmp(Trozos[0], C[i].comando) == 0) {
             C[i].funcion(NumeroT, Trozos);
             return;
