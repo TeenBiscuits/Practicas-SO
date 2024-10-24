@@ -69,20 +69,27 @@ void Cmd_cd(int NumTrozos, char *trozos[]) {
 
 void Cmd_date(int NumTrozos, char *trozos[]) {
     time_t t;
-    struct tm *tm_info = localtime(&t);
     char buffer[80];
 
     // Inicializa t con el tiempo actual
-    time(&t); // Aquí inicializamos t con la hora act
+    time(&t);
+
+    // Obtenemos la estructura tm con el tiempo local y la hacemos const
+    const struct tm *tm_info = localtime(&t);
+
+    if (tm_info == NULL) {
+        perror("Error obteniendo la hora local");
+        return;
+    }
 
     if (NumTrozos == 0) {
-        strftime(buffer, 80, "%d/%m/%Y %H:%M:%S", tm_info);
+        strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M:%S", tm_info);
         printf("Fecha y hora actuales: %s\n", buffer);
     } else if (NumTrozos == 1 && strcmp(trozos[1], "-t") == 0) {
-        strftime(buffer, 80, "%H:%M:%S", tm_info);
+        strftime(buffer, sizeof(buffer), "%H:%M:%S", tm_info);
         printf("Hora actual: %s\n", buffer);
     } else if (NumTrozos == 1 && strcmp(trozos[1], "-d") == 0) {
-        strftime(buffer, 80, "%d/%m/%Y", tm_info);
+        strftime(buffer, sizeof(buffer), "%d/%m/%Y", tm_info);
         printf("Fecha actual: %s\n", buffer);
     } else {
         printf(ANSI_COLOR_RED "Error: Opción no reconocida.\n" ANSI_COLOR_RESET);
@@ -91,6 +98,8 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
         printf("Usa el comando 'date -d' para obtener solo la fecha.\n");
     }
 }
+
+
 
 
 //Lista archivos abiertos
