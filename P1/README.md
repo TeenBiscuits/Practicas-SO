@@ -51,7 +51,7 @@ contenido
 - [ ] El comando help cuando emite un error imprime el comando help y no el comando mandado
 - [ ] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
 - [ ] Falta el comando "delrec"
-- [ ] Authors no imprime correctamente
+- [x] Authors no imprime correctamente
 - [x] El comando listdir puede ser llamado con ls
 - [ ] ...
 

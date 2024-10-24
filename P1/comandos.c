@@ -7,17 +7,20 @@
 //COMANDOS_BÁSICOS
 
 void Cmd_authors(int NumTrozos, char *trozos[]) {
-    printf("%d\n", NumTrozos);
     if (NumTrozos == 0) {
         // Si solo se introduce "authors", imprime ambos nombres y correos
-        printf("Pablo Míguez Muiño\nPablo Portas López\n");
-        printf("pablo.miguez.muino@udc.es\npablo.portas@udc.es\n");
+        printf("Pablo Portas López: pablo.portas@udc.es\n");
+        printf("Pablo Míguez Muiño: pablo.miguez.muino@udc.es\n");
     } else if (NumTrozos == 1 && strcmp(trozos[1], "-l\0") == 0) {
         // Si el segundo argumento es "-l", imprime solo los correos
-        printf("pablo.miguez.muino@udc.es\npablo.portas@udc.es\n");
+        printf("pablo.portas@udc.es\npablo.miguez.muino@udc.es\n");
     } else if (NumTrozos == 1 && strcmp(trozos[1], "-n\0") == 0) {
         // Si el segundo argumento es "-n", imprime solo los nombres
-        printf("Pablo Míguez Muiño\nPablo Portas López\n");
+        printf("Pablo Portas López\nPablo Míguez Muiño\n");
+    } else if (NumTrozos == 1 && strcmp(trozos[1], "-?\0") == 0) {
+        printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
+        printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
+        printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
     } else {
         // Si el argumento no es reconocido, imprime el mensaje de error
         printf(ANSI_COLOR_RED "Error: Opción no reconocida.\n" ANSI_COLOR_RESET);
@@ -546,5 +549,4 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_delrec(int NumTrozos, char *trozos[]) {
-
 }
