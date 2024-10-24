@@ -545,32 +545,5 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     printf(ANSI_COLOR_RED "Error: '%s' no es ni un archivo ni un directorio válido.\n" ANSI_COLOR_RESET, trozos[1]);
 }
 
-void Cmd_delrec(const char *path) {
-    struct stat path_stat;
-    if (stat(path, &path_stat) != 0) { perror("stat"); return; }
-
-    if (S_ISREG(path_stat.st_mode)) {
-        if (unlink(path) != 0) perror("unlink");
-        return;
-    }
-
-    if (S_ISDIR(path_stat.st_mode)) {
-        DIR *dir = opendir(path);
-        if (!dir) { perror("opendir"); return; }
-
-        struct dirent *entry;
-        while ((entry = readdir(dir)) != NULL) {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
-
-            // Mueve la declaración de subpath aquí, dentro del ciclo
-            char subpath[PATH_MAX + 1];
-            snprintf(subpath, sizeof(subpath), "%s/%s", path, entry->d_name);
-
-            Cmd_delrec(subpath);  // Llamada recursiva con la ruta completa
-        }
-        closedir(dir);
-        if (rmdir(path) != 0) perror("rmdir");
-    }
-}
 
 
