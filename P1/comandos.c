@@ -541,19 +541,31 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     // Si no es ni archivo regular ni directorio, mostrar error
     printf(ANSI_COLOR_RED "Error: '%s' no es ni un archivo ni un directorio válido.\n" ANSI_COLOR_RESET, trozos[1]);
 }
+
 void Cmd_delrec(int NumTrozos, char *trozos[]) {
-    if (NumTrozos < 1) { printf("Error: Se requiere al menos un nombre.\n"); return; }
+    if (NumTrozos < 1) {
+        printf("Error: Se requiere al menos un nombre.\n");
+        return;
+    }
 
     for (int i = 1; i <= NumTrozos; i++) {
         struct stat path_stat;
-        if (stat(trozos[i], &path_stat) != 0) { perror("stat"); continue; }
+        if (stat(trozos[i], &path_stat) != 0) {
+            perror("stat");
+            continue;
+        }
 
-        if (S_ISREG(path_stat.st_mode)) {  // Eliminar archivo
+        if (S_ISREG(path_stat.st_mode)) {
+            // Eliminar archivo
             if (unlink(trozos[i]) == 0) printf("Archivo '%s' eliminado.\n", trozos[i]);
             else perror("unlink");
-        } else if (S_ISDIR(path_stat.st_mode)) {  // Eliminar directorio
+        } else if (S_ISDIR(path_stat.st_mode)) {
+            // Eliminar directorio
             DIR *dir = opendir(trozos[i]);
-            if (!dir) { perror("opendir"); continue; }
+            if (!dir) {
+                perror("opendir");
+                continue;
+            }
 
             struct dirent *entry;
             while ((entry = readdir(dir)) != NULL) {
@@ -562,7 +574,7 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
                 // Mover la declaración de subpath dentro del ciclo
                 char subpath[PATH_MAX];
                 snprintf(subpath, sizeof(subpath), "%s/%s", trozos[i], entry->d_name);
-                Cmd_delrec(1, (char*[]){subpath});  // Recursividad
+                Cmd_delrec(1, (char *[]){subpath}); // Recursividad
             }
             closedir(dir);
             if (rmdir(trozos[i]) == 0) printf("Directorio '%s' eliminado.\n", trozos[i]);
