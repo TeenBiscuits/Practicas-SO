@@ -2,28 +2,31 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
-#include "help.h"
 #include "list.h"
 
-// COMANDOS P0 + P1
+//COMANDOS_BÁSICOS
 
 void Cmd_authors(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
         // Si solo se introduce "authors", imprime ambos nombres y correos
         printf("Pablo Portas López: pablo.portas@udc.es\n");
         printf("Pablo Míguez Muiño: pablo.miguez.muino@udc.es\n");
-    } else if (strcmp(trozos[1], "-l\0") == 0) {
+    } else if (NumTrozos == 1 && strcmp(trozos[1], "-l\0") == 0) {
         // Si el segundo argumento es "-l", imprime solo los correos
         printf("pablo.portas@udc.es\npablo.miguez.muino@udc.es\n");
-    } else if (strcmp(trozos[1], "-n\0") == 0) {
+    } else if (NumTrozos == 1 && strcmp(trozos[1], "-n\0") == 0) {
         // Si el segundo argumento es "-n", imprime solo los nombres
         printf("Pablo Portas López\nPablo Míguez Muiño\n");
-    } else if (strcmp(trozos[1], "-?\0") == 0) {
-        Help_authors();
+    } else if (NumTrozos == 1 && strcmp(trozos[1], "-?\0") == 0) {
+        printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
+        printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
+        printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
     } else {
         // Si el argumento no es reconocido, imprime el mensaje de error
         printf(ANSI_COLOR_RED "Error: Opción no reconocida.\n" ANSI_COLOR_RESET);
-        Help_authors();
+        printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
+        printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
+        printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
     }
 }
 
@@ -235,47 +238,65 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
     printf("Arquitectura de la Máquina: %s\n", sys_info.machine);
 }
 
-// strcut de los comandos del help o Carolina Herrera :)
-struct CMDHELP CH[] = {
-    {"-?", Help_help},
-    {"authors", Help_authors},
-    {"pid", Help_pid},
-    {"ppid", Help_ppid},
-    {"cd", Help_cd},
-    {"date", Help_date},
-    {"historic", Help_historic},
-    {"open", Help_open},
-    {"close", Help_close},
-    {"dup", Help_dup},
-    {"infosys", Help_infosys},
-    {"help", Help_help},
-    {"quit", Help_exit},
-    {"exit", Help_exit},
-    {"bye", Help_exit},
-    {"makefile", Help_makefile},
-    {"makedir", Help_makedir},
-    {"listfile", Help_listfile},
-    {"ls", Help_listfile},
-    {"cwd", Help_cwd},
-    {"listdir", Help_listdir},
-    {"reclist", Help_reclist},
-    {"revlist", Help_revlist},
-    {"erease", Help_erase},
-    {"delrec", Help_delrec},
-};
-
 void Cmd_help(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        Help_default();
-        return;
-    }
-    for (int i = 0; i < sizeof(CH) / sizeof(CH[0]); i++) {
-        if (strcmp(trozos[1], CH[i].comando) == 0) {
-            CH[i].funcion();
-            return;
+        printf("Lista de comandos disponibles:\n");
+        printf("  authors       Muestra los autores del programa.\n");
+        printf("  cd [dir]      Cambia el directorio de trabajo actual.\n");
+        printf("  close [df]    Cierra un archivo abierto con el descriptor [df].\n");
+        printf("  date [-d|-t]  Muestra la fecha y/o la hora actual.\n");
+        printf("  dup [df]      Duplica el descriptor de archivo [df].\n");
+        printf("  infosys       Muestra información del sistema.\n");
+        printf("  open [file] [mode]  Abre un archivo en el modo especificado.\n");
+        printf("  pid           Muestra el PID del proceso actual.\n");
+        printf("  ppid          Muestra el PID del proceso padre.\n");
+        printf("  help [cmd]    Muestra esta lista o ayuda sobre un comando específico.\n");
+    } else if (NumTrozos == 1) {
+        if (strcmp(trozos[1], "authors") == 0) {
+            printf("authors: Muestra los autores del programa.\n");
+            printf("Uso: authors [-l|-n]\n");
+            printf("  -l  Muestra los logins (correos electrónicos).\n");
+            printf("  -n  Muestra los nombres completos.\n");
+        } else if (strcmp(trozos[1], "cd") == 0) {
+            printf("cd: Cambia el directorio de trabajo actual.\n");
+            printf("Uso: cd [directorio]\n");
+            printf("  Si no se proporciona un directorio, cambia al directorio HOME.\n");
+        } else if (strcmp(trozos[1], "close") == 0) {
+            printf("close: Cierra un archivo abierto con el descriptor proporcionado.\n");
+            printf("Uso: close [df]\n");
+        } else if (strcmp(trozos[1], "date") == 0) {
+            printf("date: Muestra la fecha y la hora actual.\n");
+            printf("Uso: date [-d|-t]\n");
+            printf("  -d  Muestra solo la fecha.\n");
+            printf("  -t  Muestra solo la hora.\n");
+        } else if (strcmp(trozos[1], "dup") == 0) {
+            printf("dup: Duplica el descriptor de archivo proporcionado.\n");
+            printf("Uso: dup [df]\n");
+        } else if (strcmp(trozos[1], "infosys") == 0) {
+            printf("infosys: Muestra información sobre el sistema actual.\n");
+            printf("Uso: infosys\n");
+        } else if (strcmp(trozos[1], "open") == 0) {
+            printf("open: Abre un archivo con el modo especificado.\n");
+            printf("Uso: open [archivo] [modo]\n");
+            printf(
+                "  Modos: cr (crear), ap (append), ex (exclusivo), ro (solo lectura), rw (lectura/escritura), wo (solo escritura), tr (truncar).\n");
+        } else if (strcmp(trozos[1], "pid") == 0) {
+            printf("pid: Muestra el identificador del proceso actual (PID).\n");
+            printf("Uso: pid\n");
+        } else if (strcmp(trozos[1], "ppid") == 0) {
+            printf("ppid: Muestra el identificador del proceso padre (PPID).\n");
+            printf("Uso: ppid\n");
+        } else if (strcmp(trozos[1], "help") == 0) {
+            printf("help: Muestra información de ayuda sobre los comandos disponibles.\n");
+            printf("Uso: help [cmd]\n");
+        } else {
+            // Comando no reconocido
+            printf(ANSI_COLOR_RED "Error: Comando '%s' no reconocido.\n" ANSI_COLOR_RESET, trozos[0]);
         }
+    } else {
+        // Si se pasan más de 1 argumento, mostramos un mensaje de error
+        printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
     }
-    printf(ANSI_COLOR_RED "Error: Comando '%s' no encontrado.\n" ANSI_COLOR_RESET, trozos[1]);
 }
 
 tList historial = {-1,NULL};
@@ -363,23 +384,21 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     }
 }
 
+
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
-    if (NumTrozos != 1) {
-        printf(ANSI_COLOR_RED "Uso: listfile [nombre_archivo]\n" ANSI_COLOR_RESET);
-        return;
-    }
-
     struct stat fileStat;
-    if (stat(trozos[1], &fileStat) == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-               strerror(errno));
-        return;
-    }
+    if (NumTrozos != 2 || stat(trozos[1], &fileStat) == -1) return;
 
-    printf("Información de '%s':\n", trozos[1]);
-    printf("Tamaño: %ld bytes\n", fileStat.st_size);
-    printf("Permisos: %o\n", fileStat.st_mode & 0777);
-    printf("Último acceso: %s", ctime(&fileStat.st_atime)); // No requiere '\n'
+    if (strcmp(trozos[2], "-long") == 0) {
+        printf("Tamaño: %ld bytes, Permisos: %o, Último acceso: %sÚltima modif: %s",
+               fileStat.st_size, fileStat.st_mode & 0777, ctime(&fileStat.st_atime), ctime(&fileStat.st_mtime));
+    } else if (strcmp(trozos[2], "-acc") == 0) {
+        printf("Último acceso: %s", ctime(&fileStat.st_atime));
+    } else if (strcmp(trozos[2], "-link") == 0 && S_ISLNK(fileStat.st_mode)) {
+        char link_target[PATH_MAX];
+        ssize_t len = readlink(trozos[1], link_target, sizeof(link_target) - 1);
+        if (len != -1) { link_target[len] = '\0'; printf("Enlace simbólico apunta a: %s\n", link_target); }
+    }
 }
 
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
@@ -392,19 +411,33 @@ void Cmd_cwd(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_listdir(int NumTrozos, char *trozos[]) {
-    const char *dirName = (NumTrozos == 0) ? "." : trozos[1];
+    const char *dirName = (NumTrozos > 1) ? trozos[1] : ".";
+    const char *option = (NumTrozos > 2) ? trozos[2] : "";
 
     DIR *dir = opendir(dirName);
-    if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
-               strerror(errno));
-        return;
-    }
+    if (!dir) { perror("opendir"); return; }
 
-    printf("Contenido del directorio '%s':\n", dirName);
-    struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
-        printf("%s\n", ent->d_name);
+    struct dirent *entry;
+    struct stat fileStat;
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(option, "-hid") != 0 && entry->d_name[0] == '.') continue;
+
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/%s", dirName, entry->d_name);
+        if (stat(path, &fileStat) == -1) continue;
+
+        printf("%s", entry->d_name);
+        if (strcmp(option, "-long") == 0)
+            printf("  %ld bytes  %o  %s", fileStat.st_size, fileStat.st_mode & 0777, ctime(&fileStat.st_mtime));
+        else if (strcmp(option, "-acc") == 0)
+            printf("  Último acceso: %s", ctime(&fileStat.st_atime));
+        else if (strcmp(option, "-link") == 0 && S_ISLNK(fileStat.st_mode)) {
+            char link_target[PATH_MAX];
+            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
+            if (len != -1) { link_target[len] = '\0'; printf(" -> %s", link_target); }
+        }
+        printf("\n");
     }
     closedir(dir);
 }
@@ -487,9 +520,7 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
         printf(ANSI_COLOR_RED "Uso: erase [nombre_archivo/directorio]\n" ANSI_COLOR_RESET);
         return;
     }
-
     struct stat info;
-
     // Intentar obtener información del archivo
     if (stat(trozos[1], &info) == -1) {
         // Mostrar el error si no se pudo obtener información
@@ -497,7 +528,6 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
                strerror(errno));
         return;
     }
-
     // Si es un archivo regular, intentamos eliminarlo
     if (S_ISREG(info.st_mode)) {
         if (unlink(trozos[1]) == -1) {
@@ -508,7 +538,6 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
         }
         return;
     }
-
     // Si es un directorio, intentamos eliminarlo
     if (S_ISDIR(info.st_mode)) {
         if (rmdir(trozos[1]) == -1) {
@@ -522,6 +551,32 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
 
     // Si no es ni archivo regular ni directorio, mostrar error
     printf(ANSI_COLOR_RED "Error: '%s' no es ni un archivo ni un directorio válido.\n" ANSI_COLOR_RESET, trozos[1]);
+}
+void Cmd_delrec(const char *path) {
+    struct stat path_stat;
+    if (stat(path, &path_stat) != 0) { perror("stat"); return; }
+
+    if (S_ISREG(path_stat.st_mode)) {  // Eliminar archivo
+        if (unlink(path) != 0) perror("unlink");
+        return;
+    }
+
+    if (S_ISDIR(path_stat.st_mode)) {  // Eliminar directorio recursivamente
+        DIR *dir = opendir(path);
+        if (!dir) { perror("opendir"); return; }
+
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+
+            // Mover la declaración de subpath aquí, dentro del ciclo
+            char subpath[PATH_MAX];
+            snprintf(subpath, sizeof(subpath), "%s/%s", path, entry->d_name);
+            Cmd_delrec(subpath);
+        }
+        closedir(dir);
+        if (rmdir(path) != 0) perror("rmdir");
+    }
 }
 
 
