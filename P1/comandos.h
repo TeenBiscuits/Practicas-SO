@@ -72,8 +72,6 @@ void Cmd_makedir(int NumTrozos, char *trozos[]);
 
 void Cmd_makefile(int NumTrozos, char *trozos[]);
 
-void Cmd_makedir(int NumTrozos, char *trozos[]);
-
 void Cmd_listfile(int NumTrozos, char *trozos[]);
 
 void Cmd_cwd(int NumTrozos, char *trozos[]);
