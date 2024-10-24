@@ -47,7 +47,13 @@ void Help_infosys() {
 void Help_help() {
     printf("help [cmd|-lt|-T|-all]\tMuestra ayuda sobre los comandos\n");
     printf("\t-lt: lista topics de ayuda\n\t-T topic: lista comandos sobre ese topic\n"
-        "\tcmd: info sobre el comando cmd\n\t-all: lista todos los topics con sus comandos");
+        "\tcmd: info sobre el comando cmd\n\t-all: lista todos los topics con sus comandos\n");
+}
+
+void Help_default() {
+    printf("help [cmd|-lt|-T|-all]\tMuestra ayuda sobre los comandos\n");
+    printf("Comandos disponibles:\n");
+    printf("authors, pid, ppid, cd, date, historic, open, close, dup, infosys, help, quit, exit, bye, makefile, listfile, cwd, listdir, reclist, revlist, erase, delrec.\n");
 }
 
 void Help_historic() {
@@ -73,7 +79,7 @@ void Help_listfile() {
 }
 
 void Help_cwd() {
-    printf("cwd\tMuestra el directorio actual del shell");
+    printf("cwd\tMuestra el directorio actual del shell\n");
 }
 
 void Help_listdir() {

@@ -2,31 +2,28 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
+#include "help.h"
 #include "list.h"
 
-//COMANDOS_BÁSICOS
+// COMANDOS P0 + P1
 
 void Cmd_authors(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
         // Si solo se introduce "authors", imprime ambos nombres y correos
         printf("Pablo Portas López: pablo.portas@udc.es\n");
         printf("Pablo Míguez Muiño: pablo.miguez.muino@udc.es\n");
-    } else if (NumTrozos == 1 && strcmp(trozos[1], "-l\0") == 0) {
+    } else if (strcmp(trozos[1], "-l\0") == 0) {
         // Si el segundo argumento es "-l", imprime solo los correos
         printf("pablo.portas@udc.es\npablo.miguez.muino@udc.es\n");
-    } else if (NumTrozos == 1 && strcmp(trozos[1], "-n\0") == 0) {
+    } else if (strcmp(trozos[1], "-n\0") == 0) {
         // Si el segundo argumento es "-n", imprime solo los nombres
         printf("Pablo Portas López\nPablo Míguez Muiño\n");
-    } else if (NumTrozos == 1 && strcmp(trozos[1], "-?\0") == 0) {
-        printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
-        printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
-        printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
+    } else if (strcmp(trozos[1], "-?\0") == 0) {
+        Help_authors();
     } else {
         // Si el argumento no es reconocido, imprime el mensaje de error
         printf(ANSI_COLOR_RED "Error: Opción no reconocida.\n" ANSI_COLOR_RESET);
-        printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
-        printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
-        printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
+        Help_authors();
     }
 }
 
@@ -238,65 +235,47 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
     printf("Arquitectura de la Máquina: %s\n", sys_info.machine);
 }
 
+// strcut de los comandos del help o Carolina Herrera :)
+struct CMDHELP CH[] = {
+    {"-?", Help_help},
+    {"authors", Help_authors},
+    {"pid", Help_pid},
+    {"ppid", Help_ppid},
+    {"cd", Help_cd},
+    {"date", Help_date},
+    {"historic", Help_historic},
+    {"open", Help_open},
+    {"close", Help_close},
+    {"dup", Help_dup},
+    {"infosys", Help_infosys},
+    {"help", Help_help},
+    {"quit", Help_exit},
+    {"exit", Help_exit},
+    {"bye", Help_exit},
+    {"makefile", Help_makefile},
+    {"makedir", Help_makedir},
+    {"listfile", Help_listfile},
+    {"ls", Help_listfile},
+    {"cwd", Help_cwd},
+    {"listdir", Help_listdir},
+    {"reclist", Help_reclist},
+    {"revlist", Help_revlist},
+    {"erease", Help_erase},
+    {"delrec", Help_delrec},
+};
+
 void Cmd_help(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        printf("Lista de comandos disponibles:\n");
-        printf("  authors       Muestra los autores del programa.\n");
-        printf("  cd [dir]      Cambia el directorio de trabajo actual.\n");
-        printf("  close [df]    Cierra un archivo abierto con el descriptor [df].\n");
-        printf("  date [-d|-t]  Muestra la fecha y/o la hora actual.\n");
-        printf("  dup [df]      Duplica el descriptor de archivo [df].\n");
-        printf("  infosys       Muestra información del sistema.\n");
-        printf("  open [file] [mode]  Abre un archivo en el modo especificado.\n");
-        printf("  pid           Muestra el PID del proceso actual.\n");
-        printf("  ppid          Muestra el PID del proceso padre.\n");
-        printf("  help [cmd]    Muestra esta lista o ayuda sobre un comando específico.\n");
-    } else if (NumTrozos == 1) {
-        if (strcmp(trozos[1], "authors") == 0) {
-            printf("authors: Muestra los autores del programa.\n");
-            printf("Uso: authors [-l|-n]\n");
-            printf("  -l  Muestra los logins (correos electrónicos).\n");
-            printf("  -n  Muestra los nombres completos.\n");
-        } else if (strcmp(trozos[1], "cd") == 0) {
-            printf("cd: Cambia el directorio de trabajo actual.\n");
-            printf("Uso: cd [directorio]\n");
-            printf("  Si no se proporciona un directorio, cambia al directorio HOME.\n");
-        } else if (strcmp(trozos[1], "close") == 0) {
-            printf("close: Cierra un archivo abierto con el descriptor proporcionado.\n");
-            printf("Uso: close [df]\n");
-        } else if (strcmp(trozos[1], "date") == 0) {
-            printf("date: Muestra la fecha y la hora actual.\n");
-            printf("Uso: date [-d|-t]\n");
-            printf("  -d  Muestra solo la fecha.\n");
-            printf("  -t  Muestra solo la hora.\n");
-        } else if (strcmp(trozos[1], "dup") == 0) {
-            printf("dup: Duplica el descriptor de archivo proporcionado.\n");
-            printf("Uso: dup [df]\n");
-        } else if (strcmp(trozos[1], "infosys") == 0) {
-            printf("infosys: Muestra información sobre el sistema actual.\n");
-            printf("Uso: infosys\n");
-        } else if (strcmp(trozos[1], "open") == 0) {
-            printf("open: Abre un archivo con el modo especificado.\n");
-            printf("Uso: open [archivo] [modo]\n");
-            printf(
-                "  Modos: cr (crear), ap (append), ex (exclusivo), ro (solo lectura), rw (lectura/escritura), wo (solo escritura), tr (truncar).\n");
-        } else if (strcmp(trozos[1], "pid") == 0) {
-            printf("pid: Muestra el identificador del proceso actual (PID).\n");
-            printf("Uso: pid\n");
-        } else if (strcmp(trozos[1], "ppid") == 0) {
-            printf("ppid: Muestra el identificador del proceso padre (PPID).\n");
-            printf("Uso: ppid\n");
-        } else if (strcmp(trozos[1], "help") == 0) {
-            printf("help: Muestra información de ayuda sobre los comandos disponibles.\n");
-            printf("Uso: help [cmd]\n");
-        } else {
-            // Comando no reconocido
-            printf(ANSI_COLOR_RED "Error: Comando '%s' no reconocido.\n" ANSI_COLOR_RESET, trozos[0]);
-        }
-    } else {
-        // Si se pasan más de 1 argumento, mostramos un mensaje de error
-        printf(ANSI_COLOR_RED "Error: Demasiados argumentos. Usa 'help [cmd]'.\n" ANSI_COLOR_RESET);
+        Help_default();
+        return;
     }
+    for (int i = 0; i < sizeof(CH) / sizeof(CH[0]); i++) {
+        if (strcmp(trozos[1], CH[i].comando) == 0) {
+            CH[i].funcion();
+            return;
+        }
+    }
+    printf(ANSI_COLOR_RED "Error: Comando '%s' no encontrado.\n" ANSI_COLOR_RESET, trozos[1]);
 }
 
 tList historial = {-1,NULL};

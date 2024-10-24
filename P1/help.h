@@ -6,6 +6,13 @@
 
 #include <stdio.h>
 
+// Struct para almacenar comandos y sus funciones de ayuda correspondientes
+struct CMDHELP {
+    char *comando;
+
+    void (*funcion)();
+};
+
 // Imprime por pantalla la ayuda de authors
 void Help_authors();
 
@@ -35,6 +42,9 @@ void Help_infosys();
 
 // Imprime por pantalla la ayuda de help
 void Help_help();
+
+// Imprime por pantalla la ayuda básica de help y una lista de todos los comandos disponibles.
+void Help_default();
 
 // Imprime por pantalla la ayuda de historic
 void Help_historic();
