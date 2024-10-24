@@ -6,18 +6,18 @@
 
 ### P0
 
-- [ ] authors [-l|-n]
-- [ ] pid
-- [ ] ppid
-- [ ] cd [dir]
-- [ ] date [-t|-d]
-- [ ] historic [N|-N] **(1)**
-- [ ] open [file] mode (cr,ap,ex,ro,rw,wo,tr)
-- [ ] close [df]
-- [ ] dup [df]
-- [ ] infosys
-- [ ] help [cmd]
-- [ ] quit, exit, bye
+- [x] authors [-l|-n]
+- [x] pid
+- [x] ppid
+- [x] cd [dir]
+- [x] date [-t|-d]
+- [x] historic [N|-N] **(1)**
+- [x] open [file] mode (cr,ap,ex,ro,rw,wo,tr)
+- [x] close [df]
+- [x] dup [df]
+- [x] infosys
+- [x] help [cmd]
+- [x] quit, exit, bye
 
 (1) _Hypothetically, there’s a scenario where trying to repeat a historic command could yield an infinite loop or a
 stack overflow (depending on how it is coded), so students may choose to not store calls to historic N itself in the
