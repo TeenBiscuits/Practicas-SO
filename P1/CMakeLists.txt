@@ -8,4 +8,6 @@ add_executable(P1 main.c
         list.h
         color.h
         comandos.c
-        comandos.h)
+        comandos.h
+        help.c
+        help.h)

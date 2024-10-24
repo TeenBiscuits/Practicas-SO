@@ -14,65 +14,46 @@
 CC = gcc
 CFLAGS = -Wall
 
-# Fuente y Salida del makefile
-SRC = main.c
-OBJ = shell.out
-
-# Comandos
-COMA = comandos.c
-COMP = comandos.out
-
-# Librería y archivo dependencia
-LIB = list.c
-DEPE = list.out
-
-# Literalmente variables colores
-COLORES = color.h
-
 # Con "make" OBJ es la ejecución por defecto (lo compila y luego ejecuta)
-all: $(OBJ)
-	./$(OBJ)
+all: shell.out
+	./shell.out
 
 # Con "make flechas" para compilar y ejecutar con rlwrap
-flechas: $(OBJ)
-	rlwrap ./$(OBJ)
+flechas: shell.out
+	rlwrap ./shell.out
 
 # Con "make compilar" solo se compila
-compile: $(OBJ)
-
-# Con "make lib" se compila la librería
-lib: $(LIB)
-	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
-
-# Con "make comandos" se compilan los comandos
-comandos: $(COMA)
-	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
+compile: shell.out
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
-leaks: $(SRC) $(LIB) $(COMA)
-	$(CC) $(CFLAGS) -g -O0 -c -o $(DEPE) $(LIB)
-	$(CC) $(CFLAGS) -g -O0 -c -o $(COMP) $(COMA)
-	$(CC) $(CFLAGS) -g -O0 -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
-	valgrind --leak-check=full --show-reachable=yes ./$(OBJ)
+leaks: main.c list.c help.c comandos.c
+	$(CC) $(CFLAGS) -g -O0 -c -o list.out list.c
+	$(CC) $(CFLAGS) -g -O0 -c -o help.out help.c
+	$(CC) $(CFLAGS) -g -O0 -c -o comandos.out comandos.c
+	$(CC) $(CFLAGS) -g -O0 -o shell.out main.c list.out help.out comandos.out color.h
+	valgrind --leak-check=full --show-reachable=yes ./shell.out
 
 # Con "make debug" se compula y se procede a debuguear con gdb
-debug: $(SRC) $(DEPE) $(COMP)
-	$(CC) $(CFLAGS) -g -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
-	gdb $(OBJ)
+debug: main.c list.out help.out comandos.out help.out
+	$(CC) $(CFLAGS) -g -o shell.out main.c list.out help.out comandos.out help.out color.h
+	gdb shell.out
 
 # Con "make clean" borrar el archivo
 clean:
 	rm -f *.out
 
 # Compilación
-$(DEPE): $(LIB)
-	$(CC) $(CFLAGS) -c -o $(DEPE) $(LIB)
+help.out: help.c
+	$(CC) $(CFLAGS) -c -o help.out help.c
 
-$(COMP): $(COMA)
-	$(CC) $(CFLAGS) -c -o $(COMP) $(COMA)
+list.out: list.c
+	$(CC) $(CFLAGS) -c -o list.out list.c
 
-$(OBJ): $(SRC) $(DEPE) $(COMP)
-	$(CC) $(CFLAGS) -o $(OBJ) $(SRC) $(DEPE) $(COMP) $(COLORES)
+comandos.out: comandos.c
+	$(CC) $(CFLAGS) -c -o comandos.out comandos.c
+
+shell.out: main.c help.out list.out comandos.out
+	$(CC) $(CFLAGS) -o shell.out main.c help.out list.out comandos.out color.h
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all flechas compile lib comandos leaks debug clean
