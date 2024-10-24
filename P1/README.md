@@ -47,8 +47,8 @@ contenido
 
 - [x] El comando "date" provoca un leak de memoria
 - [x] Warnings varios en Cmd_date
-- [ ] El comando help no ha sido actualizado a todos los comandos
-- [ ] El comando help cuando emite un error imprime el comando help y no el comando mandado
+- [x] El comando help no ha sido actualizado a todos los comandos
+- [x] El comando help cuando emite un error imprime el comando help y no el comando mandado
 - [ ] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
 - [ ] Falta el comando "delrec" | La cabecera de delrec está mal.
 - [x] Authors no imprime correctamente
