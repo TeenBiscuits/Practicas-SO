@@ -80,8 +80,6 @@ void Cmd_cwd(int NumTrozos, char *trozos[]);
 
 void Cmd_listdir(int NumTrozos, char *trozos[]);
 
-void Cmd_listdir(int NumTrozos, char *trozos[]);
-
 void recursive_list(const char *dirName);
 
 void Cmd_reclist(int NumTrozos, char *trozos[]);
