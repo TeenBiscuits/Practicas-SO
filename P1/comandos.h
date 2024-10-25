@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
 
 #include "color.h"
 #include "list.h"

@@ -82,12 +82,11 @@ struct CMD C[] = {
     {"makefile", Cmd_makefile},
     {"makedir", Cmd_makedir},
     {"listfile", Cmd_listfile},
-    {"ls", Cmd_listfile},
     {"cwd", Cmd_cwd},
     {"listdir", Cmd_listdir},
     {"reclist", Cmd_reclist},
     {"revlist", Cmd_revlist},
-    {"erease", Cmd_erase},
+    {"erase", Cmd_erase},
     {"delrec", Cmd_delrec},
 };
 

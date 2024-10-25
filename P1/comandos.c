@@ -33,12 +33,11 @@ struct CMDHELP CH[] = {
     {"makefile", Help_makefile},
     {"makedir", Help_makedir},
     {"listfile", Help_listfile},
-    {"ls", Help_listfile},
     {"cwd", Help_cwd},
     {"listdir", Help_listdir},
     {"reclist", Help_reclist},
     {"revlist", Help_revlist},
-    {"erease", Help_erase},
+    {"erase", Help_erase},
     {"delrec", Help_delrec},
 };
 
@@ -295,15 +294,16 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
 // P1
 
 void Cmd_makefile(int NumTrozos, char *trozos[]) {
-    if (NumTrozos != 1) {
-        printf(ANSI_COLOR_RED "Uso: makefile [nombre_archivo]\n" ANSI_COLOR_RESET);
+    if (NumTrozos < 1) return;
+
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_makefile();
         return;
     }
 
     int fd = open(trozos[1], O_CREAT | O_EXCL | O_WRONLY, 0644);
     if (fd == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo crear el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-               strerror(errno));
+        Imprimir_Error();
     } else {
         printf("Archivo '%s' creado exitosamente.\n", trozos[1]);
         close(fd);
@@ -311,34 +311,78 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_makedir(int NumTrozos, char *trozos[]) {
-    if (NumTrozos != 1) {
-        printf(ANSI_COLOR_RED "Uso: makedir [nombre_directorio]\n" ANSI_COLOR_RESET);
+    if (NumTrozos < 1) return;
+
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_makedir();
         return;
     }
 
     if (mkdir(trozos[1], 0755) == -1) {
-        printf(ANSI_COLOR_RED "Error: No se pudo crear el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-               strerror(errno));
+        Imprimir_Error();
     } else {
         printf("Directorio '%s' creado exitosamente.\n", trozos[1]);
     }
 }
 
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
-    struct stat fileStat;
-    if (NumTrozos != 2 || stat(trozos[1], &fileStat) == -1) return;
+    if (NumTrozos < 1) return;
 
-    if (strcmp(trozos[2], "-long") == 0) {
-        printf("Tamaño: %ld bytes, Permisos: %o, Último acceso: %sÚltima modif: %s",
-               fileStat.st_size, fileStat.st_mode & 0777, ctime(&fileStat.st_atime), ctime(&fileStat.st_mtime));
-    } else if (strcmp(trozos[2], "-acc") == 0) {
-        printf("Último acceso: %s", ctime(&fileStat.st_atime));
-    } else if (strcmp(trozos[2], "-link") == 0 && S_ISLNK(fileStat.st_mode)) {
+    if (NumTrozos > 2) {
+        printf(ANSI_COLOR_RED "Demasiados parámetros.\n" ANSI_COLOR_RESET);
+        return;
+    }
+
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_listfile();
+        return;
+    }
+
+    struct stat fileStat;
+    if (stat(trozos[NumTrozos], &fileStat) == -1) {
+        Imprimir_Error();
+        return;
+    }
+    if (NumTrozos == 1) {
+        printf("\t%ld  %s\n", fileStat.st_size, trozos[1]);
+        return;
+    }
+
+
+    if (strcmp(trozos[1], "-long") == 0) {
+        // Conversión del tiempo de última modificación a un string en el formato especificado
+        char buf[200];
+        time_t t = fileStat.st_mtime; /*st_mtime is type time_t */
+        struct tm lt;
+        localtime_r(&t, &lt); /* convert to struct tm */
+        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", &lt);
+
+        printf("%s   %ld (%ld)    %s    %s permisos        %ld %s\n", buf, fileStat.st_nlink, fileStat.st_ino,
+               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, fileStat.st_size, trozos[2]);
+        return;
+    }
+    if (strcmp(trozos[1], "-acc") == 0) {
+        // Conversión del tiempo de última modificación a un string en el formato especificado
+        char buf[200];
+        time_t t = fileStat.st_atime; /*st_mtime is type time_t */
+        struct tm lt;
+        localtime_r(&t, &lt); /* convert to struct tm */
+        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", &lt);
+
+        printf("\t%ld  %s %s\n", fileStat.st_size, buf, trozos[2]);
+
+        return;
+    }
+
+    if (strcmp(trozos[1], "-link") == 0) {
+        // ESTO NO FUNCIONA COMO DEBERÍA
         char link_target[PATH_MAX];
         ssize_t len = readlink(trozos[1], link_target, sizeof(link_target) - 1);
         if (len != -1) {
             link_target[len] = '\0';
             printf("Enlace simbólico apunta a: %s\n", link_target);
+        } else {
+            printf(ANSI_COLOR_RED "El archivo '%s' no es un enlace.\n" ANSI_COLOR_RESET, trozos[2]);
         }
     }
 }

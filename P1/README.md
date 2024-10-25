@@ -25,8 +25,8 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 
 ### P1
 
-- [ ] makefile [name]
-- [ ] makedir [name]
+- [x] makefile [name]
+- [x] makedir [name]
 - [ ] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
 - [ ] cwd
 - [ ] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
@@ -53,5 +53,7 @@ contenido
 - [ ] Falta el comando "delrec" | La cabecera de delrec está mal.
 - [x] Authors no imprime correctamente
 - [x] El comando listdir puede ser llamado con ls
-- [ ] ...
+- [ ] Open tienen memory leaks
+- [ ] Listfile no imprime correctamente (como en referencia)
+- [ ] 
 
