@@ -255,7 +255,9 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
             printf("%d. %s\n", i, posaux->comando);
             posaux = next(posaux, historial);
         }
+        return;
     }
+    
     if (strcmp(trozos[1], "-?") == 0) {
         Help_close();
         return;
