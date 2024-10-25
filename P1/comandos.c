@@ -565,7 +565,7 @@ void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_
         // Saltar archivos ocultos si no se deben mostrar
         if (!show_hidden && is_hidden(ent->d_name)) continue;
 
-        char path[PATH_MAX];  // Declarar `path` en el ámbito interno
+        char path[PATH_MAX];
         snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
 
         struct stat info;
@@ -581,11 +581,12 @@ void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_
             printf(ANSI_COLOR_BLUE "Directorio: %s\n" ANSI_COLOR_RESET, path);
             recursive_list(path, depth + 1, show_hidden, long_listing, show_accesstime, show_symlink);
         } else {
+            // Mostrar detalles para archivos
             printf(ANSI_COLOR_GREEN "Archivo: %s", path);
 
             if (show_symlink && S_ISLNK(info.st_mode)) {
                 char symlink_target[PATH_MAX];
-                ssize_t len = readlink(path, symlink_target, sizeof(symlink_target)-1);
+                ssize_t len = readlink(path, symlink_target, sizeof(symlink_target) - 1);
                 if (len != -1) symlink_target[len] = '\0';
                 printf(" -> %s", symlink_target);
             }
@@ -601,8 +602,11 @@ void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_
             printf("\n");
         }
     }
+
+    // Cerrar el directorio al finalizar la iteración
     closedir(dir);
 }
+
 
 
 void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime, bool show_symlink) {
@@ -664,6 +668,8 @@ void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing,
             }
         }
     }
+
+    // Cerrar el directorio después de ambas pasadas
     closedir(dir);
 }
 
