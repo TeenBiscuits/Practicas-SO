@@ -327,25 +327,32 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
-    if (NumTrozos < 1) return;
-    if (!strcmp(trozos[1], "-?")) { Help_listfile(); return; }
+    int show_long = 0, show_acc = 0, show_link = 0;
 
-    struct stat fileStat;
-    const char *path = (NumTrozos == 1) ? "." : trozos[NumTrozos - 1];
-    if (stat(path, &fileStat) == -1) { perror("Error al obtener información del archivo"); return; }
+    // Parse options
+    for (int i = 1; i < NumTrozos; i++) {
+        if (!strcmp(trozos[i], "-long")) show_long = 1;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
+        else if (!strcmp(trozos[i], "-link")) show_link = 1;
+    }
 
-    if (NumTrozos == 1) {
-        printf("\t%ld  %s\n", fileStat.st_size, path);
-    } else if (!strcmp(trozos[1], "-long")) {
-        char buf[200];
-        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", localtime(&fileStat.st_mtime));
-        printf("%c%c%c%c%c%c%c%c%c%c ",
-               (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
-               (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
-               (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
-               (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-');
-        printf("%s %ld (%ld) %s %s %ld %s\n", buf, fileStat.st_nlink, fileStat.st_ino,
-               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, fileStat.st_size, path);
+    // Process each file/directory
+    for (int i = 1; i < NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
+        struct stat fileStat;
+        if (lstat(trozos[i], &fileStat) == -1) { perror("Error"); continue; }
+
+        char timebuf[20];
+        strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
+        if (show_long)
+            printf("%s %ld %s %s %8ld %s\n", timebuf, (long)fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name,
+                   getgrgid(fileStat.st_gid)->gr_name, (long)fileStat.st_size, trozos[i]);
+        else printf("%ld %s\n", (long)fileStat.st_size, trozos[i]);
+
+        if (show_link && S_ISLNK(fileStat.st_mode)) {
+            char link_target[1024]; ssize_t len = readlink(trozos[i], link_target, sizeof(link_target) - 1);
+            if (len != -1) { link_target[len] = '\0'; printf(" -> %s\n", link_target); }
+        }
     }
 }
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
@@ -661,4 +668,17 @@ void revlist_directory(const char *dir_name, int show_hidden, int show_long, int
         }
     }
     closedir(dir);
+}
+
+void print_permissions(mode_t mode) {
+    printf((S_ISDIR(mode)) ? "d" : "-");
+    printf((mode & S_IRUSR) ? "r" : "-");
+    printf((mode & S_IWUSR) ? "w" : "-");
+    printf((mode & S_IXUSR) ? "x" : "-");
+    printf((mode & S_IRGRP) ? "r" : "-");
+    printf((mode & S_IWGRP) ? "w" : "-");
+    printf((mode & S_IXGRP) ? "x" : "-");
+    printf((mode & S_IROTH) ? "r" : "-");
+    printf((mode & S_IWOTH) ? "w" : "-");
+    printf((mode & S_IXOTH) ? "x" : "-");
 }

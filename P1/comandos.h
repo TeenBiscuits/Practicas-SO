@@ -129,4 +129,6 @@ void list_directory(const char *dir_name, int show_hidden, int show_long, int sh
 
 void revlist_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link);
 
+void print_permissions(mode_t mode);
+
 #endif
