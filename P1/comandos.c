@@ -259,7 +259,7 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
     }
 
     if (strcmp(trozos[1], "-?") == 0) {
-        Help_close();
+        Help_historic();
         return;
     }
 
