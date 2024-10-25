@@ -21,15 +21,18 @@
 #include "color.h"
 #include "list.h"
 
+// COMANDOS BÁSICOS P0 + P1
 
-#define MAX_FILES 100
+#define MAX_FILES 100   // Máximos archivos posibles de abrir
 
+// Struct para almacenar los archivos abierto
 typedef struct {
     int desc;
     char filename[PATH_MAX];
     char mode[3];
 } OpenFile;
 
+// Struct para almacenar las equivalencias entre "comando" y función
 struct CMD {
     char *comando;
 

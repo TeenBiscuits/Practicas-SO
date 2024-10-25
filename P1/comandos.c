@@ -2,11 +2,10 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
-
 #include "help.h"
 #include "list.h"
 
-//COMANDOS_BÁSICOS
+// COMANDOS BÁSICOS P0 + P1
 
 void Imprimir_Error() {
     printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
