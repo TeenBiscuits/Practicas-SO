@@ -130,6 +130,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         Help_open();
         return;
     }
+    if (NumTrozos < 2) return;
 
     int flags = get_open_flags(trozos[2]), desc;
     if (flags == -1) {
@@ -375,7 +376,6 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
     }
 
     if (strcmp(trozos[1], "-link") == 0) {
-        // ESTO NO FUNCIONA COMO DEBERÍA
         char link_target[PATH_MAX];
         ssize_t len = readlink(trozos[1], link_target, sizeof(link_target) - 1);
         if (len != -1) {
@@ -388,6 +388,11 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_cwd();
+        return;
+    }
+
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
         printf(ANSI_COLOR_RED "Error: No se pudo obtener el directorio actual: %s\n" ANSI_COLOR_RESET, strerror(errno));
@@ -397,6 +402,11 @@ void Cmd_cwd(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_listdir(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_listdir();
+        return;
+    }
+
     const char *dirName = (NumTrozos > 1) ? trozos[1] : ".";
     const char *option = (NumTrozos > 2) ? trozos[2] : "";
 
@@ -434,6 +444,11 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_reclist(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_reclist();
+        return;
+    }
+
     const char *dirName = ".";
     bool show_hidden = false, long_listing = false, show_accesstime = false, show_symlink = false;
 
@@ -450,6 +465,11 @@ void Cmd_reclist(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_revlist(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_revlist();
+        return;
+    }
+
     const char *dirName = ".";
     bool show_hidden = false, long_listing = false, show_accesstime = false, show_symlink = false;
 
@@ -466,10 +486,13 @@ void Cmd_revlist(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_erase(int NumTrozos, char *trozos[]) {
-    if (NumTrozos != 1) {
-        printf(ANSI_COLOR_RED "Uso: erase [nombre_archivo/directorio]\n" ANSI_COLOR_RESET);
+    if (NumTrozos < 1) return;
+
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_erase();
         return;
     }
+
     struct stat info;
     // Intentar obtener información del archivo
     if (stat(trozos[1], &info) == -1) {
@@ -504,8 +527,10 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_delrec(int NumTrozos, char *trozos[]) {
-    if (NumTrozos < 1) {
-        printf("Error: Se requiere al menos un nombre.\n");
+    if (NumTrozos < 1) return;
+
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_erase();
         return;
     }
 

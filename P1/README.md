@@ -28,7 +28,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 - [x] makefile [name]
 - [x] makedir [name]
 - [ ] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
-- [ ] cwd
+- [x] cwd
 - [ ] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
 - [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(
   3)**
@@ -49,11 +49,12 @@ contenido
 - [x] Warnings varios en Cmd_date
 - [x] El comando help no ha sido actualizado a todos los comandos
 - [x] El comando help cuando emite un error imprime el comando help y no el comando mandado
-- [ ] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
-- [ ] Falta el comando "delrec" | La cabecera de delrec está mal.
+- [x] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
 - [x] Authors no imprime correctamente
 - [x] El comando listdir puede ser llamado con ls
-- [ ] Open tienen memory leaks
-- [ ] Listfile no imprime correctamente (como en referencia)
-- [ ] 
+- [x] Open tienen memory leaks
+- [ ] erase no borra más de un archivo
+- [ ] listfile -link no funciona correctamente (como en shell referencia)
+- [ ] reclist no imprime correctamente (como en shell referencia)
+- [ ] revlist no imprime correctamente (como en shell referencia)
 
