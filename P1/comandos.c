@@ -7,9 +7,47 @@
 
 // COMANDOS BÁSICOS P0 + P1
 
-void Imprimir_Error() {
-    printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
-}
+// VARIABLES GLOBALES AUXILIARES
+
+// Lista de archivos abiertos
+OpenFile open_files[MAX_FILES];
+int open_file_count = 0; //Esto es el contador de archivos abiertos
+
+// Struct Comandos Help o Carolina Herrera (ChatGPT nunca pondría esto)
+struct CMDHELP CH[] = {
+    {"-?", Help_help},
+    {"authors", Help_authors},
+    {"pid", Help_pid},
+    {"ppid", Help_ppid},
+    {"cd", Help_cd},
+    {"date", Help_date},
+    {"historic", Help_historic},
+    {"open", Help_open},
+    {"close", Help_close},
+    {"dup", Help_dup},
+    {"infosys", Help_infosys},
+    {"help", Help_help},
+    {"quit", Help_exit},
+    {"exit", Help_exit},
+    {"bye", Help_exit},
+    {"makefile", Help_makefile},
+    {"makedir", Help_makedir},
+    {"listfile", Help_listfile},
+    {"ls", Help_listfile},
+    {"cwd", Help_cwd},
+    {"listdir", Help_listdir},
+    {"reclist", Help_reclist},
+    {"revlist", Help_revlist},
+    {"erease", Help_erase},
+    {"delrec", Help_delrec},
+};
+
+// Variable global del historial
+tList historial = {-1,NULL};
+
+// COMANDOS
+
+// P0
 
 void Cmd_authors(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
@@ -84,43 +122,6 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
     } else if (strcmp(trozos[1], "-?") == 0) Help_date();
 }
 
-
-// Lista de archivos abiertos
-OpenFile open_files[MAX_FILES];
-int open_file_count = 0; //Esto es el contador de archivos abiertos
-
-int get_open_flags(const char *mode) {
-    if (strcmp(mode, "cr\0") == 0)
-        return O_CREAT | O_WRONLY;
-    if (strcmp(mode, "ap\0") == 0)
-        return O_APPEND | O_WRONLY;
-    if (strcmp(mode, "ex\0") == 0)
-        return O_CREAT | O_EXCL | O_WRONLY;
-    if (strcmp(mode, "ro\0") == 0)
-        return O_RDONLY;
-    if (strcmp(mode, "rw\0") == 0)
-        return O_RDWR;
-    if (strcmp(mode, "wo\0") == 0)
-        return O_WRONLY;
-    if (strcmp(mode, "tr\0") == 0)
-        return O_TRUNC | O_WRONLY;
-
-    return -1;
-}
-
-void list_open_files() {
-    if (open_file_count == 0) {
-        printf("No hay archivos abiertos.\n");
-        return;
-    }
-
-    printf("Archivos abiertos:\n");
-    printf("Descriptor\tNombre\tModo\n");
-    for (int i = 0; i < open_file_count; i++) {
-        printf("%d\t\t%s\t%s\n", open_files[i].desc, open_files[i].filename, open_files[i].mode);
-    }
-}
-
 void Cmd_open(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
         list_open_files();
@@ -182,7 +183,6 @@ void Cmd_close(int NumTrozos, char *trozos[]) {
     printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, desc);
 }
 
-
 void Cmd_dup(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0 || atoi(trozos[1]) < 0) {
         printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'dup [df]'.\n" ANSI_COLOR_RESET);
@@ -215,7 +215,6 @@ void Cmd_dup(int NumTrozos, char *trozos[]) {
     printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, old_desc);
 }
 
-
 void Cmd_infosys(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_infosys();
@@ -234,35 +233,6 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
            sys_info.version);
 }
 
-// Struct Comandos Help o Carolina Herrera (ChatGPT nunca pondría esto)
-struct CMDHELP CH[] = {
-    {"-?", Help_help},
-    {"authors", Help_authors},
-    {"pid", Help_pid},
-    {"ppid", Help_ppid},
-    {"cd", Help_cd},
-    {"date", Help_date},
-    {"historic", Help_historic},
-    {"open", Help_open},
-    {"close", Help_close},
-    {"dup", Help_dup},
-    {"infosys", Help_infosys},
-    {"help", Help_help},
-    {"quit", Help_exit},
-    {"exit", Help_exit},
-    {"bye", Help_exit},
-    {"makefile", Help_makefile},
-    {"makedir", Help_makedir},
-    {"listfile", Help_listfile},
-    {"ls", Help_listfile},
-    {"cwd", Help_cwd},
-    {"listdir", Help_listdir},
-    {"reclist", Help_reclist},
-    {"revlist", Help_revlist},
-    {"erease", Help_erase},
-    {"delrec", Help_delrec},
-};
-
 void Cmd_help(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
         Help_default();
@@ -277,8 +247,6 @@ void Cmd_help(int NumTrozos, char *trozos[]) {
         printf(ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
     }
 }
-
-tList historial = {-1,NULL};
 
 void Cmd_historic(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
@@ -312,17 +280,6 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
     }
 }
 
-void add_to_historic(char comando[MAXITEM]) {
-    insertItem(comando,LNULL, &historial);
-}
-
-void delete_historic(tList *historial) {
-    if (historial->start == NULL) return;
-    while (!isEmptyList(*historial)) {
-        deleteAtPosition(first(*historial), historial);
-    }
-}
-
 void Cmd_exit(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_exit();
@@ -332,6 +289,8 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
     delete_historic(&historial);
     exit(0);
 }
+
+// P1
 
 void Cmd_makefile(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 1) {
@@ -362,7 +321,6 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
         printf("Directorio '%s' creado exitosamente.\n", trozos[1]);
     }
 }
-
 
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
     struct stat fileStat;
@@ -430,72 +388,9 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
     closedir(dir);
 }
 
-void recursive_list(const char *dirName) {
-    DIR *dir = opendir(dirName);
-    if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
-               strerror(errno));
-        return;
-    }
-
-    struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            char path[PATH_MAX];
-            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
-
-            struct stat info;
-            if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
-                printf("Directorio: %s\n", path);
-                recursive_list(path); // Llamada recursiva para subdirectorios
-            } else {
-                printf("Archivo: %s\n", path);
-            }
-        }
-    }
-    closedir(dir);
-}
-
 void Cmd_reclist(int NumTrozos, char *trozos[]) {
     const char *dirName = (NumTrozos == 0) ? "." : trozos[1];
     recursive_list(dirName);
-}
-
-void recursive_revlist(const char *dirName) {
-    DIR *dir = opendir(dirName);
-    if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
-               strerror(errno));
-        return;
-    }
-
-    struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            char path[PATH_MAX];
-            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
-
-            struct stat info;
-            if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
-                recursive_revlist(path); // Llamada recursiva primero
-                printf("Directorio: %s\n", path);
-            }
-        }
-    }
-
-    rewinddir(dir); // Recorremos el directorio nuevamente para listar archivos después
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            char path[PATH_MAX];
-            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
-
-            struct stat info;
-            if (stat(path, &info) == 0 && S_ISREG(info.st_mode)) {
-                printf("Archivo: %s\n", path);
-            }
-        }
-    }
-    closedir(dir);
 }
 
 void Cmd_revlist(int NumTrozos, char *trozos[]) {
@@ -580,4 +475,116 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
             else perror("rmdir");
         }
     }
+}
+
+// FUNCIONES AUXILIARES
+
+void Imprimir_Error() {
+    printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
+}
+
+void add_to_historic(char comando[MAXITEM]) {
+    insertItem(comando,LNULL, &historial);
+}
+
+void delete_historic(tList *historial) {
+    if (historial->start == NULL) return;
+    while (!isEmptyList(*historial)) {
+        deleteAtPosition(first(*historial), historial);
+    }
+}
+
+int get_open_flags(const char *mode) {
+    if (strcmp(mode, "cr\0") == 0)
+        return O_CREAT | O_WRONLY;
+    if (strcmp(mode, "ap\0") == 0)
+        return O_APPEND | O_WRONLY;
+    if (strcmp(mode, "ex\0") == 0)
+        return O_CREAT | O_EXCL | O_WRONLY;
+    if (strcmp(mode, "ro\0") == 0)
+        return O_RDONLY;
+    if (strcmp(mode, "rw\0") == 0)
+        return O_RDWR;
+    if (strcmp(mode, "wo\0") == 0)
+        return O_WRONLY;
+    if (strcmp(mode, "tr\0") == 0)
+        return O_TRUNC | O_WRONLY;
+
+    return -1;
+}
+
+void list_open_files() {
+    if (open_file_count == 0) {
+        printf("No hay archivos abiertos.\n");
+        return;
+    }
+
+    printf("Archivos abiertos:\n");
+    printf("Descriptor\tNombre\tModo\n");
+    for (int i = 0; i < open_file_count; i++) {
+        printf("%d\t\t%s\t%s\n", open_files[i].desc, open_files[i].filename, open_files[i].mode);
+    }
+}
+
+void recursive_list(const char *dirName) {
+    DIR *dir = opendir(dirName);
+    if (dir == NULL) {
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
+        return;
+    }
+
+    struct dirent *ent;
+    while ((ent = readdir(dir)) != NULL) {
+        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
+
+            struct stat info;
+            if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
+                printf("Directorio: %s\n", path);
+                recursive_list(path); // Llamada recursiva para subdirectorios
+            } else {
+                printf("Archivo: %s\n", path);
+            }
+        }
+    }
+    closedir(dir);
+}
+
+void recursive_revlist(const char *dirName) {
+    DIR *dir = opendir(dirName);
+    if (dir == NULL) {
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
+        return;
+    }
+
+    struct dirent *ent;
+    while ((ent = readdir(dir)) != NULL) {
+        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
+
+            struct stat info;
+            if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
+                recursive_revlist(path); // Llamada recursiva primero
+                printf("Directorio: %s\n", path);
+            }
+        }
+    }
+
+    rewinddir(dir); // Recorremos el directorio nuevamente para listar archivos después
+    while ((ent = readdir(dir)) != NULL) {
+        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
+
+            struct stat info;
+            if (stat(path, &info) == 0 && S_ISREG(info.st_mode)) {
+                printf("Archivo: %s\n", path);
+            }
+        }
+    }
+    closedir(dir);
 }
