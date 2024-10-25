@@ -123,8 +123,10 @@ int get_open_flags(const char *mode);
 
 void list_open_files();
 
-void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_listing, bool show_accesstime, bool show_symlink);
+void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_listing, bool show_accesstime,
+                    bool show_symlink);
 
-void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime, bool show_symlink);
+void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime,
+                       bool show_symlink);
 
 #endif

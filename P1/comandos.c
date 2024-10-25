@@ -257,7 +257,7 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
         }
         return;
     }
-    
+
     if (strcmp(trozos[1], "-?") == 0) {
         Help_close();
         return;
@@ -402,8 +402,9 @@ void Cmd_reclist(int NumTrozos, char *trozos[]) {
         else dirName = trozos[i];
     }
 
-    recursive_list(dirName, 0, show_hidden, long_listing, show_accesstime, show_symlink);  // Ahora es compatible
+    recursive_list(dirName, 0, show_hidden, long_listing, show_accesstime, show_symlink); // Ahora es compatible
 }
+
 void Cmd_revlist(int NumTrozos, char *trozos[]) {
     const char *dirName = ".";
     bool show_hidden = false, long_listing = false, show_accesstime = false, show_symlink = false;
@@ -552,10 +553,12 @@ bool is_hidden(const char *name) {
     return name[0] == '.';
 }
 
-void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_listing, bool show_accesstime, bool show_symlink) {
+void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_listing, bool show_accesstime,
+                    bool show_symlink) {
     DIR *dir = opendir(dirName);
     if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName, strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
         return;
     }
 
@@ -592,7 +595,8 @@ void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_
             }
 
             if (long_listing) {
-                printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long)info.st_size, info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
+                printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long) info.st_size,
+                       info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
             }
 
             if (show_accesstime) {
@@ -608,11 +612,12 @@ void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_
 }
 
 
-
-void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime, bool show_symlink) {
+void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime,
+                       bool show_symlink) {
     DIR *dir = opendir(dirName);
     if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName, strerror(errno));
+        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
+               strerror(errno));
         return;
     }
 
@@ -657,7 +662,8 @@ void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing,
                 }
 
                 if (long_listing) {
-                    printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long)info.st_size, info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
+                    printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long) info.st_size,
+                           info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
                 }
 
                 if (show_accesstime) {
@@ -672,4 +678,3 @@ void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing,
     // Cerrar el directorio después de ambas pasadas
     closedir(dir);
 }
-
