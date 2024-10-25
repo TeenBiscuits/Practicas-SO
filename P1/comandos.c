@@ -328,65 +328,26 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
 
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
     if (NumTrozos < 1) return;
-
-    if (NumTrozos > 2) {
-        printf(ANSI_COLOR_RED "Demasiados parámetros.\n" ANSI_COLOR_RESET);
-        return;
-    }
-
-    if (strcmp(trozos[1], "-?") == 0) {
-        Help_listfile();
-        return;
-    }
+    if (!strcmp(trozos[1], "-?")) { Help_listfile(); return; }
 
     struct stat fileStat;
-    if (stat(trozos[NumTrozos], &fileStat) == -1) {
-        Imprimir_Error();
-        return;
-    }
+    const char *path = (NumTrozos == 1) ? "." : trozos[NumTrozos - 1];
+    if (stat(path, &fileStat) == -1) { perror("Error al obtener información del archivo"); return; }
+
     if (NumTrozos == 1) {
-        printf("\t%ld  %s\n", fileStat.st_size, trozos[1]);
-        return;
-    }
-
-
-    if (strcmp(trozos[1], "-long") == 0) {
-        // Conversión del tiempo de última modificación a un string en el formato especificado
+        printf("\t%ld  %s\n", fileStat.st_size, path);
+    } else if (!strcmp(trozos[1], "-long")) {
         char buf[200];
-        time_t t = fileStat.st_mtime; /*st_mtime is type time_t */
-        struct tm lt;
-        localtime_r(&t, &lt); /* convert to struct tm */
-        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", &lt);
-
-        printf("%s   %ld (%ld)    %s    %s permisos        %ld %s\n", buf, fileStat.st_nlink, fileStat.st_ino,
-               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, fileStat.st_size, trozos[2]);
-        return;
-    }
-    if (strcmp(trozos[1], "-acc") == 0) {
-        // Conversión del tiempo de última modificación a un string en el formato especificado
-        char buf[200];
-        time_t t = fileStat.st_atime; /*st_mtime is type time_t */
-        struct tm lt;
-        localtime_r(&t, &lt); /* convert to struct tm */
-        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", &lt);
-
-        printf("\t%ld  %s %s\n", fileStat.st_size, buf, trozos[2]);
-
-        return;
-    }
-
-    if (strcmp(trozos[1], "-link") == 0) {
-        char link_target[PATH_MAX];
-        ssize_t len = readlink(trozos[1], link_target, sizeof(link_target) - 1);
-        if (len != -1) {
-            link_target[len] = '\0';
-            printf("Enlace simbólico apunta a: %s\n", link_target);
-        } else {
-            printf(ANSI_COLOR_RED "El archivo '%s' no es un enlace.\n" ANSI_COLOR_RESET, trozos[2]);
-        }
+        strftime(buf, sizeof(buf), "%Y/%m/%d-%H:%M", localtime(&fileStat.st_mtime));
+        printf("%c%c%c%c%c%c%c%c%c%c ",
+               (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
+               (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
+               (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
+               (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-');
+        printf("%s %ld (%ld) %s %s %ld %s\n", buf, fileStat.st_nlink, fileStat.st_ino,
+               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, fileStat.st_size, path);
     }
 }
-
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_cwd();
@@ -444,86 +405,53 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_reclist(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_reclist();
-        return;
-    }
+    int show_hidden = 0, show_long = 0, show_acc = 0, show_link = 0;
+    int start_index = 1;
 
-    const char *dirName = ".";
-    bool show_hidden = false, long_listing = false, show_accesstime = false, show_symlink = false;
-
-    // Procesar opciones
     for (int i = 1; i < NumTrozos; i++) {
-        if (strcmp(trozos[i], "-hid") == 0) show_hidden = true;
-        else if (strcmp(trozos[i], "-long") == 0) long_listing = true;
-        else if (strcmp(trozos[i], "-acc") == 0) show_accesstime = true;
-        else if (strcmp(trozos[i], "-link") == 0) show_symlink = true;
-        else dirName = trozos[i];
+        if (!strcmp(trozos[i], "-hid")) show_hidden = 1;
+        else if (!strcmp(trozos[i], "-long")) show_long = 1;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
+        else if (!strcmp(trozos[i], "-link")) show_link = 1;
+        else { start_index = i; break; }
     }
 
-    recursive_list(dirName, 0, show_hidden, long_listing, show_accesstime, show_symlink); // Ahora es compatible
+    for (int i = start_index; i < NumTrozos; i++)
+        list_directory(trozos[i], show_hidden, show_long, show_acc, show_link);
 }
 
 void Cmd_revlist(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_revlist();
-        return;
-    }
+    int show_hidden = 0, show_long = 0, show_acc = 0, show_link = 0;
+    int start_index = 1;
 
-    const char *dirName = ".";
-    bool show_hidden = false, long_listing = false, show_accesstime = false, show_symlink = false;
-
-    // Procesar opciones
     for (int i = 1; i < NumTrozos; i++) {
-        if (strcmp(trozos[i], "-hid") == 0) show_hidden = true;
-        else if (strcmp(trozos[i], "-long") == 0) long_listing = true;
-        else if (strcmp(trozos[i], "-acc") == 0) show_accesstime = true;
-        else if (strcmp(trozos[i], "-link") == 0) show_symlink = true;
-        else dirName = trozos[i];
+        if (!strcmp(trozos[i], "-hid")) show_hidden = 1;
+        else if (!strcmp(trozos[i], "-long")) show_long = 1;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
+        else if (!strcmp(trozos[i], "-link")) show_link = 1;
+        else { start_index = i; break; }
     }
 
-    recursive_revlist(dirName, show_hidden, long_listing, show_accesstime, show_symlink);
+    for (int i = start_index; i < NumTrozos; i++)
+        revlist_directory(trozos[i], show_hidden, show_long, show_acc, show_link);
 }
-
 void Cmd_erase(int NumTrozos, char *trozos[]) {
-    if (NumTrozos < 1) return;
+    if (NumTrozos < 2) return;
+    if (!strcmp(trozos[1], "-?")) { Help_erase(); return; }
 
-    if (strcmp(trozos[1], "-?") == 0) {
-        Help_erase();
-        return;
-    }
-
-    struct stat info;
-    // Intentar obtener información del archivo
-    if (stat(trozos[1], &info) == -1) {
-        // Mostrar el error si no se pudo obtener información
-        printf(ANSI_COLOR_RED "Error: No se pudo obtener información de '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-               strerror(errno));
-        return;
-    }
-    // Si es un archivo regular, intentamos eliminarlo
-    if (S_ISREG(info.st_mode)) {
-        if (unlink(trozos[1]) == -1) {
-            printf(ANSI_COLOR_RED "Error: No se pudo borrar el archivo '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-                   strerror(errno));
-        } else {
-            printf("Archivo '%s' borrado exitosamente.\n", trozos[1]);
+    for (int i = 1; i < NumTrozos; i++) {
+        struct stat info;
+        if (stat(trozos[i], &info) == -1) {
+            printf("Error al obtener info de '%s': %s\n", trozos[i], strerror(errno));
+            continue;
         }
-        return;
+        if (S_ISREG(info.st_mode) && unlink(trozos[i]) == 0)
+            printf("Archivo '%s' borrado.\n", trozos[i]);
+        else if (S_ISDIR(info.st_mode) && rmdir(trozos[i]) == 0)
+            printf("Directorio '%s' borrado.\n", trozos[i]);
+        else
+            printf("Error al borrar '%s': %s\n", trozos[i], strerror(errno));
     }
-    // Si es un directorio, intentamos eliminarlo
-    if (S_ISDIR(info.st_mode)) {
-        if (rmdir(trozos[1]) == -1) {
-            printf(ANSI_COLOR_RED "Error: No se pudo borrar el directorio '%s': %s\n" ANSI_COLOR_RESET, trozos[1],
-                   strerror(errno));
-        } else {
-            printf("Directorio '%s' borrado exitosamente.\n", trozos[1]);
-        }
-        return;
-    }
-
-    // Si no es ni archivo regular ni directorio, mostrar error
-    printf(ANSI_COLOR_RED "Error: '%s' no es ni un archivo ni un directorio válido.\n" ANSI_COLOR_RESET, trozos[1]);
 }
 
 void Cmd_delrec(int NumTrozos, char *trozos[]) {
@@ -622,128 +550,115 @@ bool is_hidden(const char *name) {
     return name[0] == '.';
 }
 
-void recursive_list(const char *dirName, int depth, bool show_hidden, bool long_listing, bool show_accesstime,
-                    bool show_symlink) {
-    DIR *dir = opendir(dirName);
-    if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
-               strerror(errno));
-        return;
-    }
+void list_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link) {
+    DIR *dir = opendir(dir_name);
+    if (!dir) { perror("Error al abrir directorio"); return; }
 
-    struct dirent *ent;
+    struct dirent *entry;
+    struct stat fileStat;
+    char path[1024];
 
-    while ((ent = readdir(dir)) != NULL) {
-        // Saltar archivos ocultos si no se deben mostrar
-        if (!show_hidden && is_hidden(ent->d_name)) continue;
+    // Primer pase: Archivos
+    while ((entry = readdir(dir)) != NULL) {
+        if (!show_hidden && entry->d_name[0] == '.') continue;
+        snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
+        stat(path, &fileStat);
 
-        char path[PATH_MAX];
-        snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
+        if (S_ISDIR(fileStat.st_mode)) continue; // Saltar directorios para listarlos después
 
-        struct stat info;
-        if (stat(path, &info) == -1) {
-            printf(ANSI_COLOR_RED "Error al obtener información de '%s': %s\n" ANSI_COLOR_RESET, path, strerror(errno));
-            continue;
-        }
-
-        // Mostrar detalles según las opciones
-        for (int i = 0; i < depth; i++) printf("  ");
-
-        if (S_ISDIR(info.st_mode)) {
-            printf(ANSI_COLOR_BLUE "Directorio: %s\n" ANSI_COLOR_RESET, path);
-            recursive_list(path, depth + 1, show_hidden, long_listing, show_accesstime, show_symlink);
+        if (show_long) {
+            char timebuf[20];
+            strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
+            printf("%c%c%c%c%c%c%c%c%c%c %ld %s %s %5ld %s %s\n",
+                   (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
+                   (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
+                   (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
+                   (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-',
+                   fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name,
+                   fileStat.st_size, timebuf, entry->d_name);
         } else {
-            // Mostrar detalles para archivos
-            printf(ANSI_COLOR_GREEN "Archivo: %s", path);
+            printf("%s\n", entry->d_name);
+        }
 
-            if (show_symlink && S_ISLNK(info.st_mode)) {
-                char symlink_target[PATH_MAX];
-                ssize_t len = readlink(path, symlink_target, sizeof(symlink_target) - 1);
-                if (len != -1) symlink_target[len] = '\0';
-                printf(" -> %s", symlink_target);
+        if (show_link && S_ISLNK(fileStat.st_mode)) {
+            char link_target[1024];
+            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
+            if (len != -1) {
+                link_target[len] = '\0';
+                printf(" -> %s\n", link_target);
             }
-
-            if (long_listing) {
-                printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long) info.st_size,
-                       info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
-            }
-
-            if (show_accesstime) {
-                printf(" [Último acceso: %s]", ctime(&info.st_atime));
-            }
-
-            printf("\n");
         }
     }
 
-    // Cerrar el directorio al finalizar la iteración
+    rewinddir(dir);  // Resetear el directorio para la segunda pasada (subdirectorios)
+
+    // Segundo pase: Subdirectorios
+    while ((entry = readdir(dir)) != NULL) {
+        if (!show_hidden && entry->d_name[0] == '.') continue;
+        snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
+        stat(path, &fileStat);
+
+        if (S_ISDIR(fileStat.st_mode) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
+            printf("\n%s:\n", path);
+            list_directory(path, show_hidden, show_long, show_acc, show_link);
+        }
+    }
     closedir(dir);
 }
 
 
-void recursive_revlist(const char *dirName, bool show_hidden, bool long_listing, bool show_accesstime,
-                       bool show_symlink) {
-    DIR *dir = opendir(dirName);
-    if (dir == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo abrir el directorio '%s': %s\n" ANSI_COLOR_RESET, dirName,
-               strerror(errno));
-        return;
-    }
+void revlist_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link) {
+    DIR *dir = opendir(dir_name);
+    if (!dir) { perror("Error al abrir directorio"); return; }
 
-    struct dirent *ent;
+    struct dirent *entry;
+    struct stat fileStat;
+    char path[1024];
 
-    // Primera pasada: Listar subdirectorios primero
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            if (!show_hidden && is_hidden(ent->d_name)) continue; // Saltar si es oculto y no queremos mostrarlo
+    // Primer pase: Subdirectorios
+    while ((entry = readdir(dir)) != NULL) {
+        if (!show_hidden && entry->d_name[0] == '.') continue;
+        snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
+        stat(path, &fileStat);
 
-            char path[PATH_MAX];
-            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
-
-            struct stat info;
-            if (stat(path, &info) == 0 && S_ISDIR(info.st_mode)) {
-                recursive_revlist(path, show_hidden, long_listing, show_accesstime, show_symlink); // Recursivo primero
-                printf(ANSI_COLOR_BLUE "Directorio: %s\n" ANSI_COLOR_RESET, path);
-            }
+        if (S_ISDIR(fileStat.st_mode) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
+            printf("\n%s:\n", path);
+            revlist_directory(path, show_hidden, show_long, show_acc, show_link);
         }
     }
 
-    // Reiniciar el directorio para la segunda pasada
-    rewinddir(dir);
+    rewinddir(dir);  // Resetear el directorio para el segundo pase (archivos)
 
-    // Segunda pasada: Listar archivos después
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            if (!show_hidden && is_hidden(ent->d_name)) continue;
+    // Segundo pase: Archivos
+    while ((entry = readdir(dir)) != NULL) {
+        if (!show_hidden && entry->d_name[0] == '.') continue;
+        snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
+        stat(path, &fileStat);
 
-            char path[PATH_MAX];
-            snprintf(path, sizeof(path), "%s/%s", dirName, ent->d_name);
+        if (S_ISDIR(fileStat.st_mode)) continue;  // Saltar subdirectorios en la segunda pasada
 
-            struct stat info;
-            if (stat(path, &info) == 0 && S_ISREG(info.st_mode)) {
-                printf(ANSI_COLOR_GREEN "Archivo: %s", path);
+        if (show_long) {
+            char timebuf[20];
+            strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
+            printf("%c%c%c%c%c%c%c%c%c%c %ld %s %s %5ld %s %s\n",
+                   (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
+                   (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
+                   (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
+                   (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-',
+                   fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name,
+                   fileStat.st_size, timebuf, entry->d_name);
+        } else {
+            printf("%s\n", entry->d_name);
+        }
 
-                if (show_symlink && S_ISLNK(info.st_mode)) {
-                    char symlink_target[PATH_MAX];
-                    ssize_t len = readlink(path, symlink_target, sizeof(symlink_target) - 1);
-                    if (len != -1) symlink_target[len] = '\0';
-                    printf(" -> %s", symlink_target);
-                }
-
-                if (long_listing) {
-                    printf(" [Tamaño: %lld bytes, Permisos: %o]", (long long) info.st_size,
-                           info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
-                }
-
-                if (show_accesstime) {
-                    printf(" [Último acceso: %s]", ctime(&info.st_atime));
-                }
-
-                printf("\n");
+        if (show_link && S_ISLNK(fileStat.st_mode)) {
+            char link_target[1024];
+            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
+            if (len != -1) {
+                link_target[len] = '\0';
+                printf(" -> %s\n", link_target);
             }
         }
     }
-
-    // Cerrar el directorio después de ambas pasadas
     closedir(dir);
 }
