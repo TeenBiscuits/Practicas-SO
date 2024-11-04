@@ -1,60 +1,46 @@
 # Pablo Portas López           pablo.portas
 # Pablo Míguez Mouiño          pablo.miguez.moino
 
-# ELIMINAR ESTE COMENTARIO EN EL FUTURO
-# He creado este archivo make, para que sirve te preguntarás.
-# Yo tampoco lo sabía.
-# Pues por lo visto vale para que al ejecutar simplemente "make" este archivo
-# indique una serie de pasos para compilar y ejecutar un programa.
-# Super util para no tener que escribir comandos super largos como
-# gcc p0.c -o p0.out -Wall && ./p0.out
-# que no es muy largo pero oye tampoco nos sobra el tiempo
-
 # Usar el compilador gcc con las cflags
 CC = gcc
 CFLAGS = -Wall
 
 # Con "make" OBJ es la ejecución por defecto (lo compila y luego ejecuta)
-all: shell.out
-	./shell.out
+all: p2.o
+
+# Con "make run" para compilar y ejecutar
+run: p2.o
+	./p2.o
 
 # Con "make flechas" para compilar y ejecutar con rlwrap
-flechas: shell.out
-	rlwrap ./shell.out
-
-# Con "make compilar" solo se compila
-compile: shell.out
+flechas: p2.o
+	rlwrap ./p2.o
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
 leaks: main.c list.c help.c comandos.c
-	$(CC) $(CFLAGS) -g -O0 -c -o list.out list.c
-	$(CC) $(CFLAGS) -g -O0 -c -o help.out help.c
-	$(CC) $(CFLAGS) -g -O0 -c -o comandos.out comandos.c
-	$(CC) $(CFLAGS) -g -O0 -o shell.out main.c list.out help.out comandos.out color.h
-	valgrind --leak-check=full --show-reachable=yes ./shell.out
-
-# Con "make debug" se compula y se procede a debuguear con gdb
-debug: main.c list.out help.out comandos.out help.out
-	$(CC) $(CFLAGS) -g -o shell.out main.c list.out help.out comandos.out help.out color.h
-	gdb shell.out
+	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
+	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
+	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
+	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o color.h
+	valgrind --leak-check=full --show-reachable=yes ./p2.o
 
 # Con "make clean" borrar el archivo
 clean:
-	rm -f *.out
+	rm -f *.o
 
 # Compilación
-help.out: help.c
-	$(CC) $(CFLAGS) -c -o help.out help.c
+help.o: help.c
+	$(CC) $(CFLAGS) -c -o help.o help.c
 
-list.out: list.c
-	$(CC) $(CFLAGS) -c -o list.out list.c
+list.o: list.c
+	$(CC) $(CFLAGS) -c -o list.o list.c
 
-comandos.out: comandos.c
-	$(CC) $(CFLAGS) -c -o comandos.out comandos.c
+comandos.o: comandos.c
+	$(CC) $(CFLAGS) -c -o comandos.o comandos.c
 
-shell.out: main.c help.out list.out comandos.out
-	$(CC) $(CFLAGS) -o shell.out main.c help.out list.out comandos.out color.h
+p2.o: main.c help.o list.o comandos.o
+	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o comandos.o color.h
 
 # Se declara que las ejecuciones no son archivos
-.PHONY: all flechas compile lib comandos leaks debug clean
+.PHONY: all run flechas leaks clean
 

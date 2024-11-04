@@ -70,4 +70,5 @@ contenido
 - [ ] listfile -link no funciona correctamente (como en shell referencia)
 - [ ] reclist no imprime correctamente (como en shell referencia)
 - [ ] revlist no imprime correctamente (como en shell referencia)
-
+- [ ] delrec no elimina
+ 
