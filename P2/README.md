@@ -33,7 +33,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 - [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(
   3)**
 - [ ] revlist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs antes)
-- [ ] erase [name1 name2 ..]
+- [x] erase [name1 name2 ..]
 - [ ] delrec [name1 name2 ..]
 
 (2) -long: listado largo | -acc: acesstime | -link: si es enlace simbolico, el path contenido
@@ -66,7 +66,7 @@ contenido
 - [x] Authors no imprime correctamente
 - [x] El comando listdir puede ser llamado con ls
 - [x] Open tienen memory leaks
-- [ ] erase no borra más de un archivo
+- [x] erase no borra más de un archivo
 - [ ] listfile -link no funciona correctamente (como en shell referencia)
 - [ ] reclist no imprime correctamente (como en shell referencia)
 - [ ] revlist no imprime correctamente (como en shell referencia)

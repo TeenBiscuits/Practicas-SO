@@ -446,7 +446,7 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     if (NumTrozos < 2) return;
     if (!strcmp(trozos[1], "-?")) { Help_erase(); return; }
 
-    for (int i = 1; i < NumTrozos; i++) {
+    for (int i = 1; i <= NumTrozos; i++) {
         struct stat info;
         if (stat(trozos[i], &info) == -1) {
             printf("Error al obtener info de '%s': %s\n", trozos[i], strerror(errno));
