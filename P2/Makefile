@@ -12,6 +12,13 @@ all: p2.o
 run: p2.o
 	./p2.o
 
+# Con "make test" para comprobar los comandos
+test: main.c list.c help.c comandos.c
+	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
+	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
+	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
+	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o color.h
+	valgrind --leak-check=full --show-reachable=yes ./p2.o < tests.txt
 # Con "make flechas" para compilar y ejecutar con rlwrap
 flechas: p2.o
 	rlwrap ./p2.o
