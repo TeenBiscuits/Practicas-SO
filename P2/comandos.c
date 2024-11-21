@@ -344,7 +344,7 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
-        Aux_fileinfo(trozos[i],show_long,show_acc,show_link);
+        Aux_fileinfo(trozos[i],trozos[i],show_long,show_acc,show_link);
     }
 }
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
@@ -395,42 +395,53 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
             snprintf(path, sizeof(path), "%s/%s", trozos[i], entry->d_name);
             if (stat(path, &fileStat) == -1) continue;
 
-            Aux_fileinfo(path, show_long, show_acc, show_link);
+            Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
         }
         closedir(dir);
     }
 }
 
 void Cmd_reclist(int NumTrozos, char *trozos[]) {
-    int show_hidden = 0, show_long = 0, show_acc = 0, show_link = 0;
-    int start_index = 1;
-
-    for (int i = 1; i < NumTrozos; i++) {
-        if (!strcmp(trozos[i], "-hid")) show_hidden = 1;
-        else if (!strcmp(trozos[i], "-long")) show_long = 1;
-        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
-        else if (!strcmp(trozos[i], "-link")) show_link = 1;
-        else { start_index = i; break; }
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_reclist();
+        return;
     }
 
-    for (int i = start_index; i < NumTrozos; i++)
-        list_directory(trozos[i], show_hidden, show_long, show_acc, show_link);
+    bool show_long = false, show_acc = false, show_link = false, show_hid = false;
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (!strcmp(trozos[i], "-long")) show_long = true;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = true;
+        else if (!strcmp(trozos[i], "-link")) show_link = true;
+        else if (!strcmp(trozos[i], "-hid")) show_hid = true;
+    }
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
+        printf(ANSI_COLOR_GREEN "%s:" ANSI_COLOR_RESET "\n", trozos[i]);
+        Aux_reclist(trozos[i], show_long, show_acc, show_link, show_hid);
+    }
 }
 
 void Cmd_revlist(int NumTrozos, char *trozos[]) {
-    int show_hidden = 0, show_long = 0, show_acc = 0, show_link = 0;
-    int start_index = 1;
-
-    for (int i = 1; i < NumTrozos; i++) {
-        if (!strcmp(trozos[i], "-hid")) show_hidden = 1;
-        else if (!strcmp(trozos[i], "-long")) show_long = 1;
-        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
-        else if (!strcmp(trozos[i], "-link")) show_link = 1;
-        else { start_index = i; break; }
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
+        Help_revlist();
+        return;
     }
 
-    for (int i = start_index; i < NumTrozos; i++)
-        revlist_directory(trozos[i], show_hidden, show_long, show_acc, show_link);
+    bool show_long = false, show_acc = false, show_link = false, show_hid = false;
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (!strcmp(trozos[i], "-long")) show_long = true;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = true;
+        else if (!strcmp(trozos[i], "-link")) show_link = true;
+        else if (!strcmp(trozos[i], "-hid")) show_hid = true;
+    }
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
+        Aux_revlist(trozos[i], show_long, show_acc, show_link, show_hid,trozos[i]);
+    }
 }
 void Cmd_erase(int NumTrozos, char *trozos[]) {
     if (NumTrozos < 2) return;
@@ -547,9 +558,13 @@ bool is_hidden(const char *name) {
     return name[0] == '.';
 }
 
-void list_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link) {
+
+void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid) {
     DIR *dir = opendir(dir_name);
-    if (!dir) { perror("Error al abrir directorio"); return; }
+    if (!dir) {
+        Imprimir_Error();
+        return;
+    }
 
     struct dirent *entry;
     struct stat fileStat;
@@ -557,56 +572,37 @@ void list_directory(const char *dir_name, int show_hidden, int show_long, int sh
 
     // Primer pase: Archivos
     while ((entry = readdir(dir)) != NULL) {
-        if (!show_hidden && entry->d_name[0] == '.') continue;
+        if (!show_hid && entry->d_name[0] == '.') continue;
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        if (S_ISDIR(fileStat.st_mode)) continue; // Saltar directorios para listarlos después
-
-        if (show_long) {
-            char timebuf[20];
-            strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
-            printf("%c%c%c%c%c%c%c%c%c%c %ld %s %s %5ld %s %s\n",
-                   (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
-                   (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
-                   (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
-                   (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-',
-                   fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name,
-                   fileStat.st_size, timebuf, entry->d_name);
-        } else {
-            printf("%s\n", entry->d_name);
-        }
-
-        if (show_link && S_ISLNK(fileStat.st_mode)) {
-            char link_target[1024];
-            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
-            if (len != -1) {
-                link_target[len] = '\0';
-                printf(" -> %s\n", link_target);
-            }
-        }
+        Aux_fileinfo(path,entry->d_name,show_long,show_acc,show_link);
     }
 
+    printf("\n");
     rewinddir(dir);  // Resetear el directorio para la segunda pasada (subdirectorios)
 
     // Segundo pase: Subdirectorios
     while ((entry = readdir(dir)) != NULL) {
-        if (!show_hidden && entry->d_name[0] == '.') continue;
+        if (!show_hid && entry->d_name[0] == '.') continue;
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
         if (S_ISDIR(fileStat.st_mode) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
-            printf("\n%s:\n", path);
-            list_directory(path, show_hidden, show_long, show_acc, show_link);
+            printf(ANSI_COLOR_GREEN "%s:" ANSI_COLOR_RESET "\n", path);
+            Aux_reclist(path, show_long, show_acc, show_link, show_acc);
         }
     }
     closedir(dir);
 }
 
 
-void revlist_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link) {
+void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir) {
     DIR *dir = opendir(dir_name);
-    if (!dir) { perror("Error al abrir directorio"); return; }
+    if (!dir) {
+        Imprimir_Error();
+        return;
+    }
 
     struct dirent *entry;
     struct stat fileStat;
@@ -614,49 +610,31 @@ void revlist_directory(const char *dir_name, int show_hidden, int show_long, int
 
     // Primer pase: Subdirectorios
     while ((entry = readdir(dir)) != NULL) {
-        if (!show_hidden && entry->d_name[0] == '.') continue;
+        if (!show_hid && entry->d_name[0] == '.') continue;
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
         if (S_ISDIR(fileStat.st_mode) && strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
-            printf("\n%s:\n", path);
-            revlist_directory(path, show_hidden, show_long, show_acc, show_link);
+            Aux_revlist(path, show_long, show_acc, show_link, show_acc, path);
         }
     }
 
     rewinddir(dir);  // Resetear el directorio para el segundo pase (archivos)
 
     // Segundo pase: Archivos
+
+    printf(ANSI_COLOR_GREEN "%s:" ANSI_COLOR_RESET "\n", parent_dir);
+
     while ((entry = readdir(dir)) != NULL) {
-        if (!show_hidden && entry->d_name[0] == '.') continue;
+        if (!show_hid && entry->d_name[0] == '.') continue;
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        if (S_ISDIR(fileStat.st_mode)) continue;  // Saltar subdirectorios en la segunda pasada
-
-        if (show_long) {
-            char timebuf[20];
-            strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
-            printf("%c%c%c%c%c%c%c%c%c%c %ld %s %s %5ld %s %s\n",
-                   (S_ISDIR(fileStat.st_mode)) ? 'd' : '-',
-                   (fileStat.st_mode & S_IRUSR) ? 'r' : '-', (fileStat.st_mode & S_IWUSR) ? 'w' : '-', (fileStat.st_mode & S_IXUSR) ? 'x' : '-',
-                   (fileStat.st_mode & S_IRGRP) ? 'r' : '-', (fileStat.st_mode & S_IWGRP) ? 'w' : '-', (fileStat.st_mode & S_IXGRP) ? 'x' : '-',
-                   (fileStat.st_mode & S_IROTH) ? 'r' : '-', (fileStat.st_mode & S_IWOTH) ? 'w' : '-', (fileStat.st_mode & S_IXOTH) ? 'x' : '-',
-                   fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name,
-                   fileStat.st_size, timebuf, entry->d_name);
-        } else {
-            printf("%s\n", entry->d_name);
-        }
-
-        if (show_link && S_ISLNK(fileStat.st_mode)) {
-            char link_target[1024];
-            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
-            if (len != -1) {
-                link_target[len] = '\0';
-                printf(" -> %s\n", link_target);
-            }
-        }
+        Aux_fileinfo(path,entry->d_name,show_long,show_acc,show_link);
     }
+
+    printf("\n");
+
     closedir(dir);
 }
 
@@ -706,7 +684,7 @@ char * ConvierteModo (mode_t m, char *permisos){
     return permisos;
 }
 
-void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link) {
+void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
     struct stat fileStat;
     if (lstat(path, &fileStat) == -1) {
         Imprimir_Error();
@@ -724,18 +702,18 @@ void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link) {
         printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",
             timebuf, (long)fileStat.st_nlink, fileStat.st_ino,
             getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, perms,
-            (long)fileStat.st_size, path);
+            (long)fileStat.st_size, name);
     }
     else if (show_acc) {
-        printf("%8ld  %s %s\n", fileStat.st_size, timebuf, path);
+        printf("%8ld  %s %s\n", fileStat.st_size, timebuf, name);
     }
     else if (show_link && S_ISLNK(fileStat.st_mode)) {
         char link_target[1024];
         ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
         link_target[len] = '\0';
-        printf("%8ld  %s -> %s\n", fileStat.st_size, path, link_target);
+        printf("%8ld  %s -> %s\n", fileStat.st_size, name, link_target);
     }
     else {
-        printf("%8ld  %s\n", fileStat.st_size, path);
+        printf("%8ld  %s\n", fileStat.st_size, name);
     }
 }

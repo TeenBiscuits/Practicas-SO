@@ -125,9 +125,9 @@ int get_open_flags(const char *mode);
 
 void list_open_files();
 
-void list_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link);
+void Aux_reclist(char *dir_name, bool show_hidden, bool show_long, bool show_acc, bool show_link);
 
-void revlist_directory(const char *dir_name, int show_hidden, int show_long, int show_acc, int show_link);
+void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir);
 
 void print_permissions(mode_t mode);
 
@@ -135,6 +135,6 @@ char LetraTF (mode_t m);
 
 char * ConvierteModo (mode_t m, char *permisos);
 
-void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link);
+void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
 
 #endif
