@@ -327,32 +327,23 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_listfile(int NumTrozos, char *trozos[]) {
-    int show_long = 0, show_acc = 0, show_link = 0;
+    if (NumTrozos < 1) return;
 
-    // Parse options
-    for (int i = 1; i < NumTrozos; i++) {
-        if (!strcmp(trozos[i], "-long")) show_long = 1;
-        else if (!strcmp(trozos[i], "-acc")) show_acc = 1;
-        else if (!strcmp(trozos[i], "-link")) show_link = 1;
+    if (strcmp(trozos[1], "-?") == 0) {
+        Help_listfile();
+        return;
     }
 
-    // Process each file/directory
-    for (int i = 1; i < NumTrozos; i++) {
-        if (trozos[i][0] == '-') continue;
-        struct stat fileStat;
-        if (lstat(trozos[i], &fileStat) == -1) { perror("Error"); continue; }
+    bool show_long = false, show_acc = false, show_link = false;
 
-        char timebuf[20];
-        strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
-        if (show_long)
-            printf("%s %ld %s %s %8ld %s\n", timebuf, (long)fileStat.st_nlink, getpwuid(fileStat.st_uid)->pw_name,
-                   getgrgid(fileStat.st_gid)->gr_name, (long)fileStat.st_size, trozos[i]);
-        else printf("%ld %s\n", (long)fileStat.st_size, trozos[i]);
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (!strcmp(trozos[i], "-long")) show_long = true;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = true;
+        else if (!strcmp(trozos[i], "-link")) show_link = true;
+    }
 
-        if (show_link && S_ISLNK(fileStat.st_mode)) {
-            char link_target[1024]; ssize_t len = readlink(trozos[i], link_target, sizeof(link_target) - 1);
-            if (len != -1) { link_target[len] = '\0'; printf(" -> %s\n", link_target); }
-        }
+    for (int i = 1; i <= NumTrozos; i++) {
+        Aux_fileinfo(trozos[i],show_long,show_acc,show_link);
     }
 }
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
@@ -681,4 +672,72 @@ void print_permissions(mode_t mode) {
     printf((mode & S_IROTH) ? "r" : "-");
     printf((mode & S_IWOTH) ? "w" : "-");
     printf((mode & S_IXOTH) ? "x" : "-");
+}
+
+char LetraTF (mode_t m){
+    switch (m&S_IFMT) { /*and bit a bit con los bits de formato,0170000 */
+        case S_IFSOCK: return 's'; /*socket */
+        case S_IFLNK: return 'l'; /*symbolic link*/
+        case S_IFREG: return '-'; /* fichero normal*/
+        case S_IFBLK: return 'b'; /*block device*/
+        case S_IFDIR: return 'd'; /*directorio */
+        case S_IFCHR: return 'c'; /*char device*/
+        case S_IFIFO: return 'p'; /*pipe*/
+        default: return '?'; /*desconocido, no deberia aparecer*/
+    }
+}
+
+char * ConvierteModo (mode_t m, char *permisos){
+    strcpy(permisos,"---------- ");
+
+    permisos[0]=LetraTF(m);
+    if (m&S_IRUSR) permisos[1]='r';    /*propietario*/
+    if (m&S_IWUSR) permisos[2]='w';
+    if (m&S_IXUSR) permisos[3]='x';
+    if (m&S_IRGRP) permisos[4]='r';    /*grupo*/
+    if (m&S_IWGRP) permisos[5]='w';
+    if (m&S_IXGRP) permisos[6]='x';
+    if (m&S_IROTH) permisos[7]='r';    /*resto*/
+    if (m&S_IWOTH) permisos[8]='w';
+    if (m&S_IXOTH) permisos[9]='x';
+    if (m&S_ISUID) permisos[3]='s';    /*setuid, setgid y stickybit*/
+    if (m&S_ISGID) permisos[6]='s';
+    if (m&S_ISVTX) permisos[9]='t';
+
+    return permisos;
+}
+
+void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link) {
+    if (path[0] == '-') return;
+    struct stat fileStat;
+    if (lstat(path, &fileStat) == -1) {
+        Imprimir_Error();
+        return;
+    }
+
+    char timebuf[20];
+    // Si también se pasó el parametro -acc se sustituirá la fecha de creación por modificación
+    strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
+
+    char perms[12];
+    ConvierteModo(fileStat.st_mode, perms);
+
+    if(show_long) {
+        printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",
+            timebuf, (long)fileStat.st_nlink, fileStat.st_ino,
+            getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, perms,
+            (long)fileStat.st_size, path);
+    }
+    else if (show_acc) {
+        printf("%8ld  %s %s\n", fileStat.st_size, timebuf, path);
+    }
+    else if (show_link && S_ISLNK(fileStat.st_mode)) {
+        char link_target[1024];
+        ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
+        link_target[len] = '\0';
+        printf("%8ld  %s -> %s\n", fileStat.st_size, path, link_target);
+    }
+    else {
+        printf("%8ld  %s\n", fileStat.st_size, path);
+    }
 }

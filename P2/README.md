@@ -27,7 +27,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 
 - [x] makefile [name]
 - [x] makedir [name]
-- [ ] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
+- [x] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
 - [x] cwd
 - [ ] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
 - [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(
@@ -67,7 +67,7 @@ contenido
 - [x] El comando listdir puede ser llamado con ls
 - [x] Open tienen memory leaks
 - [x] erase no borra más de un archivo
-- [ ] listfile -link no funciona correctamente (como en shell referencia)
+- [x] listfile -link no funciona correctamente (como en shell referencia)
 - [ ] reclist no imprime correctamente (como en shell referencia)
 - [ ] revlist no imprime correctamente (como en shell referencia)
 - [ ] delrec no elimina

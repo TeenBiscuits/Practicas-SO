@@ -131,4 +131,10 @@ void revlist_directory(const char *dir_name, int show_hidden, int show_long, int
 
 void print_permissions(mode_t mode);
 
+char LetraTF (mode_t m);
+
+char * ConvierteModo (mode_t m, char *permisos);
+
+void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link);
+
 #endif
