@@ -343,6 +343,7 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
     }
 
     for (int i = 1; i <= NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
         Aux_fileinfo(trozos[i],show_long,show_acc,show_link);
     }
 }
@@ -366,40 +367,38 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
         return;
     }
 
-    const char *dirName = (NumTrozos > 1) ? trozos[1] : ".";
-    const char *option = (NumTrozos > 2) ? trozos[2] : "";
+    bool show_long = false, show_acc = false, show_link = false, show_hid = false;
 
-    DIR *dir = opendir(dirName);
-    if (!dir) {
-        perror("opendir");
-        return;
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (!strcmp(trozos[i], "-long")) show_long = true;
+        else if (!strcmp(trozos[i], "-acc")) show_acc = true;
+        else if (!strcmp(trozos[i], "-link")) show_link = true;
+        else if (!strcmp(trozos[i], "-hid")) show_hid = true;
     }
-    struct dirent *entry;
-    struct stat fileStat;
 
-    while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(option, "-hid") != 0 && entry->d_name[0] == '.') continue;
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
 
-        char path[PATH_MAX];
-        snprintf(path, sizeof(path), "%s/%s", dirName, entry->d_name);
-        if (stat(path, &fileStat) == -1) continue;
-
-        printf("%s", entry->d_name);
-        if (strcmp(option, "-long") == 0)
-            printf("  %ld bytes  %o  %s", fileStat.st_size, fileStat.st_mode & 0777, ctime(&fileStat.st_mtime));
-        else if (strcmp(option, "-acc") == 0)
-            printf("  Último acceso: %s", ctime(&fileStat.st_atime));
-        else if (strcmp(option, "-link") == 0 && S_ISLNK(fileStat.st_mode)) {
-            char link_target[PATH_MAX];
-            ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
-            if (len != -1) {
-                link_target[len] = '\0';
-                printf(" -> %s", link_target);
-            }
+        DIR *dir = opendir(trozos[i]);
+        if (!dir) {
+            Imprimir_Error();
+            return;
         }
-        printf("\n");
+
+        struct dirent *entry;
+        struct stat fileStat;
+
+        while ((entry = readdir(dir)) != NULL) {
+            if (entry->d_name[0] == '.' && !show_hid) continue;
+
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", trozos[i], entry->d_name);
+            if (stat(path, &fileStat) == -1) continue;
+
+            Aux_fileinfo(path, show_long, show_acc, show_link);
+        }
+        closedir(dir);
     }
-    closedir(dir);
 }
 
 void Cmd_reclist(int NumTrozos, char *trozos[]) {
@@ -708,7 +707,6 @@ char * ConvierteModo (mode_t m, char *permisos){
 }
 
 void Aux_fileinfo(char *path, bool show_long, bool show_acc, bool show_link) {
-    if (path[0] == '-') return;
     struct stat fileStat;
     if (lstat(path, &fileStat) == -1) {
         Imprimir_Error();

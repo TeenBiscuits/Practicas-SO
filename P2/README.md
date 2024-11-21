@@ -29,7 +29,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 - [x] makedir [name]
 - [x] listfile [-long][-link][-acc] name1 name2 n3 ... lista ficheros; **(2)**
 - [x] cwd
-- [ ] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
+- [x] listdir [-hid][-long][-link][-acc] n1 n2 ... lista contenidos de directorios **(3)**
 - [ ] reclist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs después) **(
   3)**
 - [ ] revlist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs antes)
