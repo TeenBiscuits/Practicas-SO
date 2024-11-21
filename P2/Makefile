@@ -13,29 +13,29 @@ run: p2.o
 	./p2.o
 
 # Con "make test" para comprobar los comandos
-test: main.c list.c help.c comandos.c
-	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
-	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
-	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
-	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o color.h
+test: debug
 	valgrind --leak-check=full --show-reachable=yes ./p2.o < tests.txt
 # Con "make flechas" para compilar y ejecutar con rlwrap
 flechas: p2.o
 	rlwrap ./p2.o
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
-leaks: main.c list.c help.c comandos.c
-	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
-	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
-	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
-	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o color.h
+leaks: debug
 	valgrind --leak-check=full --show-reachable=yes ./p2.o
 
 # Con "make clean" borrar el archivo
 clean:
 	rm -f *.o
 
-# Compilación
+# Compilación con símbolos de debug y optimización
+debug: main.c list.c help.c comandos.c
+	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
+	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
+	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
+	$(CC) $(CFLAGS) -g -O0 -c -o memoria.o memoria.c
+	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o memoria.o color.h
+
+# Compilación normal
 help.o: help.c
 	$(CC) $(CFLAGS) -c -o help.o help.c
 
@@ -45,9 +45,12 @@ list.o: list.c
 comandos.o: comandos.c
 	$(CC) $(CFLAGS) -c -o comandos.o comandos.c
 
-p2.o: main.c help.o list.o comandos.o
-	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o comandos.o color.h
+memoria.o: memoria.c
+	$(CC) $(CFLAGS) -c -o memoria.o memoria.c
+
+p2.o: main.c help.o list.o comandos.o memoria.o
+	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o comandos.o memoria.o color.h
 
 # Se declara que las ejecuciones no son archivos
-.PHONY: all run flechas leaks clean
+.PHONY: all run flechas leaks debug clean
 
