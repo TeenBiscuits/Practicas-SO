@@ -34,7 +34,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
   3)**
 - [x] revlist [-hid][-long][-link][-acc] n1 n2 ... lista recursivamente contenidos de directorios (subdirs antes)
 - [x] erase [name1 name2 ..]
-- [ ] delrec [name1 name2 ..]
+- [x] delrec [name1 name2 ..]
 
 (2) -long: listado largo | -acc: acesstime | -link: si es enlace simbolico, el path contenido
 
@@ -70,5 +70,5 @@ contenido
 - [x] listfile -link no funciona correctamente (como en shell referencia)
 - [x] reclist no imprime correctamente (como en shell referencia)
 - [x] revlist no imprime correctamente (como en shell referencia)
-- [ ] delrec no elimina
+- [x] delrec no elimina
  

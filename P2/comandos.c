@@ -476,45 +476,27 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_delrec(int NumTrozos, char *trozos[]) {
-    if (NumTrozos < 1) return;
-
-    if (strcmp(trozos[1], "-?") == 0) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_erase();
         return;
     }
 
+    bool outcwd = false;
+
     for (int i = 1; i <= NumTrozos; i++) {
-        struct stat path_stat;
-        if (stat(trozos[i], &path_stat) != 0) {
-            perror("stat");
+        if (!strcmp(trozos[i], "-outcwd")) outcwd = true;
+    }
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (trozos[i][0] == '-') continue;
+        if (trozos[i][0] == '/' && !outcwd) {
+            printf(ANSI_COLOR_RED "No es posible borrar '%s'. Solo es posible borrar carpetas en el CWD. "
+                                  "Esto no es un error, es una característica diseña para evitar que en un "
+                                  "desliz elimine root. Pero puedes usar -outcwd para eliminar fuera del CWD."
+                                  ANSI_COLOR_RESET "\n",trozos[i]);
             continue;
         }
-
-        if (S_ISREG(path_stat.st_mode)) {
-            // Eliminar archivo
-            if (unlink(trozos[i]) == 0) printf("Archivo '%s' eliminado.\n", trozos[i]);
-            else perror("unlink");
-        } else if (S_ISDIR(path_stat.st_mode)) {
-            // Eliminar directorio
-            DIR *dir = opendir(trozos[i]);
-            if (!dir) {
-                perror("opendir");
-                continue;
-            }
-
-            struct dirent *entry;
-            while ((entry = readdir(dir)) != NULL) {
-                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
-
-                // Mover la declaración de subpath dentro del ciclo
-                char subpath[PATH_MAX];
-                snprintf(subpath, sizeof(subpath), "%s/%s", trozos[i], entry->d_name);
-                Cmd_delrec(1, (char *[]){subpath}); // Recursividad
-            }
-            closedir(dir);
-            if (rmdir(trozos[i]) == 0) printf("Directorio '%s' eliminado.\n", trozos[i]);
-            else perror("rmdir");
-        }
+        Aux_delrec(trozos[i]);
     }
 }
 
@@ -728,5 +710,43 @@ void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool sh
     }
     else {
         printf("%8ld  %s\n", fileStat.st_size, name);
+    }
+}
+
+void Aux_delrec(char *dir_name) {
+    struct stat path_stat;
+    if (stat(dir_name, &path_stat) != 0) {
+        Imprimir_Error();
+        return;
+    }
+
+    // Primero Eliminar archivos
+    if (S_ISREG(path_stat.st_mode)) {
+        if (unlink(dir_name) == 0) printf("Archivo '%s' eliminado.\n", dir_name);
+        else Imprimir_Error();
+    }
+    // Segundo Eliminar directorio
+    else if (S_ISDIR(path_stat.st_mode)) {
+
+        DIR *dir = opendir(dir_name);
+        if (!dir) {
+            Imprimir_Error();
+            return;
+        }
+
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+
+            // Mover la declaración de subpath dentro del ciclo
+            char subpath[PATH_MAX];
+            snprintf(subpath, sizeof(subpath), "%s/%s", dir_name, entry->d_name);
+
+            Aux_delrec(subpath);
+
+        }
+        closedir(dir);
+        if (rmdir(dir_name) == 0) printf("Directorio '%s' eliminado.\n", dir_name);
+        else Imprimir_Error();
     }
 }

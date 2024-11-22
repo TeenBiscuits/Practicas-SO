@@ -137,4 +137,6 @@ char * ConvierteModo (mode_t m, char *permisos);
 
 void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
 
+void Aux_delrec(char *dir_name);
+
 #endif
