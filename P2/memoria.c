@@ -173,6 +173,33 @@ void *convertir_direccion(const char *direccion_str) {
     return direccion;
 }
 
+FILE *abrirArchivo(const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("Error al abrir archivo");
+    }
+    return file;
+}
+
+size_t leer_bytes(FILE *file, void *addr, size_t tamano) {
+    size_t bytes_leidos = fread(addr, 1, tamano, file);
+
+    if (bytes_leidos < tamano) {
+        if (feof(file)) {
+            printf("Fin del archivo alcanzado. Bytes leídos: %zu\n", bytes_leidos);
+        } else if (ferror(file)) {
+            perror("Error al leer el archivo");
+        }
+    }
+
+    return bytes_leidos;
+}
+
+void cerrar_archivo(FILE *file) {
+    if (file !=NULL) {
+        fclose(file);
+    }
+}
 
 
 ////////////////////////////////////////////COMANDOS////////////////////////////////////////////////////////////////////
@@ -239,6 +266,33 @@ void Cmd_memory(int numTrozos, char *args[]) {
         }
     }
 }
+
+void Cmd_readfile(int NumTrozos, char *args[]) {
+    if (NumTrozos!=4) {
+        printf("Faltan parametros\n");
+        return;
+    }
+    const char *filename = args[1];
+    const char *add_str = args[2];
+    size_t tamano = (size_t)strtoul(args[3], NULL, 10);
+
+    void *addr = convertir_direccion(add_str);
+    if (addr == NULL) {
+        printf("Dirección inválida");
+        return;
+    }
+
+    FILE *file = abrirArchivo(filename);
+    if (file == NULL) {
+        return;
+    }
+    size_t bytes_leidos = leer_bytes(file, addr, tamano);
+    if (bytes_leidos > 0) {
+        printf("Bytes leídos: %zu\n", bytes_leidos);
+    }
+    cerrar_archivo(file);
+}
+
 
 
 
