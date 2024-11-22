@@ -2,10 +2,11 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
+#include "memoria.h"
 #include "help.h"
 #include "list.h"
 
-// COMANDOS BÁSICOS P0 + P1
+// COMANDOS BÁSICOS P0 + P1 + P2
 
 // VARIABLES GLOBALES AUXILIARES
 

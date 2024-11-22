@@ -300,34 +300,34 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
     volcar_memoria((const uint8_t *)direccion_inicio, cantidad_bytes); // Función para volcar memoria
 }
 
-void Cmd_memory(int numTrozos, char *args[]) {
-    if (numTrozos == 1 || (numTrozos == 2 && strcmp(args[1], "-all") == 0)) {
+void Cmd_memory(int numTrozos, char *trozos[]) {
+    if (numTrozos == 1 || (numTrozos == 2 && strcmp(trozos[1], "-all") == 0)) {
         memory_all();
         return;
     }
     for (int i = 1; i < numTrozos; ++i) {
-        if (strcmp(args[i], "-funcs") == 0) {
+        if (strcmp(trozos[i], "-funcs") == 0) {
             memory_funcs();
-        } else if (strcmp(args[i], "-vars") == 0) {
+        } else if (strcmp(trozos[i], "-vars") == 0) {
             memory_vars();
-        } else if (strcmp(args[i], "-blocks") == 0) {
+        } else if (strcmp(trozos[i], "-blocks") == 0) {
             memory_blocks();
-        }else if (strcmp(args[i], "-pmap") == 0) {
+        }else if (strcmp(trozos[i], "-pmap") == 0) {
             Do_MemPmap();
         }else {
-            printf("Comando desconocido: %s\n", args[i]);
+            printf("Comando desconocido: %s\n", trozos[i]);
         }
     }
 }
 
-void Cmd_readfile(int NumTrozos, char *args[]) {
+void Cmd_readfile(int NumTrozos, char *trozos[]) {
     if (NumTrozos!=4) {
         printf("Faltan parametros\n");
         return;
     }
-    const char *filename = args[1];
-    const char *add_str = args[2];
-    size_t tamano = (size_t)strtoul(args[3], NULL, 10);
+    const char *filename = trozos[1];
+    const char *add_str = trozos[2];
+    size_t tamano = (size_t)strtoul(trozos[3], NULL, 10);
 
     void *addr = convertir_direccion(add_str);
     if (addr == NULL) {
@@ -346,14 +346,14 @@ void Cmd_readfile(int NumTrozos, char *args[]) {
     cerrar_archivo(file);
 }
 
-void Cmd_writefile(int NumTrozos, char *args[]) {
+void Cmd_writefile(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 4) {
         printf("Parametros incorrectos\n");
         return;
     }
-    const char *filename = args[1];
-    const char *direccion_str = args[2];
-    const size_t count = (size_t)strtoull(args[3], NULL, 10);
+    const char *filename = trozos[1];
+    const char *direccion_str = trozos[2];
+    const size_t count = (size_t)strtoull(trozos[3], NULL, 10);
 
     const void *addr = convertir_direccion(direccion_str);
     if (addr == NULL) {
@@ -372,14 +372,14 @@ void Cmd_writefile(int NumTrozos, char *args[]) {
     fclose(file);
 }
 
-void Cmd_read(int NumTrozos, char *args[]) {
+void Cmd_read(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 4) {
         printf("Parametros incorrectos\n");
         return;
     }
-    int fd = atoi(args[1]);
-    const char *direccion_str = args[2];
-    size_t count = (size_t)strtoull(args[3], NULL, 10);
+    int fd = atoi(trozos[1]);
+    const char *direccion_str = trozos[2];
+    size_t count = (size_t)strtoull(trozos[3], NULL, 10);
 
     void *direccion = convertir_direccion(direccion_str);
     if (direccion == NULL) {
@@ -391,14 +391,14 @@ void Cmd_read(int NumTrozos, char *args[]) {
     }
 }
 
-void Cmd_write(int NumTrozos, char *args[]) {
+void Cmd_write(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 4) {
         printf("Uso: write <descriptor> <direccion> <bytes>\n");
         return;
     }
-    int fd = atoi(args[1]);
-    const char *direccion_str = args[2];
-    size_t count = (size_t)strtoull(args[3], NULL, 10);
+    int fd = atoi(trozos[1]);
+    const char *direccion_str = trozos[2];
+    size_t count = (size_t)strtoull(trozos[3], NULL, 10);
     void *direccion = convertir_direccion(direccion_str);
     if (direccion == NULL) {
         return;
@@ -410,13 +410,13 @@ void Cmd_write(int NumTrozos, char *args[]) {
     }
 }
 
-void Cmd_recurse(int NumTrozos, char *args[]) {
+void Cmd_recurse(int NumTrozos, char *trozos[]) {
     if (NumTrozos != 2) {
         printf("Uso: recurse <n>\n");
         return;
     }
 
-    int n = atoi(args[1]);
+    int n = atoi(trozos[1]);
     if (n < 0) {
         printf("Error: El número de recursiones debe ser mayor o igual a 0.\n");
         return;

@@ -10,6 +10,7 @@
 
 #include "color.h"
 #include "comandos.h"
+#include "memoria.h"
 
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
@@ -88,6 +89,14 @@ struct CMD C[] = {
     {"revlist", Cmd_revlist},
     {"erase", Cmd_erase},
     {"delrec", Cmd_delrec},
+    {"memfill", Cmd_memfill},
+    {"memdump", Cmd_memdump},
+    {"memory", Cmd_memory},
+    {"readfile", Cmd_readfile},
+    {"writefile", Cmd_writefile},
+    {"read", Cmd_read},
+    {"write", Cmd_write},
+    {"recurse", Cmd_recurse}
 };
 
 void procesarEntrada(char comando[MAXITEM]) {
