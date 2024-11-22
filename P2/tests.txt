@@ -31,6 +31,9 @@ infosys
 help -?
 help authors
 help
+
+
+
 makedir -?
 makedir test
 makedir test/subtest
@@ -64,4 +67,30 @@ revlist -acc test
 erase -?
 erase BORRAME.txt test
 delrec AMITAMBIEN.txt test
+
+
+
+allocate -?
+allocate
+deallocate -?
+deallocate
+memfill -?
+memfill
+memdump -?
+memdump
+memory -?
+memory
+readfile -?
+readfile
+writefile -?
+writefile
+read -?
+read
+write -?
+write
+recurse -?
+recurse
+
+
+
 exit

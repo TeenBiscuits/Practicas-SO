@@ -257,6 +257,11 @@ void recursive_function(int n, int *param_address) {
 
 ////////////////////////////////////////////COMANDOS////////////////////////////////////////////////////////////////////
 void Cmd_memfill(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_memfill();
+        return;
+    }
+
     if (NumTrozos < 4) {
         printf("Número de trozos incorrecto. Uso: memfill <addr> <ch> <cont>\n");
         return;
@@ -279,6 +284,11 @@ void Cmd_memfill(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_memdump(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
+        Help_memdump();
+        return;
+    }
+
     void *direccion_inicio = convertir_direccion(trozos[1]);
     if (direccion_inicio == NULL) {
         printf("Error al obtener la dirección inicial.\n");
@@ -300,12 +310,17 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
     volcar_memoria((const uint8_t *)direccion_inicio, cantidad_bytes); // Función para volcar memoria
 }
 
-void Cmd_memory(int numTrozos, char *trozos[]) {
-    if (numTrozos == 1 || (numTrozos == 2 && strcmp(trozos[1], "-all") == 0)) {
+void Cmd_memory(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
+        Help_memory();
+        return;
+    }
+
+    if (NumTrozos == 1 || (NumTrozos == 2 && strcmp(trozos[1], "-all") == 0)) {
         memory_all();
         return;
     }
-    for (int i = 1; i < numTrozos; ++i) {
+    for (int i = 1; i < NumTrozos; ++i) {
         if (strcmp(trozos[i], "-funcs") == 0) {
             memory_funcs();
         } else if (strcmp(trozos[i], "-vars") == 0) {
@@ -321,6 +336,11 @@ void Cmd_memory(int numTrozos, char *trozos[]) {
 }
 
 void Cmd_readfile(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_readfile();
+        return;
+    }
+
     if (NumTrozos!=4) {
         printf("Faltan parametros\n");
         return;
@@ -347,6 +367,11 @@ void Cmd_readfile(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_writefile(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_writefile();
+        return;
+    }
+
     if (NumTrozos != 4) {
         printf("Parametros incorrectos\n");
         return;
@@ -373,6 +398,11 @@ void Cmd_writefile(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_read(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_read();
+        return;
+    }
+
     if (NumTrozos != 4) {
         printf("Parametros incorrectos\n");
         return;
@@ -392,6 +422,11 @@ void Cmd_read(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_write(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_write();
+        return;
+    }
+
     if (NumTrozos != 4) {
         printf("Uso: write <descriptor> <direccion> <bytes>\n");
         return;
@@ -411,6 +446,11 @@ void Cmd_write(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_recurse(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_recurse();
+        return;
+    }
+
     if (NumTrozos != 2) {
         printf("Uso: recurse <n>\n");
         return;

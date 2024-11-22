@@ -67,7 +67,7 @@ void Cmd_memfill(int NumTrozos, char *trozos[]);
 
 void Cmd_memdump(int NumTrozos, char *trozos[]);
 
-void Cmd_memory(int numTrozos, char *args[]);
+void Cmd_memory(int NumTrozos, char *args[]);
 
 void Cmd_readfile(int NumTrozos, char *args[]);
 
