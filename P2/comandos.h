@@ -131,9 +131,9 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
 
 void print_permissions(mode_t mode);
 
-char LetraTF (mode_t m);
+char LetraTF(mode_t m);
 
-char * ConvierteModo (mode_t m, char *permisos);
+char *ConvierteModo(mode_t m, char *permisos);
 
 void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
 

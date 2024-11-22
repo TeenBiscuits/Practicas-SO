@@ -355,9 +355,10 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
-        Aux_fileinfo(trozos[i],trozos[i],show_long,show_acc,show_link);
+        Aux_fileinfo(trozos[i], trozos[i], show_long, show_acc, show_link);
     }
 }
+
 void Cmd_cwd(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_cwd();
@@ -453,12 +454,16 @@ void Cmd_revlist(int NumTrozos, char *trozos[]) {
 
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
-        Aux_revlist(trozos[i], show_long, show_acc, show_link, show_hid,trozos[i]);
+        Aux_revlist(trozos[i], show_long, show_acc, show_link, show_hid, trozos[i]);
     }
 }
+
 void Cmd_erase(int NumTrozos, char *trozos[]) {
     if (NumTrozos < 2) return;
-    if (!strcmp(trozos[1], "-?")) { Help_erase(); return; }
+    if (!strcmp(trozos[1], "-?")) {
+        Help_erase();
+        return;
+    }
 
     for (int i = 1; i <= NumTrozos; i++) {
         struct stat info;
@@ -491,9 +496,9 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
         if (trozos[i][0] == '-') continue;
         if (trozos[i][0] == '/' && !outcwd) {
             printf(ANSI_COLOR_RED "No es posible borrar '%s'. Solo es posible borrar carpetas en el CWD. "
-                                  "Esto no es un error, es una característica diseña para evitar que en un "
-                                  "desliz elimine root. Pero puedes usar -outcwd para eliminar fuera del CWD."
-                                  ANSI_COLOR_RESET "\n",trozos[i]);
+                   "Esto no es un error, es una característica diseña para evitar que en un "
+                   "desliz elimine root. Pero puedes usar -outcwd para eliminar fuera del CWD."
+                   ANSI_COLOR_RESET "\n", trozos[i]);
             continue;
         }
         Aux_delrec(trozos[i]);
@@ -571,11 +576,11 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path,entry->d_name,show_long,show_acc,show_link);
+        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
-    rewinddir(dir);  // Resetear el directorio para la segunda pasada (subdirectorios)
+    rewinddir(dir); // Resetear el directorio para la segunda pasada (subdirectorios)
 
     // Segundo pase: Subdirectorios
     while ((entry = readdir(dir)) != NULL) {
@@ -614,7 +619,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         }
     }
 
-    rewinddir(dir);  // Resetear el directorio para el segundo pase (archivos)
+    rewinddir(dir); // Resetear el directorio para el segundo pase (archivos)
 
     // Segundo pase: Archivos
 
@@ -625,7 +630,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path,entry->d_name,show_long,show_acc,show_link);
+        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
@@ -646,8 +651,9 @@ void print_permissions(mode_t mode) {
     printf((mode & S_IXOTH) ? "x" : "-");
 }
 
-char LetraTF (mode_t m){
-    switch (m&S_IFMT) { /*and bit a bit con los bits de formato,0170000 */
+char LetraTF(mode_t m) {
+    switch (m & S_IFMT) {
+        /*and bit a bit con los bits de formato,0170000 */
         case S_IFSOCK: return 's'; /*socket */
         case S_IFLNK: return 'l'; /*symbolic link*/
         case S_IFREG: return '-'; /* fichero normal*/
@@ -659,22 +665,22 @@ char LetraTF (mode_t m){
     }
 }
 
-char * ConvierteModo (mode_t m, char *permisos){
-    strcpy(permisos,"---------- ");
+char *ConvierteModo(mode_t m, char *permisos) {
+    strcpy(permisos, "---------- ");
 
-    permisos[0]=LetraTF(m);
-    if (m&S_IRUSR) permisos[1]='r';    /*propietario*/
-    if (m&S_IWUSR) permisos[2]='w';
-    if (m&S_IXUSR) permisos[3]='x';
-    if (m&S_IRGRP) permisos[4]='r';    /*grupo*/
-    if (m&S_IWGRP) permisos[5]='w';
-    if (m&S_IXGRP) permisos[6]='x';
-    if (m&S_IROTH) permisos[7]='r';    /*resto*/
-    if (m&S_IWOTH) permisos[8]='w';
-    if (m&S_IXOTH) permisos[9]='x';
-    if (m&S_ISUID) permisos[3]='s';    /*setuid, setgid y stickybit*/
-    if (m&S_ISGID) permisos[6]='s';
-    if (m&S_ISVTX) permisos[9]='t';
+    permisos[0] = LetraTF(m);
+    if (m & S_IRUSR) permisos[1] = 'r'; /*propietario*/
+    if (m & S_IWUSR) permisos[2] = 'w';
+    if (m & S_IXUSR) permisos[3] = 'x';
+    if (m & S_IRGRP) permisos[4] = 'r'; /*grupo*/
+    if (m & S_IWGRP) permisos[5] = 'w';
+    if (m & S_IXGRP) permisos[6] = 'x';
+    if (m & S_IROTH) permisos[7] = 'r'; /*resto*/
+    if (m & S_IWOTH) permisos[8] = 'w';
+    if (m & S_IXOTH) permisos[9] = 'x';
+    if (m & S_ISUID) permisos[3] = 's'; /*setuid, setgid y stickybit*/
+    if (m & S_ISGID) permisos[6] = 's';
+    if (m & S_ISVTX) permisos[9] = 't';
 
     return permisos;
 }
@@ -693,22 +699,19 @@ void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool sh
     char perms[12];
     ConvierteModo(fileStat.st_mode, perms);
 
-    if(show_long) {
+    if (show_long) {
         printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",
-            timebuf, (long)fileStat.st_nlink, fileStat.st_ino,
-            getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, perms,
-            (long)fileStat.st_size, name);
-    }
-    else if (show_acc) {
+               timebuf, (long) fileStat.st_nlink, fileStat.st_ino,
+               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, perms,
+               (long) fileStat.st_size, name);
+    } else if (show_acc) {
         printf("%8ld  %s %s\n", fileStat.st_size, timebuf, name);
-    }
-    else if (show_link && S_ISLNK(fileStat.st_mode)) {
+    } else if (show_link && S_ISLNK(fileStat.st_mode)) {
         char link_target[1024];
         ssize_t len = readlink(path, link_target, sizeof(link_target) - 1);
         link_target[len] = '\0';
         printf("%8ld  %s -> %s\n", fileStat.st_size, name, link_target);
-    }
-    else {
+    } else {
         printf("%8ld  %s\n", fileStat.st_size, name);
     }
 }
@@ -727,7 +730,6 @@ void Aux_delrec(char *dir_name) {
     }
     // Segundo Eliminar directorio
     else if (S_ISDIR(path_stat.st_mode)) {
-
         DIR *dir = opendir(dir_name);
         if (!dir) {
             Imprimir_Error();
@@ -743,7 +745,6 @@ void Aux_delrec(char *dir_name) {
             snprintf(subpath, sizeof(subpath), "%s/%s", dir_name, entry->d_name);
 
             Aux_delrec(subpath);
-
         }
         closedir(dir);
         if (rmdir(dir_name) == 0) printf("Directorio '%s' eliminado.\n", dir_name);
