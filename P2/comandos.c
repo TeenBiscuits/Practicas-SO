@@ -388,7 +388,7 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
     }
 
     for (int i = 1; i <= NumTrozos; i++) {
-        if (trozos[i][0] == '-') continue;
+        if (trozos[i][0] == '-') continue; // Ignorar parámetros
 
         DIR *dir = opendir(trozos[i]);
         if (!dir) {
@@ -398,6 +398,8 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
 
         struct dirent *entry;
         struct stat fileStat;
+
+        printf(ANSI_COLOR_GREEN "%s:" ANSI_COLOR_RESET "\n", trozos[i]);
 
         while ((entry = readdir(dir)) != NULL) {
             if (entry->d_name[0] == '.' && !show_hid) continue;
