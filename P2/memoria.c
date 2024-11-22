@@ -241,6 +241,20 @@ ssize_t escribir_en_descriptor(int fd, const void *addr, size_t count) {
     return bytes_escritos;
 }
 
+static char static_array[2048];
+
+void recursive_function(int n, int *param_address) {
+    char automatic_array[2048];
+
+    printf("parametro:  %d(%p) array %p, arr estatico %p\n",
+           n, (void *)param_address, (void *)automatic_array, (void *)static_array);
+
+    if (n > 0) {
+        recursive_function(n - 1, &n);
+    }
+}
+
+
 ////////////////////////////////////////////COMANDOS////////////////////////////////////////////////////////////////////
 void Cmd_memfill(int NumTrozos, char *trozos[]) {
     if (NumTrozos < 4) {
@@ -396,6 +410,20 @@ void Cmd_write(int NumTrozos, char *args[]) {
     }
 }
 
+void Cmd_recurse(int NumTrozos, char *args[]) {
+    if (NumTrozos != 2) {
+        printf("Uso: recurse <n>\n");
+        return;
+    }
+
+    int n = atoi(args[1]);
+    if (n < 0) {
+        printf("Error: El número de recursiones debe ser mayor o igual a 0.\n");
+        return;
+    }
+
+    recursive_function(n, &n);
+}
 
 
 
