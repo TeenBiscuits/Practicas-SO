@@ -84,7 +84,7 @@ void Cmd_authors(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_pid(int NumTrozos, char *trozos[]) {
-    if (strcmp(trozos[1], "-?") == 0) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_pid();
         return;
     }
@@ -92,7 +92,7 @@ void Cmd_pid(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_ppid(int NumTrozos, char *trozos[]) {
-    if (strcmp(trozos[1], "-?") == 0) {
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_ppid();
         return;
     }
@@ -141,7 +141,10 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         Help_open();
         return;
     }
-    if (NumTrozos < 2) return;
+    if (NumTrozos < 2) {
+        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'open fich [df]'.\n" ANSI_COLOR_RESET);
+        return;
+    }
 
     int flags = get_open_flags(trozos[2]), desc;
     if (flags == -1) {
