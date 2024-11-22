@@ -79,4 +79,34 @@ void Help_erase();
 // Imprime por pantalla la ayuda de delrec
 void Help_delrec();
 
+// Imprime por pantalla la ayuda de allocate
+void Help_allocate();
+
+// Imprime por pantalla la ayuda de deallocate
+void Help_deallocate();
+
+// Imprime por pantalla la ayuda de memfill
+void Help_memfill();
+
+// Imprime por pantalla la ayuda de memdump
+void Help_memdump();
+
+// Imprime por pantalla la ayuda de memory
+void Help_memory();
+
+// Imprime por pantalla la ayuda de readfile
+void Help_readfile();
+
+// Imprime por pantalla la ayuda de writefile
+void Help_writefile();
+
+// Imprime por pantalla la ayuda de read
+void Help_read();
+
+// Imprime por pantalla la ayuda de write
+void Help_write();
+
+// Imprime por pantalla la ayuda de recurse
+void Help_recurse();
+
 #endif //HELP_H

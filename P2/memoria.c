@@ -201,6 +201,45 @@ void cerrar_archivo(FILE *file) {
     }
 }
 
+size_t escribir_bytes(FILE *file, const void *addr, size_t count) {
+    if (file == NULL || addr == NULL) {
+        fprintf(stderr, "Error: Archivo o dirección de memoria no válidos.\n");
+        return 0;
+    }
+    size_t bytes_escritos = fwrite(addr, 1, count, file);
+    if (bytes_escritos < count) {
+        perror("Error al escribir en el archivo");
+    }
+    return bytes_escritos;
+}
+
+ssize_t leer_desde_descriptor(int fd, void *addr, size_t count) {
+    if (fd < 0 || addr == NULL) {
+        fprintf(stderr, "Error: Descriptor de archivo o dirección de memoria no válidos.\n");
+        return -1;
+    }
+
+    ssize_t bytes_leidos = read(fd, addr, count);
+    if (bytes_leidos < 0) {
+        perror("Error al leer desde el descriptor de archivo");
+    }
+
+    return bytes_leidos;
+}
+
+ssize_t escribir_en_descriptor(int fd, const void *addr, size_t count) {
+    if (fd < 0 || addr == NULL) {
+        fprintf(stderr, "Error: Descriptor de archivo o dirección de memoria no válidos.\n");
+        return -1;
+    }
+
+    ssize_t bytes_escritos = write(fd, addr, count);
+    if (bytes_escritos < 0) {
+        perror("Error al escribir en el descriptor de archivo");
+    }
+
+    return bytes_escritos;
+}
 
 ////////////////////////////////////////////COMANDOS////////////////////////////////////////////////////////////////////
 void Cmd_memfill(int NumTrozos, char *trozos[]) {
@@ -286,14 +325,76 @@ void Cmd_readfile(int NumTrozos, char *args[]) {
     if (file == NULL) {
         return;
     }
-    size_t bytes_leidos = leer_bytes(file, addr, tamano);
+    const size_t bytes_leidos = leer_bytes(file, addr, tamano);
     if (bytes_leidos > 0) {
         printf("Bytes leídos: %zu\n", bytes_leidos);
     }
     cerrar_archivo(file);
 }
 
+void Cmd_writefile(int NumTrozos, char *args[]) {
+    if (NumTrozos != 4) {
+        printf("Parametros incorrectos\n");
+        return;
+    }
+    const char *filename = args[1];
+    const char *direccion_str = args[2];
+    const size_t count = (size_t)strtoull(args[3], NULL, 10);
 
+    const void *addr = convertir_direccion(direccion_str);
+    if (addr == NULL) {
+        printf("Error: dirección de memoria inválida.\n");
+        return;
+    }
+
+    FILE *file = abrirArchivo(filename);
+    if (file == NULL) {
+        return;
+    }
+    const size_t bytes_escritos = escribir_bytes(file, addr, count);
+    if (bytes_escritos > 0) {
+        printf("Bytes escritos: %zu\n", bytes_escritos);
+    }
+    fclose(file);
+}
+
+void Cmd_read(int NumTrozos, char *args[]) {
+    if (NumTrozos != 4) {
+        printf("Parametros incorrectos\n");
+        return;
+    }
+    int fd = atoi(args[1]);
+    const char *direccion_str = args[2];
+    size_t count = (size_t)strtoull(args[3], NULL, 10);
+
+    void *direccion = convertir_direccion(direccion_str);
+    if (direccion == NULL) {
+        return;
+    }
+    ssize_t bytes_leidos = leer_desde_descriptor(fd, direccion, count);
+    if (bytes_leidos >= 0) {
+        printf("Bytes leídos: %zd\n", bytes_leidos);
+    }
+}
+
+void Cmd_write(int NumTrozos, char *args[]) {
+    if (NumTrozos != 4) {
+        printf("Uso: write <descriptor> <direccion> <bytes>\n");
+        return;
+    }
+    int fd = atoi(args[1]);
+    const char *direccion_str = args[2];
+    size_t count = (size_t)strtoull(args[3], NULL, 10);
+    void *direccion = convertir_direccion(direccion_str);
+    if (direccion == NULL) {
+        return;
+    }
+
+    ssize_t bytes_escritos = escribir_en_descriptor(fd, direccion, count);
+    if (bytes_escritos >= 0) {
+        printf("Bytes escritos: %zd\n", bytes_escritos);
+    }
+}
 
 
 

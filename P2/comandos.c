@@ -39,6 +39,16 @@ struct CMDHELP CH[] = {
     {"revlist", Help_revlist},
     {"erase", Help_erase},
     {"delrec", Help_delrec},
+    {"allocate", Help_allocate},
+    {"deallocate", Help_deallocate},
+    {"memfill", Help_memfill},
+    {"memdump", Help_memdump},
+    {"memory", Help_memory},
+    {"readfile", Help_readfile},
+    {"writefile", Help_writefile},
+    {"read", Help_read},
+    {"write", Help_write},
+    {"recurse", Help_recurse}
 };
 
 // Variable global del historial
