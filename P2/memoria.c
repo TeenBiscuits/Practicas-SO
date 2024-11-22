@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <unistd.h>
+// Pablo Portas López           pablo.portas
+// Pablo Míguez Mouiño          pablo.miguez.moino
+
+#include "memoria.h"
+#include "help.h"
 
 // Variables globales inicializadas
 int global1 = 1, global2 = 2, global3 = 3;

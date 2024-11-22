@@ -1,6 +1,5 @@
-//
-// Created by paablomiiguez on 21/11/24.
-//
+// Pablo Portas López           pablo.portas
+// Pablo Míguez Mouiño          pablo.miguez.moino
 
 #ifndef MEMORIA_H
 #define MEMORIA_H
@@ -9,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <unistd.h>
 
 
 void funcion1();
