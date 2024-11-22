@@ -113,17 +113,17 @@ void Help_delrec() {
 void Help_allocate() {
     printf("allocate [-malloc|-shared|-createshared|-mmap]... Asigna un bloque de memoria\n"
     "-malloc tam: asigna un bloque malloc de tamano tam\n"
-    "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n
-    "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n
+    "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
+    "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
     "-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
 }
 
 void Help_deallocate() {
-    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	Desasigna un bloque de memoria\n
-    "-malloc tam: desasigna el bloque malloc de tamano tam\n
-    "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n
-    "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n
-    "-mmap fich: desmapea el fichero mapeado fich\n
+    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	Desasigna un bloque de memoria\n"
+    "-malloc tam: desasigna el bloque malloc de tamano tam\n"
+    "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
+    "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
+    "-mmap fich: desmapea el fichero mapeado fich\n"
     "addr: desasigna el bloque de memoria en la direccion addr\n");
 }
 
@@ -136,11 +136,11 @@ void Help_memdump(){
 }
 
 void Help_memory() {
-    printf("memory [-blocks|-funcs|-vars|-all|-pmap] ..	Muestra muestra detalles de la memoria del proceso\n
-        "-blocks: los bloques de memoria asignados\n
-        "-funcs: las direcciones de las funciones\n
-        "-vars: las direcciones de las variables\n
-        ":-all: todo\n
+    printf("memory [-blocks|-funcs|-vars|-all|-pmap] ..	Muestra muestra detalles de la memoria del proceso\n"
+        "-blocks: los bloques de memoria asignados\n"
+        "-funcs: las direcciones de las funciones\n"
+        "-vars: las direcciones de las variables\n"
+        ":-all: todo\n"
         "-pmap: muestra la salida del comando pmap(o similar)\n");
 }
 
