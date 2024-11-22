@@ -53,7 +53,8 @@ void Help_help() {
 void Help_default() {
     printf("help [cmd|-lt|-T|-all]\tMuestra ayuda sobre los comandos\n");
     printf("Comandos disponibles:\n");
-    printf("authors, pid, ppid, cd, date, historic, open, close, dup, infosys, help, quit, exit, bye, makefile, listfile, cwd, listdir, reclist, revlist, erase, delrec.\n");
+    printf(
+        "authors, pid, ppid, cd, date, historic, open, close, dup, infosys, help, quit, exit, bye, makefile, listfile, cwd, listdir, reclist, revlist, erase, delrec.\n");
 }
 
 void Help_historic() {
@@ -112,26 +113,26 @@ void Help_delrec() {
 
 void Help_allocate() {
     printf("allocate [-malloc|-shared|-createshared|-mmap]... Asigna un bloque de memoria\n"
-    "-malloc tam: asigna un bloque malloc de tamano tam\n"
-    "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
-    "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
-    "-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
+        "-malloc tam: asigna un bloque malloc de tamano tam\n"
+        "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
+        "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
+        "-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
 }
 
 void Help_deallocate() {
     printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	Desasigna un bloque de memoria\n"
-    "-malloc tam: desasigna el bloque malloc de tamano tam\n"
-    "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
-    "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
-    "-mmap fich: desmapea el fichero mapeado fich\n"
-    "addr: desasigna el bloque de memoria en la direccion addr\n");
+        "-malloc tam: desasigna el bloque malloc de tamano tam\n"
+        "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
+        "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
+        "-mmap fich: desmapea el fichero mapeado fich\n"
+        "addr: desasigna el bloque de memoria en la direccion addr\n");
 }
 
 void Help_memfill() {
     printf("memfill addr cont byte 	Llena la memoria a partir de addr con byte\n");
 }
 
-void Help_memdump(){
+void Help_memdump() {
     printf("memdump addr cont 	Vuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
 }
 
