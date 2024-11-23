@@ -28,6 +28,26 @@ typedef struct tList {
     tPosL start;
 } tList;
 
+// Añade un input al final del histórico
+void HList_add(char comando[MAXITEM]);
+
+// Muestra todas las entradas del historial en orden ascendente
+void HList_show_all();
+
+// Muestra la entrada n
+void HList_show_n(int n);
+
+// Muestra las últimas n entradas en orden descendente
+void HList_show_last_n(int n);
+
+// Devuelve el total de elementos en el historial
+int HList_total();
+
+// Borra el historial completo
+void HList_delete_all(void);
+
+// AUXILIARES / INTERNAS
+
 // Dado la dirección de memoria de una variable tList, inicializar una lista vacía
 void HList_aux_createEmptyList(tList *lista);
 

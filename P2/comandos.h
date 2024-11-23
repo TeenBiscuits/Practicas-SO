@@ -93,12 +93,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES
 
-// Añade un input al histórico
-void add_to_historic();
-
-// Borra el historial completo
-void delete_historic(tList *historial);
-
 int get_open_flags(const char *mode);
 
 void list_open_files();

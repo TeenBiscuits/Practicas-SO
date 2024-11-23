@@ -10,6 +10,7 @@
 
 #include "color.h"
 #include "comandos.h"
+#include "hislist.h"
 #include "help.h"
 #include "memoria.h"
 
@@ -103,7 +104,7 @@ struct CMD C[] = {
 void procesarEntrada(char comando[MAXITEM]) {
     if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
 
-    add_to_historic(comando);
+    HList_add(comando);
 
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);

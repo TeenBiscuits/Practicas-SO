@@ -31,9 +31,6 @@
 OpenFile open_files[MAX_FILES];
 int open_file_count = 0; //Esto es el contador de archivos abiertos
 
-// Variable global del historial
-tList historial = {-1,NULL};
-
 // COMANDOS
 
 // P0
@@ -228,11 +225,7 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
 
 void Cmd_historic(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        tPosL posaux = HList_aux_first(historial);
-        for (int i = 1; posaux != LNULL; i++) {
-            printf("%d. %s\n", i, posaux->comando);
-            posaux = HList_aux_next(posaux, historial);
-        }
+        HList_show_all();
         return;
     }
 
@@ -243,20 +236,10 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
 
     int ncomando = atoi(trozos[1]);
     if (ncomando <= -1) {
-        tPosL posaux = HList_aux_last(historial);
-        for (int i = historial.contador; i > historial.contador + ncomando && posaux != LNULL; i--) {
-            printf("%d. %s\n", i + 1, posaux->comando);
-            posaux = HList_aux_previous(posaux, historial);
-        }
+        HList_show_last_n(ncomando);
     }
-    if (ncomando >= 1 && ncomando <= historial.contador + 1) {
-        tPosL posaux = HList_aux_first(historial);
-        for (int i = ncomando; i > 0; i--) {
-            if (i == 1) {
-                printf("%d. %s\n", ncomando, posaux->comando);
-            }
-            posaux = HList_aux_next(posaux, historial);
-        }
+    else if (ncomando >= 1 && ncomando <= HList_total()) {
+        HList_show_n(ncomando);
     }
 }
 
@@ -266,7 +249,7 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
         return;
     }
     printf("Saliendo del shell...\n");
-    delete_historic(&historial);
+    HList_delete_all();
     exit(0);
 }
 
@@ -473,17 +456,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 }
 
 // FUNCIONES AUXILIARES
-
-void add_to_historic(char comando[MAXITEM]) {
-    HList_aux_insertItem(comando,LNULL, &historial);
-}
-
-void delete_historic(tList *historial) {
-    if (historial->start == NULL) return;
-    while (!HList_aux_isEmptyList(*historial)) {
-        HList_aux_deleteAtPosition(HList_aux_first(*historial), historial);
-    }
-}
 
 int get_open_flags(const char *mode) {
     if (strcmp(mode, "cr\0") == 0)

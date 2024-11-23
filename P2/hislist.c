@@ -4,8 +4,55 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "hislist.h"
+
+// Variable global del historial
+tList historial = {-1,NULL};
+
+void HList_add(char comando[MAXITEM]) {
+    HList_aux_insertItem(comando,LNULL, &historial);
+}
+
+void HList_show_all() {
+    tPosL posaux = HList_aux_first(historial);
+    for (int i = 1; posaux != LNULL; i++) {
+        printf("%d. %s\n", i, posaux->comando);
+        posaux = HList_aux_next(posaux, historial);
+    }
+}
+
+void HList_show_n(int n) {
+    tPosL posaux = HList_aux_first(historial);
+    for (int i = n; i > 0; i--) {
+        if (i == 1) {
+            printf("%d. %s\n", n, posaux->comando);
+        }
+        posaux = HList_aux_next(posaux, historial);
+    }
+}
+
+void HList_show_last_n(int n) {
+    tPosL posaux = HList_aux_last(historial);
+    for (int i = historial.contador; i > historial.contador + n && posaux != LNULL; i--) {
+        printf("%d. %s\n", i + 1, posaux->comando);
+        posaux = HList_aux_previous(posaux, historial);
+    }
+}
+
+int HList_total() {
+    return historial.contador + 1;
+}
+
+void HList_delete_all(void) {
+    if (historial.start == NULL) return;
+    while (!HList_aux_isEmptyList(historial)) {
+        HList_aux_deleteAtPosition(HList_aux_first(historial), &historial);
+    }
+}
+
+// AUXILIARES / INTERNAS
 
 void HList_aux_createEmptyList(tList *lista) {
     lista->contador = -1;
