@@ -102,21 +102,27 @@ void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES
 
-int get_open_flags(const char *mode);
+// Devuelve el valor numérico de las diferentes "flags" de apertura
+int Aux_open_get_flag(const char *mode);
 
-void list_open_files();
+// Imprime por pantalla los archivos abiertos y sus descriptores
+// De no haberlos imprime un aviso
+void Aux_open_lofiles();
 
 void Aux_reclist(char *dir_name, bool show_hidden, bool show_long, bool show_acc, bool show_link);
 
 void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir);
 
-void print_permissions(mode_t mode);
+// Devuelve la letra del tipo de archivo
+char Aux_comando_LetraTF(mode_t m);
 
-char LetraTF(mode_t m);
+// Dado un mode_t devuelve un string con formato
+// Ej: -rwxrwxrwx
+char *Aux_comando_mode_to_string(mode_t m, char *permisos);
 
-char *ConvierteModo(mode_t m, char *permisos);
-
-void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
+// Imprime la información de un archivo dados su nombre y ruta.
+// Dependiendo de los valores booleanos long, acc y link
+void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
 
 void Aux_delrec(char *dir_name);
 

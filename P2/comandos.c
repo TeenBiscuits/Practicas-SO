@@ -60,19 +60,13 @@ void Cmd_authors(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_pid(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_pid();
-        return;
-    }
-    printf("El identificador del proceso es %d\n", getpid());
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_pid();
+    else printf("El identificador del proceso es %d\n", getpid());
 }
 
 void Cmd_ppid(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_ppid();
-        return;
-    }
-    printf("El identificador del proceso padre es %d\n", getppid());
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_ppid();
+    else printf("El identificador del proceso padre es %d\n", getppid());
 }
 
 void Cmd_cd(int NumTrozos, char *trozos[]) {
@@ -110,7 +104,7 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
 
 void Cmd_open(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        list_open_files();
+        Aux_open_lofiles();
         return;
     }
     if (strcmp(trozos[1], "-?") == 0) {
@@ -122,7 +116,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         return;
     }
 
-    int flags = get_open_flags(trozos[2]), desc;
+    int flags = Aux_open_get_flag(trozos[2]), desc;
     if (flags == -1) {
         printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET);
         return;
@@ -248,7 +242,7 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
         Help_exit();
         return;
     }
-    printf("Saliendo del shell...\n");
+    printf(ANSI_COLOR_YELLOW "Saliendo del shell...\n" ANSI_COLOR_RESET);
     HList_delete_all();
     exit(0);
 }
@@ -267,7 +261,7 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
     if (fd == -1) {
         Imprimir_Error();
     } else {
-        printf("Archivo '%s' creado exitosamente.\n", trozos[1]);
+        printf(ANSI_COLOR_GREEN "Archivo '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
         close(fd);
     }
 }
@@ -283,7 +277,7 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     if (mkdir(trozos[1], 0755) == -1) {
         Imprimir_Error();
     } else {
-        printf("Directorio '%s' creado exitosamente.\n", trozos[1]);
+        printf(ANSI_COLOR_GREEN "Directorio '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
     }
 }
 
@@ -305,7 +299,7 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
-        Aux_fileinfo(trozos[i], trozos[i], show_long, show_acc, show_link);
+        Aux_comando_pfinfo(trozos[i], trozos[i], show_long, show_acc, show_link);
     }
 }
 
@@ -359,7 +353,7 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
             snprintf(path, sizeof(path), "%s/%s", trozos[i], entry->d_name);
             if (stat(path, &fileStat) == -1) continue;
 
-            Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+            Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
         }
         closedir(dir);
     }
@@ -457,7 +451,7 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 
 // FUNCIONES AUXILIARES
 
-int get_open_flags(const char *mode) {
+int Aux_open_get_flag(const char *mode) {
     if (strcmp(mode, "cr\0") == 0)
         return O_CREAT | O_WRONLY;
     if (strcmp(mode, "ap\0") == 0)
@@ -476,9 +470,9 @@ int get_open_flags(const char *mode) {
     return -1;
 }
 
-void list_open_files() {
+void Aux_open_lofiles() {
     if (open_file_count == 0) {
-        printf("No hay archivos abiertos.\n");
+        printf(ANSI_COLOR_RED "No hay archivos abiertos.\n" ANSI_COLOR_RESET);
         return;
     }
 
@@ -488,11 +482,6 @@ void list_open_files() {
         printf("%d\t\t%s\t%s\n", open_files[i].desc, open_files[i].filename, open_files[i].mode);
     }
 }
-
-bool is_hidden(const char *name) {
-    return name[0] == '.';
-}
-
 
 void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid) {
     DIR *dir = opendir(dir_name);
@@ -511,7 +500,7 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+        Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
@@ -530,7 +519,6 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
     }
     closedir(dir);
 }
-
 
 void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir) {
     DIR *dir = opendir(dir_name);
@@ -565,7 +553,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+        Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
@@ -573,20 +561,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
     closedir(dir);
 }
 
-void print_permissions(mode_t mode) {
-    printf((S_ISDIR(mode)) ? "d" : "-");
-    printf((mode & S_IRUSR) ? "r" : "-");
-    printf((mode & S_IWUSR) ? "w" : "-");
-    printf((mode & S_IXUSR) ? "x" : "-");
-    printf((mode & S_IRGRP) ? "r" : "-");
-    printf((mode & S_IWGRP) ? "w" : "-");
-    printf((mode & S_IXGRP) ? "x" : "-");
-    printf((mode & S_IROTH) ? "r" : "-");
-    printf((mode & S_IWOTH) ? "w" : "-");
-    printf((mode & S_IXOTH) ? "x" : "-");
-}
-
-char LetraTF(mode_t m) {
+char Aux_comando_LetraTF(mode_t m) {
     switch (m & S_IFMT) {
         /*and bit a bit con los bits de formato,0170000 */
         case S_IFSOCK: return 's'; /*socket */
@@ -600,10 +575,10 @@ char LetraTF(mode_t m) {
     }
 }
 
-char *ConvierteModo(mode_t m, char *permisos) {
+char *Aux_comando_mode_to_string(mode_t m, char *permisos) {
     strcpy(permisos, "---------- ");
 
-    permisos[0] = LetraTF(m);
+    permisos[0] = Aux_comando_LetraTF(m);
     if (m & S_IRUSR) permisos[1] = 'r'; /*propietario*/
     if (m & S_IWUSR) permisos[2] = 'w';
     if (m & S_IXUSR) permisos[3] = 'x';
@@ -620,7 +595,7 @@ char *ConvierteModo(mode_t m, char *permisos) {
     return permisos;
 }
 
-void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
+void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
     struct stat fileStat;
     if (lstat(path, &fileStat) == -1) {
         Imprimir_Error();
@@ -632,7 +607,7 @@ void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool sh
     strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
 
     char perms[12];
-    ConvierteModo(fileStat.st_mode, perms);
+    Aux_comando_mode_to_string(fileStat.st_mode, perms);
 
     if (show_long) {
         printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",
