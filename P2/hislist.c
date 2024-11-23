@@ -9,14 +9,14 @@
 #include "hislist.h"
 
 // Variable global del historial
-tList historial = {-1,NULL};
+tHisList historial = {-1,NULL};
 
 void HList_add(char comando[MAXITEM]) {
     HList_aux_insertItem(comando,LNULL, &historial);
 }
 
 void HList_show_all() {
-    tPosL posaux = HList_aux_first(historial);
+    tPosHisL posaux = HList_aux_first(historial);
     for (int i = 1; posaux != LNULL; i++) {
         printf("%d. %s\n", i, posaux->comando);
         posaux = HList_aux_next(posaux, historial);
@@ -24,7 +24,7 @@ void HList_show_all() {
 }
 
 void HList_show_n(int n) {
-    tPosL posaux = HList_aux_first(historial);
+    tPosHisL posaux = HList_aux_first(historial);
     for (int i = n; i > 0; i--) {
         if (i == 1) {
             printf("%d. %s\n", n, posaux->comando);
@@ -34,7 +34,7 @@ void HList_show_n(int n) {
 }
 
 void HList_show_last_n(int n) {
-    tPosL posaux = HList_aux_last(historial);
+    tPosHisL posaux = HList_aux_last(historial);
     for (int i = historial.contador; i > historial.contador + n && posaux != LNULL; i--) {
         printf("%d. %s\n", i + 1, posaux->comando);
         posaux = HList_aux_previous(posaux, historial);
@@ -54,41 +54,41 @@ void HList_delete_all(void) {
 
 // AUXILIARES / INTERNAS
 
-void HList_aux_createEmptyList(tList *lista) {
+void HList_aux_createEmptyList(tHisList *lista) {
     lista->contador = -1;
     lista->start = LNULL;
 }
 
-bool HList_aux_isEmptyList(tList lista) {
+bool HList_aux_isEmptyList(tHisList lista) {
     if (lista.contador == -1) return true;
     return false;
 }
 
-tPosL HList_aux_first(tList lista) {
+tPosHisL HList_aux_first(tHisList lista) {
     return lista.start;
 }
 
-tPosL HList_aux_last(tList lista) {
-    tPosL puntero;
+tPosHisL HList_aux_last(tHisList lista) {
+    tPosHisL puntero;
     for (puntero = lista.start; puntero->siguiente != LNULL; puntero = puntero->siguiente);
     return puntero;
 }
 
-tPosL HList_aux_next(tPosL posicion, tList lista) {
+tPosHisL HList_aux_next(tPosHisL posicion, tHisList lista) {
     return posicion->siguiente;
 }
 
-tPosL HList_aux_previous(tPosL posicion, tList lista) {
+tPosHisL HList_aux_previous(tPosHisL posicion, tHisList lista) {
     if (posicion == lista.start) return LNULL;
-    tPosL aux;
+    tPosHisL aux;
     for (aux = lista.start; aux->siguiente != posicion; aux = aux->siguiente);
     return aux;
 }
 
-bool HList_aux_insertItem(tItemL item, tPosL posicion, tList *lista) {
+bool HList_aux_insertItem(tItemL item, tPosHisL posicion, tHisList *lista) {
     if (!HList_aux_isEmptyList(*lista) && lista->contador == MAXSIZE) return false;
 
-    tPosL aux1 = malloc(sizeof(struct tNode));
+    tPosHisL aux1 = malloc(sizeof(struct tNodeHis));
 
     if (aux1 == NULL) return false;
 
@@ -97,13 +97,13 @@ bool HList_aux_insertItem(tItemL item, tPosL posicion, tList *lista) {
     if (lista->start == LNULL)
         lista->start = aux1;
     else if (posicion == LNULL) {
-        tPosL aux2 = HList_aux_last(*lista);
+        tPosHisL aux2 = HList_aux_last(*lista);
         aux2->siguiente = aux1;
     } else if (posicion == HList_aux_first(*lista)) {
         aux1->siguiente = posicion;
         lista->start = aux1;
     } else {
-        tPosL aux2 = HList_aux_previous(posicion, *lista);
+        tPosHisL aux2 = HList_aux_previous(posicion, *lista);
         aux2->siguiente = aux1;
         aux1->siguiente = posicion;
     }
@@ -111,8 +111,8 @@ bool HList_aux_insertItem(tItemL item, tPosL posicion, tList *lista) {
     return true;
 }
 
-void HList_aux_deleteAtPosition(tPosL posicion, tList *lista) {
-    tPosL aux, anterior;
+void HList_aux_deleteAtPosition(tPosHisL posicion, tHisList *lista) {
+    tPosHisL aux, anterior;
 
     if (HList_aux_next(posicion, *lista) == LNULL) {
         if (posicion == lista->start) {
