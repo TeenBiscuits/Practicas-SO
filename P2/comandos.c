@@ -31,44 +31,6 @@
 OpenFile open_files[MAX_FILES];
 int open_file_count = 0; //Esto es el contador de archivos abiertos
 
-// Struct Comandos Help o Carolina Herrera (ChatGPT nunca pondría esto)
-struct CMDHELP CH[] = {
-    {"-?", Help_help},
-    {"authors", Help_authors},
-    {"pid", Help_pid},
-    {"ppid", Help_ppid},
-    {"cd", Help_cd},
-    {"date", Help_date},
-    {"historic", Help_historic},
-    {"open", Help_open},
-    {"close", Help_close},
-    {"dup", Help_dup},
-    {"infosys", Help_infosys},
-    {"help", Help_help},
-    {"quit", Help_exit},
-    {"exit", Help_exit},
-    {"bye", Help_exit},
-    {"makefile", Help_makefile},
-    {"makedir", Help_makedir},
-    {"listfile", Help_listfile},
-    {"cwd", Help_cwd},
-    {"listdir", Help_listdir},
-    {"reclist", Help_reclist},
-    {"revlist", Help_revlist},
-    {"erase", Help_erase},
-    {"delrec", Help_delrec},
-    {"allocate", Help_allocate},
-    {"deallocate", Help_deallocate},
-    {"memfill", Help_memfill},
-    {"memdump", Help_memdump},
-    {"memory", Help_memory},
-    {"readfile", Help_readfile},
-    {"writefile", Help_writefile},
-    {"read", Help_read},
-    {"write", Help_write},
-    {"recurse", Help_recurse}
-};
-
 // Variable global del historial
 tList historial = {-1,NULL};
 
@@ -262,21 +224,6 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
     // Imprimimos siguiendo el formato del shell de referencia
     printf("%s (%s), OS: %s-%s-%s\n", sys_info.nodename, sys_info.machine, sys_info.sysname, sys_info.release,
            sys_info.version);
-}
-
-void Cmd_help(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0) {
-        Help_default();
-    }
-    if (NumTrozos >= 1) {
-        for (int i = 0; i < sizeof(CH) / sizeof(CH[0]); i++) {
-            if (strcmp(trozos[1], CH[i].comando) == 0) {
-                CH[i].funcion();
-                return;
-            }
-        }
-        printf(ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
-    }
 }
 
 void Cmd_historic(int NumTrozos, char *trozos[]) {

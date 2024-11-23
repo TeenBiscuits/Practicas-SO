@@ -10,6 +10,7 @@
 
 #include "color.h"
 #include "comandos.h"
+#include "help.h"
 #include "memoria.h"
 
 #define MAX_ARG 1000

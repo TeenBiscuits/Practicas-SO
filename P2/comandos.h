@@ -63,10 +63,6 @@ void Cmd_dup(int NumTrozos, char *trozos[]);
 // Imprime por pantalla la información del equipo
 void Cmd_infosys(int NumTrozos, char *trozos[]);
 
-// Imprime una lista de los comandos disponibles o la ayuda
-// de un comando dado
-void Cmd_help(int NumTrozos, char *trozos[]);
-
 // Imprime por pantalla el historial de todos los inputs del usuario
 // Acepta dos parámetros: [N|-N] Imprimir el comando N o imprimir los
 // últimos N comandos
