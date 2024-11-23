@@ -20,6 +20,7 @@
 #include "comandos.h"
 #include "help.h"
 #include "hislist.h"
+#include "memlist.h"
 #include "color.h"
 #include "auxiliar.h"
 
@@ -244,6 +245,7 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
     }
     printf(ANSI_COLOR_YELLOW "Saliendo del shell...\n" ANSI_COLOR_RESET);
     HList_delete_all();
+    MList_delete_all();
     exit(0);
 }
 
