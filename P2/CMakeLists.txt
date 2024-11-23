@@ -14,4 +14,6 @@ add_executable(P2 main.c
         memoria.c
         memoria.h
         auxiliar.c
-        auxiliar.h)
+        auxiliar.h
+        memlist.c
+        memlist.h)
