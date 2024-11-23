@@ -16,6 +16,10 @@ run: p2.o
 test: debug
 	valgrind --leak-check=full --show-reachable=yes ./p2.o < tests.txt
 # Con "make flechas" para compilar y ejecutar con rlwrap
+# Existe un bug en rlwrap que elimna el promt luego de escribir algo se soluciona así:
+# $ sudo nano /etc/inputrc
+# |		# for rlwrap
+# |		set enable-bracketed-paste off
 flechas: p2.o
 	rlwrap ./p2.o
 
