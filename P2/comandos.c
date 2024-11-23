@@ -2,9 +2,9 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "comandos.h"
-#include "memoria.h"
 #include "help.h"
 #include "list.h"
+#include "color.h"
 
 // COMANDOS BÁSICOS P0 + P1 + P2
 

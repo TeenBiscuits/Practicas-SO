@@ -20,7 +20,6 @@
 #include <pwd.h>
 #include <grp.h>
 
-#include "color.h"
 #include "list.h"
 
 // COMANDOS BÁSICOS P0 + P1
