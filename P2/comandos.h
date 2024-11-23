@@ -7,8 +7,6 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-#include "hislist.h"
-
 // COMANDOS BÁSICOS P0 + P1
 
 #define MAX_FILES 100   // Máximos archivos posibles de abrir
@@ -73,22 +71,33 @@ void Cmd_exit();
 
 // P1
 
+// Crea un archivo
 void Cmd_makefile(int NumTrozos, char *trozos[]);
 
+// Crea un directorio
 void Cmd_makedir(int NumTrozos, char *trozos[]);
 
+// Da la información de un archivo o un directorio
 void Cmd_listfile(int NumTrozos, char *trozos[]);
 
+// Imprime el directorio de trabajo actual
 void Cmd_cwd(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de una carpeta
 void Cmd_listdir(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de un directorio de forma recursiva
+// (subdirectorios después)
 void Cmd_reclist(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de un directorio de forma recursiva
+// (subdirectorios antes)
 void Cmd_revlist(int NumTrozos, char *trozos[]);
 
+// Elimina archivos o directorios vacios
 void Cmd_erase(int NumTrozos, char *trozos[]);
 
+// Elimina archivos y/o directorios no vacíos recursivamente
 void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES

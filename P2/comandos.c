@@ -23,7 +23,7 @@
 #include "color.h"
 #include "auxiliar.h"
 
-// COMANDOS BÁSICOS P0 + P1 + P2
+// COMANDOS BÁSICOS P0 + P1
 
 // VARIABLES GLOBALES AUXILIARES
 
