@@ -19,7 +19,7 @@
 
 #include "comandos.h"
 #include "help.h"
-#include "list.h"
+#include "hislist.h"
 #include "color.h"
 #include "auxiliar.h"
 

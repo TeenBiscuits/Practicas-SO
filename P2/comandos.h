@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-#include "list.h"
+#include "hislist.h"
 
 // COMANDOS BÁSICOS P0 + P1
 

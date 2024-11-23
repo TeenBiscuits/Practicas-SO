@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.h"
+#include "hislist.h"
 
 void createEmptyList(tList *lista) {
     lista->contador = -1;

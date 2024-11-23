@@ -32,19 +32,19 @@ clean:
 	rm -f *.o
 
 # Compilación con símbolos de debug y optimización
-debug: main.c list.c help.c comandos.c
-	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
+debug: main.c hishislist.c help.c comandos.c
+	$(CC) $(CFLAGS) -g -O0 -c -o hislist.o hislist.c
 	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
 	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
 	$(CC) $(CFLAGS) -g -O0 -c -o memoria.o memoria.c
-	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o memoria.o color.h
+	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c hislist.o help.o comandos.o memoria.o color.h
 
 # Compilación normal
 help.o: help.c
 	$(CC) $(CFLAGS) -c -o help.o help.c
 
-list.o: list.c
-	$(CC) $(CFLAGS) -c -o list.o list.c
+hislist.o: hislist.c
+	$(CC) $(CFLAGS) -c -o hislist.o hislist.c
 
 auxiliar.o: auxiliar.c
 	$(CC) $(CFLAGS) -c -o auxiliar.o auxiliar.c
@@ -55,8 +55,8 @@ comandos.o: comandos.c
 memoria.o: memoria.c
 	$(CC) $(CFLAGS) -c -o memoria.o memoria.c
 
-p2.o: main.c help.o list.o auxiliar.o comandos.o memoria.o
-	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o auxiliar.o comandos.o memoria.o color.h
+p2.o: main.c help.o hislist.o auxiliar.o comandos.o memoria.o
+	$(CC) $(CFLAGS) -o p2.o main.c help.o hislist.o auxiliar.o comandos.o memoria.o color.h
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all run flechas leaks debug clean
