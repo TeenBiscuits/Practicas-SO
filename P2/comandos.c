@@ -21,6 +21,7 @@
 #include "help.h"
 #include "list.h"
 #include "color.h"
+#include "auxiliar.h"
 
 // COMANDOS BÁSICOS P0 + P1 + P2
 
@@ -525,10 +526,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 }
 
 // FUNCIONES AUXILIARES
-
-void Imprimir_Error() {
-    printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
-}
 
 void add_to_historic(char comando[MAXITEM]) {
     insertItem(comando,LNULL, &historial);

@@ -46,14 +46,17 @@ help.o: help.c
 list.o: list.c
 	$(CC) $(CFLAGS) -c -o list.o list.c
 
+auxiliar.o: auxiliar.c
+	$(CC) $(CFLAGS) -c -o auxiliar.o auxiliar.c
+
 comandos.o: comandos.c
 	$(CC) $(CFLAGS) -c -o comandos.o comandos.c
 
 memoria.o: memoria.c
 	$(CC) $(CFLAGS) -c -o memoria.o memoria.c
 
-p2.o: main.c help.o list.o comandos.o memoria.o
-	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o comandos.o memoria.o color.h
+p2.o: main.c help.o list.o auxiliar.o comandos.o memoria.o
+	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o auxiliar.o comandos.o memoria.o color.h
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all run flechas leaks debug clean

@@ -97,10 +97,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES
 
-// Imprime por pantalla el "Error [N de Error]: [Descripción del error]"
-// en rojo porque mola el color rojo
-void Imprimir_Error();
-
 // Añade un input al histórico
 void add_to_historic();
 
