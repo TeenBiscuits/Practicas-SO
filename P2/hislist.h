@@ -29,28 +29,28 @@ typedef struct tList {
 } tList;
 
 // Dado la dirección de memoria de una variable tList, inicializar una lista vacía
-void createEmptyList(tList *lista);
+void HList_aux_createEmptyList(tList *lista);
 
 // Comprueba si una lista (tList) está vacía
-bool isEmptyList(tList lista);
+bool HList_aux_isEmptyList(tList lista);
 
 // Devuelve la posición del primer elemento de la lista
-tPosL first(tList lista);
+tPosL HList_aux_first(tList lista);
 
 // Devuelve la posición del último elemento de la lista
-tPosL last(tList lista);
+tPosL HList_aux_last(tList lista);
 
 // Devuelve la posición del elemento siguiente a la posición dada
-tPosL next(tPosL posicion, tList lista);
+tPosL HList_aux_next(tPosL posicion, tList lista);
 
 // Devuelve la posición del elemento anterior a la posición dada
-tPosL previous(tPosL posicion, tList lista);
+tPosL HList_aux_previous(tPosL posicion, tList lista);
 
 // Inserta un item en la posición indicada, de no indicarse ninguna (LNULL) se añade al final de la lista.
 // Devuelve true/false dependiendo de si se ha podido o no insertar a la lista. El tamaño máximo es 1000.
-bool insertItem(tItemL item, tPosL posicion, tList *lista);
+bool HList_aux_insertItem(tItemL item, tPosL posicion, tList *lista);
 
 // Elimina el elemento de la posición indicada. No se devuelve si la eliminación fue ejecutada.
-void deleteAtPosition(tPosL posicion, tList *lista);
+void HList_aux_deleteAtPosition(tPosL posicion, tList *lista);
 
 #endif //LIST_H

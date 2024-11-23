@@ -7,39 +7,39 @@
 
 #include "hislist.h"
 
-void createEmptyList(tList *lista) {
+void HList_aux_createEmptyList(tList *lista) {
     lista->contador = -1;
     lista->start = LNULL;
 }
 
-bool isEmptyList(tList lista) {
+bool HList_aux_isEmptyList(tList lista) {
     if (lista.contador == -1) return true;
     return false;
 }
 
-tPosL first(tList lista) {
+tPosL HList_aux_first(tList lista) {
     return lista.start;
 }
 
-tPosL last(tList lista) {
+tPosL HList_aux_last(tList lista) {
     tPosL puntero;
     for (puntero = lista.start; puntero->siguiente != LNULL; puntero = puntero->siguiente);
     return puntero;
 }
 
-tPosL next(tPosL posicion, tList lista) {
+tPosL HList_aux_next(tPosL posicion, tList lista) {
     return posicion->siguiente;
 }
 
-tPosL previous(tPosL posicion, tList lista) {
+tPosL HList_aux_previous(tPosL posicion, tList lista) {
     if (posicion == lista.start) return LNULL;
     tPosL aux;
     for (aux = lista.start; aux->siguiente != posicion; aux = aux->siguiente);
     return aux;
 }
 
-bool insertItem(tItemL item, tPosL posicion, tList *lista) {
-    if (!isEmptyList(*lista) && lista->contador == MAXSIZE) return false;
+bool HList_aux_insertItem(tItemL item, tPosL posicion, tList *lista) {
+    if (!HList_aux_isEmptyList(*lista) && lista->contador == MAXSIZE) return false;
 
     tPosL aux1 = malloc(sizeof(struct tNode));
 
@@ -50,13 +50,13 @@ bool insertItem(tItemL item, tPosL posicion, tList *lista) {
     if (lista->start == LNULL)
         lista->start = aux1;
     else if (posicion == LNULL) {
-        tPosL aux2 = last(*lista);
+        tPosL aux2 = HList_aux_last(*lista);
         aux2->siguiente = aux1;
-    } else if (posicion == first(*lista)) {
+    } else if (posicion == HList_aux_first(*lista)) {
         aux1->siguiente = posicion;
         lista->start = aux1;
     } else {
-        tPosL aux2 = previous(posicion, *lista);
+        tPosL aux2 = HList_aux_previous(posicion, *lista);
         aux2->siguiente = aux1;
         aux1->siguiente = posicion;
     }
@@ -64,22 +64,22 @@ bool insertItem(tItemL item, tPosL posicion, tList *lista) {
     return true;
 }
 
-void deleteAtPosition(tPosL posicion, tList *lista) {
+void HList_aux_deleteAtPosition(tPosL posicion, tList *lista) {
     tPosL aux, anterior;
 
-    if (next(posicion, *lista) == LNULL) {
+    if (HList_aux_next(posicion, *lista) == LNULL) {
         if (posicion == lista->start) {
             lista->start = LNULL;
         } else {
-            aux = previous(posicion, *lista);
+            aux = HList_aux_previous(posicion, *lista);
             aux->siguiente = LNULL;
         }
     } else {
         if (posicion == lista->start) {
-            lista->start = next(posicion, *lista);
+            lista->start = HList_aux_next(posicion, *lista);
         } else {
-            anterior = previous(posicion, *lista);
-            anterior->siguiente = next(posicion, *lista);
+            anterior = HList_aux_previous(posicion, *lista);
+            anterior->siguiente = HList_aux_next(posicion, *lista);
         }
     }
     lista->contador -= 1;
