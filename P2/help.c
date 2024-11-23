@@ -1,6 +1,8 @@
 // Pablo Portas López           pablo.portas
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
+#include <stdio.h>
+
 #include "help.h"
 
 void Help_authors() {

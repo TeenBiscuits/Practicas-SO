@@ -6,10 +6,6 @@
 
 // Implementación de una lista enlazada sencilla
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-
 #define MAXITEM 2048    // Tamaño máximo de un elemento
 #define LNULL NULL      // Elemento nulo de la lista, equivalente pero no remplazable por NULL
 #define MAXSIZE 1000    // Tamaño máximo de la lista

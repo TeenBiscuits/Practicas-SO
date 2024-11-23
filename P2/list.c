@@ -1,6 +1,10 @@
 // Pablo Portas López           pablo.portas
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "list.h"
 
 void createEmptyList(tList *lista) {

@@ -4,8 +4,6 @@
 #ifndef HELP_H
 #define HELP_H
 
-#include <stdio.h>
-
 // Struct para almacenar comandos y sus funciones de ayuda correspondientes
 struct CMDHELP {
     char *comando;
