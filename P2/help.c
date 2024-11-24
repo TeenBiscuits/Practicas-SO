@@ -169,55 +169,55 @@ void Help_delrec() {
 }
 
 void Help_allocate() {
-    printf("allocate [-malloc|-shared|-createshared|-mmap]... Asigna un bloque de memoria\n"
-        "-malloc tam: asigna un bloque malloc de tamano tam\n"
-        "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
-        "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
-        "-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
+    printf("allocate [-malloc|-shared|-createshared|-mmap]... \tAsigna un bloque de memoria\n"
+        "\t-malloc tam: asigna un bloque malloc de tamano tam\n"
+        "\t-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
+        "\t-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
+        "\t-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
 }
 
 void Help_deallocate() {
-    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	Desasigna un bloque de memoria\n"
-        "-malloc tam: desasigna el bloque malloc de tamano tam\n"
-        "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
-        "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
-        "-mmap fich: desmapea el fichero mapeado fich\n"
-        "addr: desasigna el bloque de memoria en la direccion addr\n");
+    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	\tDesasigna un bloque de memoria\n"
+        "\t-malloc tam: desasigna el bloque malloc de tamano tam\n"
+        "\t-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
+        "\t-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
+        "\t-mmap fich: desmapea el fichero mapeado fich\n"
+        "\taddr: desasigna el bloque de memoria en la direccion addr\n");
 }
 
 void Help_memfill() {
-    printf("memfill addr cont byte 	Llena la memoria a partir de addr con byte\n");
+    printf("memfill addr cont byte \tLlena la memoria a partir de addr con byte\n");
 }
 
 void Help_memdump() {
-    printf("memdump addr cont 	Vuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
+    printf("memdump addr cont \tVuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
 }
 
 void Help_memory() {
-    printf("memory [-blocks|-funcs|-vars|-all|-pmap] ..	Muestra muestra detalles de la memoria del proceso\n"
-        "-blocks: los bloques de memoria asignados\n"
-        "-funcs: las direcciones de las funciones\n"
-        "-vars: las direcciones de las variables\n"
-        ":-all: todo\n"
-        "-pmap: muestra la salida del comando pmap(o similar)\n");
+    printf("memory [-blocks|-funcs|-vars|-all|-pmap] .. \tMuestra muestra detalles de la memoria del proceso\n"
+        "\t-blocks: los bloques de memoria asignados\n"
+        "\t-funcs: las direcciones de las funciones\n"
+        "\t-vars: las direcciones de las variables\n"
+        "\t-all: todo\n"
+        "\t-pmap: muestra la salida del comando pmap(o similar)\n");
 }
 
 void Help_readfile() {
-    printf("readfile fiche addr cont 	Lee cont bytes desde fich a la direccion addr\n");
+    printf("readfile fiche addr cont \tLee cont bytes desde fich a la direccion addr\n");
 }
 
 void Help_writefile() {
-    printf("writefile [-o] fiche addr cont 	Escribe cont bytes desde la direccion addr a fich (-o sobreescribe)\n");
+    printf("writefile [-o] fiche addr cont \tEscribe cont bytes desde la direccion addr a fich (-o sobreescribe)\n");
 }
 
 void Help_read() {
-    printf("read df addr cont	Transfiere cont bytes del fichero descrito por df a la dirección addr\n");
+    printf("read df addr cont \tTransfiere cont bytes del fichero descrito por df a la dirección addr\n");
 }
 
 void Help_write() {
-    printf("write df addr cont	Transfiere cont bytes desde la dirección addr al fichero descrito por df\n");
+    printf("write df addr cont \tTransfiere cont bytes desde la dirección addr al fichero descrito por df\n");
 }
 
 void Help_recurse() {
-    printf("recurse [n]	Invoca a la funcion recursiva n veces\n");
+    printf("recurse [n] \tInvoca a la funcion recursiva n veces\n");
 }
