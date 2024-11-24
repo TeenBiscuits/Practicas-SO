@@ -4,6 +4,10 @@
 #ifndef MEMLIST_H
 #define MEMLIST_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 // Implementación de una lista enlazada sencilla
 
 #define MNULL NULL              // Elemento nulo de la lista, equivalente pero no reemplazable por NULL
@@ -48,6 +52,10 @@ void MList_remove_malloc(int size);
 // Libera toda la memoria asignada y borra el memorial completo
 void MList_delete_all();
 
+// Imprime por pantalla la lista de bloques asignados dependiendo de cada tipo de asignación
+// De enviarse como parámetro -1 se imprimen todos los tipos de asignaciones
+void MList_print(enum tAllocL type_of_alloc);
+
 // AUXILIARES / INTERNAS
 
 // Dado la dirección de memoria de una variable tMemList, inicializar una lista vacía
@@ -75,5 +83,7 @@ bool MList_aux_insertItem(tDirL direccion, int size, time_t alloct_time, enum tA
 
 // Elimina el elemento de la posición indicada. No se devuelve si la eliminación fue ejecutada.
 void MList_aux_deleteAtPosition(tPosMemL posicion, tMemList *lista);
+
+void MList_aux_printNode(tPosMemL posicion);
 
 #endif //MEMLIST_H

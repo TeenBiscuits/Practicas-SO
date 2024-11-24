@@ -91,6 +91,8 @@ struct CMD C[] = {
     {"revlist", Cmd_revlist},
     {"erase", Cmd_erase},
     {"delrec", Cmd_delrec},
+    {"allocate", Cmd_allocate},
+    {"deallocate",Cmd_deallocate},
     {"memfill", Cmd_memfill},
     {"memdump", Cmd_memdump},
     {"memory", Cmd_memory},

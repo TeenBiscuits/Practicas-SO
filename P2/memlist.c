@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "memlist.h"
 #include "color.h"
@@ -15,12 +16,9 @@ tMemList memorial = {-1,NULL};
 
 void *MList_add_malloc(int size) {
     void *addr = malloc(size);
-    if (
-        addr == NULL &&
-        !MList_aux_insertItem(addr, size, time(NULL), MALLOC, -1, NULL, -1,MNULL, &memorial)
-    )
-        return NULL;
-
+    if (addr == NULL) return NULL;
+    tFNameL empty = "";
+    MList_aux_insertItem(addr, size, time(NULL), MALLOC, -1, empty, -1, MNULL, &memorial);
     return addr;
 }
 
@@ -46,6 +44,35 @@ void MList_delete_all() {
         posaux = MList_aux_first(memorial);
         if (posaux->alloc == MALLOC) free(posaux->dir);
         MList_aux_deleteAtPosition(posaux, &memorial);
+    }
+}
+
+void MList_print(enum tAllocL type_of_alloc) {
+    tPosMemL posaux;
+    if (MList_aux_isEmptyList(memorial)) {
+        printf(ANSI_COLOR_RED "No hay bloques de memoria asignados para el proceso %d" ANSI_COLOR_RESET "\n", getpid());
+        return;
+    }
+    char *allocname = NULL;
+    switch (type_of_alloc) {
+        case MALLOC: // Imprime las asignaciones por malloc
+            allocname = "malloc";
+        case SHARED: // Imprime las asignaciones por memoria compartida
+            if (allocname == NULL) allocname = "shared";
+        case MAPPED: // Imprime las asignaciones por mapeo
+            if (allocname == NULL) allocname = "mmap";
+            printf(ANSI_COLOR_YELLOW "*** Lista de bloques asignados %s para el proceso %d" ANSI_COLOR_RESET "\n",
+                   allocname, getpid());
+            for (posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
+                if (posaux->alloc == type_of_alloc) MList_aux_printNode(posaux);
+            }
+            break;
+        default: // Imprime todos los tipos de asignaciones
+            printf(ANSI_COLOR_YELLOW "*** Lista de bloques asignados para el proceso %d" ANSI_COLOR_RESET "\n",
+                   getpid());
+            for (posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial))
+                MList_aux_printNode(posaux);
+            break;
     }
 }
 
@@ -138,4 +165,23 @@ void MList_aux_deleteAtPosition(tPosMemL posicion, tMemList *lista) {
     }
     lista->contador -= 1;
     free(posicion);
+}
+
+void MList_aux_printNode(tPosMemL posicion) {
+    char datebuffer[80];
+    struct tm *tm_info = localtime(&posicion->time);
+    strftime(datebuffer, sizeof(datebuffer), "%d %b %y %H:%M", tm_info);
+    switch (posicion->alloc) {
+        case MALLOC:
+            printf("\t%p %15d %s %s\n", posicion->dir, posicion->size, datebuffer, "malloc");
+            break;
+        case SHARED:
+            printf("\t%p %15d %s %s (key %d)\n", posicion->dir, posicion->size, datebuffer, "shared",
+                   posicion->smb_key);
+            break;
+        case MAPPED:
+            printf("\t%p %15d %s %s %s (descriptor %d)\n", posicion->dir, posicion->size, datebuffer, "shared",
+                   posicion->file_name, posicion->file_desc);
+            break;
+    }
 }
