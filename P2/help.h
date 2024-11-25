@@ -4,14 +4,16 @@
 #ifndef HELP_H
 #define HELP_H
 
-#include <stdio.h>
-
 // Struct para almacenar comandos y sus funciones de ayuda correspondientes
 struct CMDHELP {
     char *comando;
 
     void (*funcion)();
 };
+
+// Imprime una lista de los comandos disponibles o la ayuda
+// de un comando dado
+void Cmd_help(int NumTrozos, char *trozos[]);
 
 // Imprime por pantalla la ayuda de authors
 void Help_authors();

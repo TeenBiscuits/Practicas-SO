@@ -16,6 +16,10 @@ run: p2.o
 test: debug
 	valgrind --leak-check=full --show-reachable=yes ./p2.o < tests.txt
 # Con "make flechas" para compilar y ejecutar con rlwrap
+# Existe un bug en rlwrap que elimna el promt luego de escribir algo se soluciona así:
+# $ sudo nano /etc/inputrc
+# |		# for rlwrap
+# |		set enable-bracketed-paste off
 flechas: p2.o
 	rlwrap ./p2.o
 
@@ -28,19 +32,27 @@ clean:
 	rm -f *.o
 
 # Compilación con símbolos de debug y optimización
-debug: main.c list.c help.c comandos.c
-	$(CC) $(CFLAGS) -g -O0 -c -o list.o list.c
+debug: main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o
 	$(CC) $(CFLAGS) -g -O0 -c -o help.o help.c
+	$(CC) $(CFLAGS) -g -O0 -c -o hislist.o hislist.c
+	$(CC) $(CFLAGS) -g -O0 -c -o memlist.o memlist.c
+	$(CC) $(CFLAGS) -g -O0 -c -o auxiliar.o auxiliar.c
 	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
 	$(CC) $(CFLAGS) -g -O0 -c -o memoria.o memoria.c
-	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c list.o help.o comandos.o memoria.o color.h
+	$(CC) $(CFLAGS) -g -O0 -o p2.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o color.h
 
 # Compilación normal
 help.o: help.c
 	$(CC) $(CFLAGS) -c -o help.o help.c
 
-list.o: list.c
-	$(CC) $(CFLAGS) -c -o list.o list.c
+hislist.o: hislist.c
+	$(CC) $(CFLAGS) -c -o hislist.o hislist.c
+
+memlist.o: memlist.c
+	$(CC) $(CFLAGS) -c -o memlist.o memlist.c
+
+auxiliar.o: auxiliar.c
+	$(CC) $(CFLAGS) -c -o auxiliar.o auxiliar.c
 
 comandos.o: comandos.c
 	$(CC) $(CFLAGS) -c -o comandos.o comandos.c
@@ -48,8 +60,8 @@ comandos.o: comandos.c
 memoria.o: memoria.c
 	$(CC) $(CFLAGS) -c -o memoria.o memoria.c
 
-p2.o: main.c help.o list.o comandos.o memoria.o
-	$(CC) $(CFLAGS) -o p2.o main.c help.o list.o comandos.o memoria.o color.h
+p2.o: main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o
+	$(CC) $(CFLAGS) -o p2.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o color.h
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all run flechas leaks debug clean

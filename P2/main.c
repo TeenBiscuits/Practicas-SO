@@ -10,6 +10,8 @@
 
 #include "color.h"
 #include "comandos.h"
+#include "hislist.h"
+#include "help.h"
 #include "memoria.h"
 
 #define MAX_ARG 1000
@@ -89,6 +91,8 @@ struct CMD C[] = {
     {"revlist", Cmd_revlist},
     {"erase", Cmd_erase},
     {"delrec", Cmd_delrec},
+    {"allocate", Cmd_allocate},
+    {"deallocate",Cmd_deallocate},
     {"memfill", Cmd_memfill},
     {"memdump", Cmd_memdump},
     {"memory", Cmd_memory},
@@ -102,7 +106,7 @@ struct CMD C[] = {
 void procesarEntrada(char comando[MAXITEM]) {
     if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
 
-    add_to_historic(comando);
+    HList_add(comando);
 
     char *Trozos[MAX_ARG];
     const int NumeroT = dividir_comando(comando, Trozos);

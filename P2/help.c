@@ -1,7 +1,64 @@
 // Pablo Portas López           pablo.portas
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
+#include <stdio.h>
+#include <string.h>
+
 #include "help.h"
+#include "color.h"
+
+// Struct Comandos Help o Carolina Herrera (ChatGPT nunca pondría esto)
+struct CMDHELP CH[] = {
+    {"-?", Help_help},
+    {"authors", Help_authors},
+    {"pid", Help_pid},
+    {"ppid", Help_ppid},
+    {"cd", Help_cd},
+    {"date", Help_date},
+    {"historic", Help_historic},
+    {"open", Help_open},
+    {"close", Help_close},
+    {"dup", Help_dup},
+    {"infosys", Help_infosys},
+    {"help", Help_help},
+    {"quit", Help_exit},
+    {"exit", Help_exit},
+    {"bye", Help_exit},
+    {"makefile", Help_makefile},
+    {"makedir", Help_makedir},
+    {"listfile", Help_listfile},
+    {"cwd", Help_cwd},
+    {"listdir", Help_listdir},
+    {"reclist", Help_reclist},
+    {"revlist", Help_revlist},
+    {"erase", Help_erase},
+    {"delrec", Help_delrec},
+    {"allocate", Help_allocate},
+    {"deallocate", Help_deallocate},
+    {"memfill", Help_memfill},
+    {"memdump", Help_memdump},
+    {"memory", Help_memory},
+    {"readfile", Help_readfile},
+    {"writefile", Help_writefile},
+    {"read", Help_read},
+    {"write", Help_write},
+    {"recurse", Help_recurse}
+};
+
+void Cmd_help(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0) {
+        Help_default();
+    }
+    if (NumTrozos >= 1) {
+        for (int i = 0; i < sizeof(CH) / sizeof(CH[0]); i++) {
+            if (strcmp(trozos[1], CH[i].comando) == 0) {
+                CH[i].funcion();
+                return;
+            }
+        }
+        printf(ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
+    }
+}
 
 void Help_authors() {
     printf("authors [-n|-l]\tMuestra los nombres y/o logins de los autores\n");
@@ -112,55 +169,55 @@ void Help_delrec() {
 }
 
 void Help_allocate() {
-    printf("allocate [-malloc|-shared|-createshared|-mmap]... Asigna un bloque de memoria\n"
-        "-malloc tam: asigna un bloque malloc de tamano tam\n"
-        "-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
-        "-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
-        "-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
+    printf("allocate [-malloc|-shared|-createshared|-mmap]... \tAsigna un bloque de memoria\n"
+        "\t-malloc tam: asigna un bloque malloc de tamano tam\n"
+        "\t-createshared cl tam: asigna (creando) el bloque de memoria compartida de clave cl y tamano tam\n"
+        "\t-shared cl: asigna el bloque de memoria compartida (ya existente) de clave cl\n"
+        "\t-mmap fich perm: mapea el fichero fich, perm son los permisos\n");
 }
 
 void Help_deallocate() {
-    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	Desasigna un bloque de memoria\n"
-        "-malloc tam: desasigna el bloque malloc de tamano tam\n"
-        "-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
-        "-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
-        "-mmap fich: desmapea el fichero mapeado fich\n"
-        "addr: desasigna el bloque de memoria en la direccion addr\n");
+    printf("deallocate [-malloc|-shared|-delkey|-mmap|addr]..	\tDesasigna un bloque de memoria\n"
+        "\t-malloc tam: desasigna el bloque malloc de tamano tam\n"
+        "\t-shared cl: desasigna (desmapea) el bloque de memoria compartida de clave cl\n"
+        "\t-delkey cl: elimina del sistema (sin desmapear) la clave de memoria cl\n"
+        "\t-mmap fich: desmapea el fichero mapeado fich\n"
+        "\taddr: desasigna el bloque de memoria en la direccion addr\n");
 }
 
 void Help_memfill() {
-    printf("memfill addr cont byte 	Llena la memoria a partir de addr con byte\n");
+    printf("memfill addr cont byte \tLlena la memoria a partir de addr con byte\n");
 }
 
 void Help_memdump() {
-    printf("memdump addr cont 	Vuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
+    printf("memdump addr cont \tVuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
 }
 
 void Help_memory() {
-    printf("memory [-blocks|-funcs|-vars|-all|-pmap] ..	Muestra muestra detalles de la memoria del proceso\n"
-        "-blocks: los bloques de memoria asignados\n"
-        "-funcs: las direcciones de las funciones\n"
-        "-vars: las direcciones de las variables\n"
-        ":-all: todo\n"
-        "-pmap: muestra la salida del comando pmap(o similar)\n");
+    printf("memory [-blocks|-funcs|-vars|-all|-pmap] .. \tMuestra muestra detalles de la memoria del proceso\n"
+        "\t-blocks: los bloques de memoria asignados\n"
+        "\t-funcs: las direcciones de las funciones\n"
+        "\t-vars: las direcciones de las variables\n"
+        "\t-all: todo\n"
+        "\t-pmap: muestra la salida del comando pmap(o similar)\n");
 }
 
 void Help_readfile() {
-    printf("readfile fiche addr cont 	Lee cont bytes desde fich a la direccion addr\n");
+    printf("readfile fiche addr cont \tLee cont bytes desde fich a la direccion addr\n");
 }
 
 void Help_writefile() {
-    printf("writefile [-o] fiche addr cont 	Escribe cont bytes desde la direccion addr a fich (-o sobreescribe)\n");
+    printf("writefile [-o] fiche addr cont \tEscribe cont bytes desde la direccion addr a fich (-o sobreescribe)\n");
 }
 
 void Help_read() {
-    printf("read df addr cont	Transfiere cont bytes del fichero descrito por df a la dirección addr\n");
+    printf("read df addr cont \tTransfiere cont bytes del fichero descrito por df a la dirección addr\n");
 }
 
 void Help_write() {
-    printf("write df addr cont	Transfiere cont bytes desde la dirección addr al fichero descrito por df\n");
+    printf("write df addr cont \tTransfiere cont bytes desde la dirección addr al fichero descrito por df\n");
 }
 
 void Help_recurse() {
-    printf("recurse [n]	Invoca a la funcion recursiva n veces\n");
+    printf("recurse [n] \tInvoca a la funcion recursiva n veces\n");
 }

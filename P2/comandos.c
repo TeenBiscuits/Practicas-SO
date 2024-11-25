@@ -1,59 +1,36 @@
 // Pablo Portas López           pablo.portas
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
-#include "comandos.h"
-#include "memoria.h"
-#include "help.h"
-#include "list.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <sys/utsname.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
 
-// COMANDOS BÁSICOS P0 + P1 + P2
+#include "comandos.h"
+#include "help.h"
+#include "hislist.h"
+#include "memlist.h"
+#include "color.h"
+#include "auxiliar.h"
+
+// COMANDOS BÁSICOS P0 + P1
 
 // VARIABLES GLOBALES AUXILIARES
 
 // Lista de archivos abiertos
 OpenFile open_files[MAX_FILES];
 int open_file_count = 0; //Esto es el contador de archivos abiertos
-
-// Struct Comandos Help o Carolina Herrera (ChatGPT nunca pondría esto)
-struct CMDHELP CH[] = {
-    {"-?", Help_help},
-    {"authors", Help_authors},
-    {"pid", Help_pid},
-    {"ppid", Help_ppid},
-    {"cd", Help_cd},
-    {"date", Help_date},
-    {"historic", Help_historic},
-    {"open", Help_open},
-    {"close", Help_close},
-    {"dup", Help_dup},
-    {"infosys", Help_infosys},
-    {"help", Help_help},
-    {"quit", Help_exit},
-    {"exit", Help_exit},
-    {"bye", Help_exit},
-    {"makefile", Help_makefile},
-    {"makedir", Help_makedir},
-    {"listfile", Help_listfile},
-    {"cwd", Help_cwd},
-    {"listdir", Help_listdir},
-    {"reclist", Help_reclist},
-    {"revlist", Help_revlist},
-    {"erase", Help_erase},
-    {"delrec", Help_delrec},
-    {"allocate", Help_allocate},
-    {"deallocate", Help_deallocate},
-    {"memfill", Help_memfill},
-    {"memdump", Help_memdump},
-    {"memory", Help_memory},
-    {"readfile", Help_readfile},
-    {"writefile", Help_writefile},
-    {"read", Help_read},
-    {"write", Help_write},
-    {"recurse", Help_recurse}
-};
-
-// Variable global del historial
-tList historial = {-1,NULL};
 
 // COMANDOS
 
@@ -84,19 +61,13 @@ void Cmd_authors(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_pid(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_pid();
-        return;
-    }
-    printf("El identificador del proceso es %d\n", getpid());
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_pid();
+    else printf("El identificador del proceso es %d\n", getpid());
 }
 
 void Cmd_ppid(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_ppid();
-        return;
-    }
-    printf("El identificador del proceso padre es %d\n", getppid());
+    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_ppid();
+    else printf("El identificador del proceso padre es %d\n", getppid());
 }
 
 void Cmd_cd(int NumTrozos, char *trozos[]) {
@@ -134,7 +105,7 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
 
 void Cmd_open(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        list_open_files();
+        Aux_open_lofiles();
         return;
     }
     if (strcmp(trozos[1], "-?") == 0) {
@@ -146,7 +117,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         return;
     }
 
-    int flags = get_open_flags(trozos[2]), desc;
+    int flags = Aux_open_get_flag(trozos[2]), desc;
     if (flags == -1) {
         printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET);
         return;
@@ -247,28 +218,9 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
            sys_info.version);
 }
 
-void Cmd_help(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0) {
-        Help_default();
-    }
-    if (NumTrozos >= 1) {
-        for (int i = 0; i < sizeof(CH) / sizeof(CH[0]); i++) {
-            if (strcmp(trozos[1], CH[i].comando) == 0) {
-                CH[i].funcion();
-                return;
-            }
-        }
-        printf(ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
-    }
-}
-
 void Cmd_historic(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0) {
-        tPosL posaux = first(historial);
-        for (int i = 1; posaux != LNULL; i++) {
-            printf("%d. %s\n", i, posaux->comando);
-            posaux = next(posaux, historial);
-        }
+        HList_show_all();
         return;
     }
 
@@ -279,20 +231,10 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
 
     int ncomando = atoi(trozos[1]);
     if (ncomando <= -1) {
-        tPosL posaux = last(historial);
-        for (int i = historial.contador; i > historial.contador + ncomando && posaux != LNULL; i--) {
-            printf("%d. %s\n", i + 1, posaux->comando);
-            posaux = previous(posaux, historial);
-        }
+        HList_show_last_n(ncomando);
     }
-    if (ncomando >= 1 && ncomando <= historial.contador + 1) {
-        tPosL posaux = first(historial);
-        for (int i = ncomando; i > 0; i--) {
-            if (i == 1) {
-                printf("%d. %s\n", ncomando, posaux->comando);
-            }
-            posaux = next(posaux, historial);
-        }
+    else if (ncomando >= 1 && ncomando <= HList_total()) {
+        HList_show_n(ncomando);
     }
 }
 
@@ -301,8 +243,9 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
         Help_exit();
         return;
     }
-    printf("Saliendo del shell...\n");
-    delete_historic(&historial);
+    printf(ANSI_COLOR_YELLOW "Saliendo del shell...\n" ANSI_COLOR_RESET);
+    HList_delete_all();
+    MList_delete_all();
     exit(0);
 }
 
@@ -320,7 +263,7 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
     if (fd == -1) {
         Imprimir_Error();
     } else {
-        printf("Archivo '%s' creado exitosamente.\n", trozos[1]);
+        printf(ANSI_COLOR_GREEN "Archivo '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
         close(fd);
     }
 }
@@ -336,7 +279,7 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     if (mkdir(trozos[1], 0755) == -1) {
         Imprimir_Error();
     } else {
-        printf("Directorio '%s' creado exitosamente.\n", trozos[1]);
+        printf(ANSI_COLOR_GREEN "Directorio '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
     }
 }
 
@@ -358,7 +301,7 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
 
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
-        Aux_fileinfo(trozos[i], trozos[i], show_long, show_acc, show_link);
+        Aux_comando_pfinfo(trozos[i], trozos[i], show_long, show_acc, show_link);
     }
 }
 
@@ -412,7 +355,7 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
             snprintf(path, sizeof(path), "%s/%s", trozos[i], entry->d_name);
             if (stat(path, &fileStat) == -1) continue;
 
-            Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+            Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
         }
         closedir(dir);
     }
@@ -510,22 +453,7 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 
 // FUNCIONES AUXILIARES
 
-void Imprimir_Error() {
-    printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
-}
-
-void add_to_historic(char comando[MAXITEM]) {
-    insertItem(comando,LNULL, &historial);
-}
-
-void delete_historic(tList *historial) {
-    if (historial->start == NULL) return;
-    while (!isEmptyList(*historial)) {
-        deleteAtPosition(first(*historial), historial);
-    }
-}
-
-int get_open_flags(const char *mode) {
+int Aux_open_get_flag(const char *mode) {
     if (strcmp(mode, "cr\0") == 0)
         return O_CREAT | O_WRONLY;
     if (strcmp(mode, "ap\0") == 0)
@@ -544,9 +472,9 @@ int get_open_flags(const char *mode) {
     return -1;
 }
 
-void list_open_files() {
+void Aux_open_lofiles() {
     if (open_file_count == 0) {
-        printf("No hay archivos abiertos.\n");
+        printf(ANSI_COLOR_RED "No hay archivos abiertos.\n" ANSI_COLOR_RESET);
         return;
     }
 
@@ -556,11 +484,6 @@ void list_open_files() {
         printf("%d\t\t%s\t%s\n", open_files[i].desc, open_files[i].filename, open_files[i].mode);
     }
 }
-
-bool is_hidden(const char *name) {
-    return name[0] == '.';
-}
-
 
 void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid) {
     DIR *dir = opendir(dir_name);
@@ -579,7 +502,7 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+        Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
@@ -598,7 +521,6 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
     }
     closedir(dir);
 }
-
 
 void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir) {
     DIR *dir = opendir(dir_name);
@@ -633,7 +555,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
         snprintf(path, sizeof(path), "%s/%s", dir_name, entry->d_name);
         stat(path, &fileStat);
 
-        Aux_fileinfo(path, entry->d_name, show_long, show_acc, show_link);
+        Aux_comando_pfinfo(path, entry->d_name, show_long, show_acc, show_link);
     }
 
     printf("\n");
@@ -641,20 +563,7 @@ void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
     closedir(dir);
 }
 
-void print_permissions(mode_t mode) {
-    printf((S_ISDIR(mode)) ? "d" : "-");
-    printf((mode & S_IRUSR) ? "r" : "-");
-    printf((mode & S_IWUSR) ? "w" : "-");
-    printf((mode & S_IXUSR) ? "x" : "-");
-    printf((mode & S_IRGRP) ? "r" : "-");
-    printf((mode & S_IWGRP) ? "w" : "-");
-    printf((mode & S_IXGRP) ? "x" : "-");
-    printf((mode & S_IROTH) ? "r" : "-");
-    printf((mode & S_IWOTH) ? "w" : "-");
-    printf((mode & S_IXOTH) ? "x" : "-");
-}
-
-char LetraTF(mode_t m) {
+char Aux_comando_LetraTF(mode_t m) {
     switch (m & S_IFMT) {
         /*and bit a bit con los bits de formato,0170000 */
         case S_IFSOCK: return 's'; /*socket */
@@ -668,10 +577,10 @@ char LetraTF(mode_t m) {
     }
 }
 
-char *ConvierteModo(mode_t m, char *permisos) {
+char *Aux_comando_mode_to_string(mode_t m, char *permisos) {
     strcpy(permisos, "---------- ");
 
-    permisos[0] = LetraTF(m);
+    permisos[0] = Aux_comando_LetraTF(m);
     if (m & S_IRUSR) permisos[1] = 'r'; /*propietario*/
     if (m & S_IWUSR) permisos[2] = 'w';
     if (m & S_IXUSR) permisos[3] = 'x';
@@ -688,7 +597,7 @@ char *ConvierteModo(mode_t m, char *permisos) {
     return permisos;
 }
 
-void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
+void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
     struct stat fileStat;
     if (lstat(path, &fileStat) == -1) {
         Imprimir_Error();
@@ -700,7 +609,7 @@ void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool sh
     strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M", localtime(show_acc ? &fileStat.st_atime : &fileStat.st_mtime));
 
     char perms[12];
-    ConvierteModo(fileStat.st_mode, perms);
+    Aux_comando_mode_to_string(fileStat.st_mode, perms);
 
     if (show_long) {
         printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",

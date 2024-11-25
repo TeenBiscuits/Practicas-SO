@@ -4,30 +4,14 @@
 #ifndef COMANDOS_H
 #define COMANDOS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
-#include <limits.h>
 #include <stdbool.h>
-#include <sys/utsname.h>
-#include <sys/stat.h>
 #include <sys/types.h>
-#include <errno.h>
-#include <dirent.h>
-#include <pwd.h>
-#include <grp.h>
-
-#include "color.h"
-#include "list.h"
 
 // COMANDOS BÁSICOS P0 + P1
 
 #define MAX_FILES 100   // Máximos archivos posibles de abrir
 
-// Struct para almacenar los archivos abierto
+// Struct para almacenar los archivos abiertos
 typedef struct {
     int desc;
     char filename[PATH_MAX];
@@ -77,10 +61,6 @@ void Cmd_dup(int NumTrozos, char *trozos[]);
 // Imprime por pantalla la información del equipo
 void Cmd_infosys(int NumTrozos, char *trozos[]);
 
-// Imprime una lista de los comandos disponibles o la ayuda
-// de un comando dado
-void Cmd_help(int NumTrozos, char *trozos[]);
-
 // Imprime por pantalla el historial de todos los inputs del usuario
 // Acepta dos parámetros: [N|-N] Imprimir el comando N o imprimir los
 // últimos N comandos
@@ -91,51 +71,58 @@ void Cmd_exit();
 
 // P1
 
+// Crea un archivo
 void Cmd_makefile(int NumTrozos, char *trozos[]);
 
+// Crea un directorio
 void Cmd_makedir(int NumTrozos, char *trozos[]);
 
+// Da la información de un archivo o un directorio
 void Cmd_listfile(int NumTrozos, char *trozos[]);
 
+// Imprime el directorio de trabajo actual
 void Cmd_cwd(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de una carpeta
 void Cmd_listdir(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de un directorio de forma recursiva
+// (subdirectorios después)
 void Cmd_reclist(int NumTrozos, char *trozos[]);
 
+// Imprime los contenidos de un directorio de forma recursiva
+// (subdirectorios antes)
 void Cmd_revlist(int NumTrozos, char *trozos[]);
 
+// Elimina archivos o directorios vacios
 void Cmd_erase(int NumTrozos, char *trozos[]);
 
+// Elimina archivos y/o directorios no vacíos recursivamente
 void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES
 
-// Imprime por pantalla el "Error [N de Error]: [Descripción del error]"
-// en rojo porque mola el color rojo
-void Imprimir_Error();
+// Devuelve el valor numérico de las diferentes "flags" de apertura
+int Aux_open_get_flag(const char *mode);
 
-// Añade un input al histórico
-void add_to_historic();
-
-// Borra el historial completo
-void delete_historic(tList *historial);
-
-int get_open_flags(const char *mode);
-
-void list_open_files();
+// Imprime por pantalla los archivos abiertos y sus descriptores
+// De no haberlos imprime un aviso
+void Aux_open_lofiles();
 
 void Aux_reclist(char *dir_name, bool show_hidden, bool show_long, bool show_acc, bool show_link);
 
 void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir);
 
-void print_permissions(mode_t mode);
+// Devuelve la letra del tipo de archivo
+char Aux_comando_LetraTF(mode_t m);
 
-char LetraTF(mode_t m);
+// Dado un mode_t devuelve un string con formato
+// Ej: -rwxrwxrwx
+char *Aux_comando_mode_to_string(mode_t m, char *permisos);
 
-char *ConvierteModo(mode_t m, char *permisos);
-
-void Aux_fileinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
+// Imprime la información de un archivo dados su nombre y ruta.
+// Dependiendo de los valores booleanos long, acc y link
+void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link);
 
 void Aux_delrec(char *dir_name);
 
