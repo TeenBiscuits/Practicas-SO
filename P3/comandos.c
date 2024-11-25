@@ -117,7 +117,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         return;
     }
 
-    int flags = Aux_open_get_flag(trozos[2]), desc;
+    int flags = Aux_general_get_flag(trozos[2]), desc;
     if (flags == -1) {
         printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET);
         return;
@@ -452,25 +452,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 }
 
 // FUNCIONES AUXILIARES
-
-int Aux_open_get_flag(const char *mode) {
-    if (strcmp(mode, "cr\0") == 0)
-        return O_CREAT | O_WRONLY;
-    if (strcmp(mode, "ap\0") == 0)
-        return O_APPEND | O_WRONLY;
-    if (strcmp(mode, "ex\0") == 0)
-        return O_CREAT | O_EXCL | O_WRONLY;
-    if (strcmp(mode, "ro\0") == 0)
-        return O_RDONLY;
-    if (strcmp(mode, "rw\0") == 0)
-        return O_RDWR;
-    if (strcmp(mode, "wo\0") == 0)
-        return O_WRONLY;
-    if (strcmp(mode, "tr\0") == 0)
-        return O_TRUNC | O_WRONLY;
-
-    return -1;
-}
 
 void Aux_open_lofiles() {
     if (open_file_count == 0) {

@@ -102,9 +102,6 @@ void Cmd_delrec(int NumTrozos, char *trozos[]);
 
 // FUNCIONES AUXILIARES
 
-// Devuelve el valor numérico de las diferentes "flags" de apertura
-int Aux_open_get_flag(const char *mode);
-
 // Imprime por pantalla los archivos abiertos y sus descriptores
 // De no haberlos imprime un aviso
 void Aux_open_lofiles();
