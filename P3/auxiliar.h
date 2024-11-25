@@ -7,6 +7,6 @@
 
 // Imprime por pantalla el "Error [N de Error]: [Descripción del error]"
 // en rojo porque mola el color rojo
-void Imprimir_Error();
+void Aux_general_Imprimir_Error();
 
 #endif //AUXILIAR_H

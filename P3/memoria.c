@@ -25,7 +25,7 @@ void Cmd_allocate(int NumTrozos, char *trozos[]) {
         if (strcmp(trozos[1], "-malloc") == 0) {
             if (NumTrozos >= 2) {
                 paux = MList_add_malloc(atoi(trozos[2]));
-                if (paux == NULL) Imprimir_Error();
+                if (paux == NULL) Aux_general_Imprimir_Error();
                 else printf(ANSI_COLOR_GREEN "Asignados %d bytes en %p" ANSI_COLOR_RESET "\n",atoi(trozos[2]),paux);
             }
             else MList_print(MALLOC);

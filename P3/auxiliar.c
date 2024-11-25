@@ -8,6 +8,6 @@
 #include "auxiliar.h"
 #include "color.h"
 
-void Imprimir_Error() {
+void Aux_general_Imprimir_Error() {
     printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
 }
