@@ -26,4 +26,22 @@ void Cmd_write(int NumTrozos, char *trozos[]);
 
 void Cmd_recurse(int NumTrozos, char *trozos[]);
 
+// Auxiliares
+
+void Aux_allocate_malloc(int NumTrozos, char *trozos[]);
+
+void Aux_deallocate_malloc(int NumTrozos, char *trozos[]);
+
+void Aux_allocate_mmap(int NumTrozos, char *trozos[]);
+
+void Aux_deallocate_mmap(int NumTrozos, char *trozos[]);
+
+void Aux_allocate_createshared(int NumTrozos, char *trozos[]);
+
+void Aux_deallocate_delkey(int NumTrozos, char *trozos[]);
+
+void Aux_allocate_shared(int NumTrozos, char *trozos[]);
+
+void Aux_deallocate_shared(int NumTrozos, char *trozos[]);
+
 #endif //MEMORIA_H

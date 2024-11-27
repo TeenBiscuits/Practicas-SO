@@ -16,7 +16,7 @@
 // Tipo de dato posición de lista, es un puntero a un nodo
 typedef struct tNodeMem *tPosMemL;
 
-typedef void *tDirL;
+typedef void *tAddressL;
 
 enum tAllocL { MALLOC, SHARED, MAPPED };
 
@@ -25,7 +25,7 @@ typedef char tFNameL[FILENAME_MAX];
 
 // Struct de nodo, formado por la información guardada y un puntero al siguiente elemento.
 struct tNodeMem {
-    tDirL dir; // Dirección de la memoria asignada
+    tAddressL address; // Dirección de la memoria asignada
     int size; // Tamaño en bits de la memoria asignada
     time_t time; // Fecha de asignación de memoria
     enum tAllocL alloc; // Tipo de asignación de memoria. Valores válidos: MALLOC, SHARED, MAPPED
@@ -45,9 +45,13 @@ typedef struct tMemList {
 // Devuelve la dirección de la memoria asignada o NULL en caso de fallo.
 void *MList_add_malloc(int size);
 
+void *MList_add_mmap(tFNameL dir, int perm);
+
 // Elimina la primera dirección asignada con malloc que encuentre del mismo tamaño size
 // Si no lo encuentra imprime por pantalla un error
 void MList_remove_malloc(int size);
+
+void MList_remove_mmap(tFNameL dir);
 
 // Libera toda la memoria asignada y borra el memorial completo
 void MList_delete_all();
@@ -78,7 +82,7 @@ tPosMemL MList_aux_previous(tPosMemL posicion, tMemList lista);
 
 // Inserta un item en la posición indicada, de no indicarse ninguna (MNULL) se añade al final de la lista.
 // Devuelve true/false dependiendo de si se ha podido o no insertar a la lista. El tamaño máximo es 1000.
-bool MList_aux_insertItem(tDirL direccion, int size, time_t alloct_time, enum tAllocL type_of_alloc, int smb_key,
+bool MList_aux_insertItem(tAddressL direccion, int size, time_t alloct_time, enum tAllocL type_of_alloc, int smb_key,
                           tFNameL file_name, int file_descriptor, tPosMemL posicion, tMemList *lista);
 
 // Elimina el elemento de la posición indicada. No se devuelve si la eliminación fue ejecutada.

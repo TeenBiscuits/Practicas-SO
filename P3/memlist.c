@@ -7,8 +7,12 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
 
 #include "memlist.h"
+#include "auxiliar.h"
 #include "color.h"
 
 // Variable global del memorial
@@ -22,17 +26,47 @@ void *MList_add_malloc(int size) {
     return addr;
 }
 
+void *MList_add_mmap(tFNameL dir, int protection) {
+    int df, map = MAP_PRIVATE, modo = O_RDONLY;
+    struct stat s;
+    void *p;
+
+    if (protection & PROT_WRITE)
+        modo = O_RDWR;
+    if (stat(dir, &s) == -1 || (df = open(dir, modo)) == -1)
+        return NULL;
+    if ((p = mmap(NULL, s.st_size, protection, map, df, 0)) == MAP_FAILED)
+        return NULL;
+    MList_aux_insertItem(p, s.st_size, time(NULL), MAPPED, -1, dir, df, MNULL, &memorial);
+    return p;
+}
+
 void MList_remove_malloc(int size) {
     if (!MList_aux_isEmptyList(memorial)) {
         for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
             if (posaux->alloc == MALLOC && posaux->size == size) {
                 // Dirección encontrada
-                free(posaux->dir); // Liberamos la memoria
+                free(posaux->address); // Liberamos la memoria
                 MList_aux_deleteAtPosition(posaux, &memorial); // Eliminamos los registros
                 return;
             }
         }
         printf(ANSI_COLOR_RED "No hay bloque de ese tamaño asignado con malloc" ANSI_COLOR_RESET "\n");
+    } else printf(ANSI_COLOR_RED "Asigna memoria primero" ANSI_COLOR_RESET "\n");
+}
+
+void MList_remove_mmap(tFNameL dir) {
+    if (!MList_aux_isEmptyList(memorial)) {
+        for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
+            if (posaux->alloc == MAPPED && !strcmp(posaux->file_name, dir)) {
+                // Archivo encontrado
+                close(posaux->file_desc);
+                munmap(posaux->address, posaux->size); // Liberamos la memoria
+                MList_aux_deleteAtPosition(posaux, &memorial); // Eliminamos los registros
+                return;
+            }
+        }
+        printf(ANSI_COLOR_RED "No hay archivos con ese nombre mapeados en memoria" ANSI_COLOR_RESET "\n");
     } else printf(ANSI_COLOR_RED "Asigna memoria primero" ANSI_COLOR_RESET "\n");
 }
 
@@ -42,7 +76,11 @@ void MList_delete_all() {
     tPosMemL posaux;
     while (!MList_aux_isEmptyList(memorial)) {
         posaux = MList_aux_first(memorial);
-        if (posaux->alloc == MALLOC) free(posaux->dir);
+        if (posaux->alloc == MALLOC) free(posaux->address);
+        if (posaux->alloc == MAPPED) {
+            close(posaux->file_desc);
+            munmap(posaux->address, posaux->size);
+        }
         MList_aux_deleteAtPosition(posaux, &memorial);
     }
 }
@@ -109,7 +147,7 @@ tPosMemL MList_aux_previous(tPosMemL posicion, tMemList lista) {
     return aux;
 }
 
-bool MList_aux_insertItem(tDirL direccion, int size, time_t alloct_time, enum tAllocL type_of_alloc, int smb_key,
+bool MList_aux_insertItem(tAddressL direccion, int size, time_t alloct_time, enum tAllocL type_of_alloc, int smb_key,
                           tFNameL file_name, int file_descriptor, tPosMemL posicion, tMemList *lista) {
     if (!MList_aux_isEmptyList(*lista) && lista->contador == MAX_MLIST_SIZE) return false;
 
@@ -118,7 +156,7 @@ bool MList_aux_insertItem(tDirL direccion, int size, time_t alloct_time, enum tA
     if (aux1 == NULL) return false;
 
     // Creación del nodo
-    aux1->dir = direccion;
+    aux1->address = direccion;
     aux1->size = size;
     aux1->time = alloct_time;
     aux1->alloc = type_of_alloc;
@@ -173,14 +211,14 @@ void MList_aux_printNode(tPosMemL posicion) {
     strftime(datebuffer, sizeof(datebuffer), "%d %b %y %H:%M", tm_info);
     switch (posicion->alloc) {
         case MALLOC:
-            printf("\t%p %15d %s %s\n", posicion->dir, posicion->size, datebuffer, "malloc");
+            printf("\t%p %15d %s %s\n", posicion->address, posicion->size, datebuffer, "malloc");
             break;
         case SHARED:
-            printf("\t%p %15d %s %s (key %d)\n", posicion->dir, posicion->size, datebuffer, "shared",
+            printf("\t%p %15d %s %s (key %d)\n", posicion->address, posicion->size, datebuffer, "shared",
                    posicion->smb_key);
             break;
         case MAPPED:
-            printf("\t%p %15d %s %s %s (descriptor %d)\n", posicion->dir, posicion->size, datebuffer, "shared",
+            printf("\t%p %15d %s %s (descriptor %d)\n", posicion->address, posicion->size, datebuffer,
                    posicion->file_name, posicion->file_desc);
             break;
     }
