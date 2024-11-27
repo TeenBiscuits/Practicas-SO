@@ -9,8 +9,14 @@
 #include "auxiliar.h"
 #include "color.h"
 
-void Aux_general_Imprimir_Error() {
-    printf(ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
+void Aux_general_Imprimir_Error(char *msg) {
+    if (errno == 0) {
+        if (!strcmp(msg, "")) fprintf(stderr,ANSI_COLOR_RED "Error Desconocido\n" ANSI_COLOR_RESET);
+        else fprintf(stderr,ANSI_COLOR_RED "Error: %s\n" ANSI_COLOR_RESET, msg);
+    } else {
+        if (!strcmp(msg, "")) fprintf(stderr,ANSI_COLOR_RED "Error %d: %s\n" ANSI_COLOR_RESET,errno, strerror(errno));
+        else fprintf(stderr,ANSI_COLOR_RED "Error %d: %s - %s\n" ANSI_COLOR_RESET,errno, msg, strerror(errno));
+    }
 }
 
 int Aux_general_get_flag(const char *mode) {

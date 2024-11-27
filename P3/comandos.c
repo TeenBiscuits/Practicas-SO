@@ -74,9 +74,9 @@ void Cmd_cd(int NumTrozos, char *trozos[]) {
     // Si no se pasa argumento (NumTrozos >= 1), cambiamos al directorio HOME del usuario
     if (NumTrozos == 0) {
         char *home = getenv("HOME"); // Obtener el directorio home del usuario
-        if (home == NULL || chdir(home) != 0) Aux_general_Imprimir_Error();
+        if (home == NULL || chdir(home) != 0) Aux_general_Imprimir_Error("");
     } else if (strcmp(trozos[1], "-?\0") == 0) Help_cd();
-    else if (chdir(trozos[1]) != 0) Aux_general_Imprimir_Error();
+    else if (chdir(trozos[1]) != 0) Aux_general_Imprimir_Error("");
 }
 
 void Cmd_date(int NumTrozos, char *trozos[]) {
@@ -88,7 +88,7 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
     const struct tm *tm_info = localtime(&t);
 
     if (tm_info == NULL) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
     if (NumTrozos == 0) {
@@ -124,7 +124,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
     }
 
     if ((desc = open(trozos[1], flags, 0644)) == -1) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
 
@@ -181,7 +181,7 @@ void Cmd_dup(int NumTrozos, char *trozos[]) {
     for (int i = 0; i < open_file_count; i++) {
         if (open_files[i].desc == old_desc) {
             if ((new_desc = dup(old_desc)) == -1) {
-                Aux_general_Imprimir_Error();
+                Aux_general_Imprimir_Error("");
                 return;
             }
             if (open_file_count < MAX_FILES) {
@@ -210,7 +210,7 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
 
     //Llamada al sistema uname para obtener info del sistema
     if (uname(&sys_info) == -1) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
     // Imprimimos siguiendo el formato del shell de referencia
@@ -261,7 +261,7 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
 
     int fd = open(trozos[1], O_CREAT | O_EXCL | O_WRONLY, 0644);
     if (fd == -1) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
     } else {
         printf(ANSI_COLOR_GREEN "Archivo '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
         close(fd);
@@ -277,7 +277,7 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     }
 
     if (mkdir(trozos[1], 0755) == -1) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
     } else {
         printf(ANSI_COLOR_GREEN "Directorio '%s' creado exitosamente.\n" ANSI_COLOR_RESET, trozos[1]);
     }
@@ -339,7 +339,7 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
 
         DIR *dir = opendir(trozos[i]);
         if (!dir) {
-            Aux_general_Imprimir_Error();
+            Aux_general_Imprimir_Error("");
             return;
         }
 
@@ -469,7 +469,7 @@ void Aux_open_lofiles() {
 void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid) {
     DIR *dir = opendir(dir_name);
     if (!dir) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
 
@@ -506,7 +506,7 @@ void Aux_reclist(char *dir_name, bool show_long, bool show_acc, bool show_link, 
 void Aux_revlist(char *dir_name, bool show_long, bool show_acc, bool show_link, bool show_hid, char *parent_dir) {
     DIR *dir = opendir(dir_name);
     if (!dir) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
 
@@ -581,7 +581,7 @@ char *Aux_comando_mode_to_string(mode_t m, char *permisos) {
 void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, bool show_link) {
     struct stat fileStat;
     if (lstat(path, &fileStat) == -1) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
 
@@ -612,20 +612,20 @@ void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, b
 void Aux_delrec(char *dir_name) {
     struct stat path_stat;
     if (stat(dir_name, &path_stat) != 0) {
-        Aux_general_Imprimir_Error();
+        Aux_general_Imprimir_Error("");
         return;
     }
 
     // Primero Eliminar archivos
     if (S_ISREG(path_stat.st_mode)) {
         if (unlink(dir_name) == 0) printf("Archivo '%s' eliminado.\n", dir_name);
-        else Aux_general_Imprimir_Error();
+        else Aux_general_Imprimir_Error("");
     }
     // Segundo Eliminar directorio
     else if (S_ISDIR(path_stat.st_mode)) {
         DIR *dir = opendir(dir_name);
         if (!dir) {
-            Aux_general_Imprimir_Error();
+            Aux_general_Imprimir_Error("");
             return;
         }
 
@@ -641,6 +641,6 @@ void Aux_delrec(char *dir_name) {
         }
         closedir(dir);
         if (rmdir(dir_name) == 0) printf("Directorio '%s' eliminado.\n", dir_name);
-        else Aux_general_Imprimir_Error();
+        else Aux_general_Imprimir_Error("");
     }
 }
