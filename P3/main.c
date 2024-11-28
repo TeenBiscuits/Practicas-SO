@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <signal.h>
 
 #include "auxiliar.h"
 #include "color.h"
@@ -34,6 +35,7 @@ void procesarEntrada(char comando[MAXITEM]);
 int dividir_comando(char *input, char **trozos);
 
 int main() {
+    signal(SIGSEGV, Aux_general_handler);
     while (true) {
         char comando[MAXITEM];
         imprimirPrompt();

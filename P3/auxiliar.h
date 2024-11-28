@@ -13,4 +13,6 @@
 // en rojo porque mola el color rojo
 void Aux_general_Imprimir_Error(char *msg);
 
+void Aux_general_handler(int sig);
+
 #endif //AUXILIAR_H
