@@ -40,23 +40,24 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
 
     if (NumTrozos == 0) {
         MList_print(-1);
-    } else {
-        if (!strcmp(trozos[1], "-malloc")) {
-            if (NumTrozos >= 2) Aux_deallocate_malloc(NumTrozos, trozos);
-            else MList_print(MALLOC);
-        }
-        if (!strcmp(trozos[1], "-mmap")) {
-            if (NumTrozos >= 2) Aux_deallocate_mmap(NumTrozos, trozos);
-            else MList_print(MAPPED);
-        }
-        if (!strcmp(trozos[1], "-shared")) {
-            if (NumTrozos >= 2) Aux_deallocate_shared(NumTrozos, trozos);
-            else MList_print(SHARED);
-        }
-        if (!strcmp(trozos[1], "-delkey")) {
-            if (NumTrozos >= 2) Aux_deallocate_delkey(NumTrozos, trozos);
-            else MList_print(SHARED);
-        }
+        return;
+    }
+
+    if (!strcmp(trozos[1], "-malloc")) {
+        if (NumTrozos >= 2) Aux_deallocate_malloc(NumTrozos, trozos);
+        else MList_print(MALLOC);
+    }
+    if (!strcmp(trozos[1], "-mmap")) {
+        if (NumTrozos >= 2) Aux_deallocate_mmap(NumTrozos, trozos);
+        else MList_print(MAPPED);
+    }
+    if (!strcmp(trozos[1], "-shared")) {
+        if (NumTrozos >= 2) Aux_deallocate_shared(NumTrozos, trozos);
+        else MList_print(SHARED);
+    }
+    if (!strcmp(trozos[1], "-delkey")) {
+        if (NumTrozos >= 2) Aux_deallocate_delkey(NumTrozos, trozos);
+        else MList_print(SHARED);
     }
 }
 

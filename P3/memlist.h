@@ -45,16 +45,27 @@ typedef struct tMemList {
 // Devuelve la dirección de la memoria asignada o NULL en caso de fallo.
 void *MList_add_malloc(int size);
 
+// Mapea a memoria un archivo dir con permisos perm y lo registra en el memorial
+// Devuelve la dirección de la memoria asignada o NULL en caso de fallo.
 void *MList_add_mmap(tFNameL dir, int perm);
 
+// Asigna el bloque de memoria compartida de clave y tamaño dados.
+// De enviarse un tamaño >= 0 se crea un nuevo bloque de memoria compartida con la clave
+// De enviarse 0 se asigna a nueva memoria el bloque ya existente "clave"
+// En sendos casos se registra en el memorial
+// Devuelve la dirección de la memoria asignada o NULL en caso de fallo.
 void *MList_add_shared(key_t clave, size_t tam);
 
 // Elimina la primera dirección asignada con malloc que encuentre del mismo tamaño size
 // Si no lo encuentra imprime por pantalla un error
 void MList_remove_malloc(int size);
 
+// Elimina de memoria el primer archivo mapeado que encuentre con el mismo path.
+// Si no lo encuentra imprime por pantalla un error
 void MList_remove_mmap(tFNameL dir);
 
+// Desasigna el primer segmento de memoria que encuentre con la key dada
+// Si no lo encuentra imprime por pantalla un error
 void MList_remove_shared(key_t key);
 
 // Libera toda la memoria asignada y borra el memorial completo
@@ -92,6 +103,7 @@ bool MList_aux_insertItem(tAddressL direccion, int size, time_t alloct_time, enu
 // Elimina el elemento de la posición indicada. No se devuelve si la eliminación fue ejecutada.
 void MList_aux_deleteAtPosition(tPosMemL posicion, tMemList *lista);
 
+// Imprime la información esencial de un nodo según su tipo de asignación de memoria
 void MList_aux_printNode(tPosMemL posicion);
 
 #endif //MEMLIST_H

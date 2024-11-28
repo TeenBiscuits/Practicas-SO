@@ -110,7 +110,7 @@ void MList_remove_shared(key_t key) {
                 return;
             }
         }
-        Aux_general_Imprimir_Error("No hay bloque de ese tamaño asignado con malloc");
+        Aux_general_Imprimir_Error("No hay bloques con esa key en memoria");
     } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
 
