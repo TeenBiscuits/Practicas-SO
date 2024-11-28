@@ -114,6 +114,25 @@ void MList_remove_shared(key_t key) {
     } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
 
+void MList_remove_addr(tAddressL address) {
+    if (!MList_aux_isEmptyList(memorial)) {
+        for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
+            if (posaux->address == address) {
+                if (posaux->alloc == MALLOC) free(posaux->address);
+                if (posaux->alloc == MAPPED) {
+                    close(posaux->file_desc);
+                    munmap(posaux->address, posaux->size);
+                }
+                if (posaux->alloc == SHARED) shmdt(posaux->address);
+                MList_aux_deleteAtPosition(posaux, &memorial); // Eliminamos los registros
+                return;
+            }
+        }
+        printf("%p", address);
+        Aux_general_Imprimir_Error("No se ha encontrado esta dirección de memoria entre las asignadas con malloc, shared o mmap");
+    } else Aux_general_Imprimir_Error("Asigna memoria primero");
+}
+
 void MList_delete_all() {
     if (MList_aux_isEmptyList(memorial)) return;
 

@@ -47,17 +47,21 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
         if (NumTrozos >= 2) Aux_deallocate_malloc(NumTrozos, trozos);
         else MList_print(MALLOC);
     }
-    if (!strcmp(trozos[1], "-mmap")) {
+    else if (!strcmp(trozos[1], "-mmap")) {
         if (NumTrozos >= 2) Aux_deallocate_mmap(NumTrozos, trozos);
         else MList_print(MAPPED);
     }
-    if (!strcmp(trozos[1], "-shared")) {
+    else if (!strcmp(trozos[1], "-shared")) {
         if (NumTrozos >= 2) Aux_deallocate_shared(NumTrozos, trozos);
         else MList_print(SHARED);
     }
-    if (!strcmp(trozos[1], "-delkey")) {
+    else if (!strcmp(trozos[1], "-delkey")) {
         if (NumTrozos >= 2) Aux_deallocate_delkey(NumTrozos, trozos);
         else MList_print(SHARED);
+    }
+    else {
+        tAddressL address = (void *) strtol(trozos[1], NULL, 16);
+        MList_remove_addr(address);
     }
 }
 

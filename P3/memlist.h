@@ -68,6 +68,10 @@ void MList_remove_mmap(tFNameL dir);
 // Si no lo encuentra imprime por pantalla un error
 void MList_remove_shared(key_t key);
 
+// Desasigna la dirección dada de existir en el memorial
+// Si no lo encuentra imprime por pantalla un error
+void MList_remove_addr(tAddressL address);
+
 // Libera toda la memoria asignada y borra el memorial completo
 void MList_delete_all();
 
