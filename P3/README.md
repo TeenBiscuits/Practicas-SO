@@ -43,8 +43,8 @@ contenido
 
 ### P2
 
-- [ ] allocate [-malloc|-mmap|-createshared|-shared]
-- [ ] deallocate [-malloc|-mmap|-shared|-delkey]
+- [x] allocate [-malloc|-mmap|-createshared|-shared]
+- [x] deallocate [-malloc|-mmap|-shared|-delkey]
 - [ ] memfill [addr] [ch cont|cont]
 - [ ] memdump [addr] [cont]
 - [ ] memory [-funcs|-vars|-blocks|-all|-pmap]
