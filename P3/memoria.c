@@ -10,6 +10,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <stdint.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
@@ -62,7 +63,7 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_memfill(int NumTrozos, char *trozos[]) {
-    if (NumTrozos == 0 || (NumTrozos >= 1 && (!strcmp(trozos[1], "-?") || NumTrozos < 3))) {
+    if (NumTrozos < 3) {
         Help_memfill();
         return;
     }
@@ -71,6 +72,24 @@ void Cmd_memfill(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_memdump(int NumTrozos, char *trozos[]) {
+    if (NumTrozos < 2) {
+        Help_memdump();
+        return;
+    }
+
+    unsigned char *address = (unsigned char *) strtol(trozos[1], NULL, 16);
+
+    for (int i = 1, j = 0; i <= atoi(trozos[2]); i++) {
+        if (j == 0) printf("%2c ", address[i-1]);
+        if (j == 1) printf("%2x ", address[i-1]);
+        if (i % 16 == 0) {
+            if (j == 0) i -= 16;
+            j = (j + 1) % 2;
+            printf("\n");
+        }
+    }
+    printf("\n");
+
 }
 
 void Cmd_memory(int NumTrozos, char *trozos[]) {
@@ -216,7 +235,7 @@ void Aux_memfill_LlenarMemoria(void *p, size_t cont, unsigned char ch) {
     unsigned char *arr = (unsigned char *) p;
     size_t i;
 
-    printf("Llenando %ld bytes de memoria con el byte %c(%d) a partir de la dirección %p\n", cont, ch, ch, p);
+    printf("Llenando %ld bytes de memoria con el byte %c(%x) a partir de la dirección %p\n", cont, ch, ch, p);
     for (i = 0; i < cont; i++)
         arr[i] = ch;
 }
