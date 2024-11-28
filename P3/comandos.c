@@ -611,10 +611,17 @@ void Aux_comando_pfinfo(char *path, char *name, bool show_long, bool show_acc, b
     Aux_comando_mode_to_string(fileStat.st_mode, perms);
 
     if (show_long) {
+        char *pw_name, *gr_group;
+        if (getpwuid(fileStat.st_uid) != NULL || getgrgid(fileStat.st_gid) != NULL) {
+            pw_name = getpwuid(fileStat.st_uid)->pw_name;
+            gr_group = getgrgid(fileStat.st_gid)->gr_name;
+        } else {
+            pw_name = "R. I. P.";
+            gr_group = "Funerarias Manolo"; // En serio si esto pasa me voy a mear de la risa
+        }
         printf("%s   %ld (%ld)    %s    %s %s %8ld %s\n",
-               timebuf, (long) fileStat.st_nlink, fileStat.st_ino,
-               getpwuid(fileStat.st_uid)->pw_name, getgrgid(fileStat.st_gid)->gr_name, perms,
-               (long) fileStat.st_size, name);
+               timebuf, (long) fileStat.st_nlink, fileStat.st_ino, pw_name,
+               gr_group, perms, (long) fileStat.st_size, name);
     } else if (show_acc) {
         printf("%8ld  %s %s\n", fileStat.st_size, timebuf, name);
     } else if (show_link && S_ISLNK(fileStat.st_mode)) {
