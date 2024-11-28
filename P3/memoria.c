@@ -89,7 +89,7 @@ void Cmd_write(int NumTrozos, char *trozos[]) {
 void Cmd_recurse(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1) {
         if (!strcmp(trozos[1], "-?")) {
-            Help_memory();
+            Help_recurse();
             return;
         }
         Aux_recurse_Recursiva(atoi(trozos[1]));
