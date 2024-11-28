@@ -13,7 +13,4 @@
 // en rojo porque mola el color rojo
 void Aux_general_Imprimir_Error(char *msg);
 
-// Devuelve el valor numérico de las diferentes "flags" de apertura
-int Aux_general_get_flag(const char *mode);
-
 #endif //AUXILIAR_H
