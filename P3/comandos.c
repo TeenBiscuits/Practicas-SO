@@ -53,7 +53,7 @@ void Cmd_authors(int NumTrozos, char *trozos[]) {
         printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
     } else {
         // Si el argumento no es reconocido, imprime el mensaje de error
-        printf(ANSI_COLOR_RED "Error: Opción no reconocida.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Opción no reconocida");
         printf("Usa el comando 'authors -l' para obtener solamente los logins.\n");
         printf("Usa el comando 'authors -n' para obtener solamente los nombres.\n");
         printf("Usa el comando 'authors' para obtener tanto los logins como los nombres.\n");
@@ -113,13 +113,13 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         return;
     }
     if (NumTrozos < 2) {
-        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'open fich [df]'.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Proporciona un descriptor válido. Usa 'open fich [df]'");
         return;
     }
 
     int flags = Aux_general_get_flag(trozos[2]), desc;
     if (flags == -1) {
-        printf(ANSI_COLOR_RED "Error: Modo no reconocido.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Modo no reconocido");
         return;
     }
 
@@ -135,7 +135,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         open_file_count++;
         printf("Archivo '%s' abierto con descriptor %d en modo '%s'.\n", trozos[1], desc, trozos[2]);
     } else {
-        printf(ANSI_COLOR_RED "Error: No se pueden abrir más archivos.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("No se pueden abrir más archivos");
         close(desc);
     }
 }
@@ -146,7 +146,7 @@ void Cmd_close(int NumTrozos, char *trozos[]) {
         return;
     }
     if (NumTrozos != 1 || atoi(trozos[1]) < 0) {
-        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'close [df]'.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Proporciona un descriptor válido. Usa 'close [df]'");
         return;
     }
 
@@ -165,12 +165,12 @@ void Cmd_close(int NumTrozos, char *trozos[]) {
             return;
         }
     }
-    printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, desc);
+    fprintf(stderr, ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, desc);
 }
 
 void Cmd_dup(int NumTrozos, char *trozos[]) {
     if (NumTrozos == 0 || atoi(trozos[1]) < 0) {
-        printf(ANSI_COLOR_RED "Error: Proporciona un descriptor válido. Usa 'dup [df]'.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Proporciona un descriptor válido. Usa 'dup [df]'");
         return;
     }
     if (strcmp(trozos[1], "-?") == 0) {
@@ -191,13 +191,13 @@ void Cmd_dup(int NumTrozos, char *trozos[]) {
                 open_file_count++;
                 printf("Descriptor %d duplicado. Nuevo descriptor: %d\n", old_desc, new_desc);
             } else {
-                printf(ANSI_COLOR_RED "Error: Límite de archivos alcanzado.\n" ANSI_COLOR_RESET);
+                Aux_general_Imprimir_Error("Límite de archivos alcanzado");
                 close(new_desc);
             }
             return;
         }
     }
-    printf(ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, old_desc);
+    fprintf(stderr,ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, old_desc);
 }
 
 void Cmd_infosys(int NumTrozos, char *trozos[]) {
@@ -232,8 +232,7 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
     int ncomando = atoi(trozos[1]);
     if (ncomando <= -1) {
         HList_show_last_n(ncomando);
-    }
-    else if (ncomando >= 1 && ncomando <= HList_total()) {
+    } else if (ncomando >= 1 && ncomando <= HList_total()) {
         HList_show_n(ncomando);
     }
 }
@@ -313,7 +312,7 @@ void Cmd_cwd(int NumTrozos, char *trozos[]) {
 
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        printf(ANSI_COLOR_RED "Error: No se pudo obtener el directorio actual: %s\n" ANSI_COLOR_RESET, strerror(errno));
+        Aux_general_Imprimir_Error("No se pudo obtener el directorio actual");
     } else {
         printf("Directorio actual: %s\n", cwd);
     }
@@ -441,10 +440,10 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
     for (int i = 1; i <= NumTrozos; i++) {
         if (trozos[i][0] == '-') continue;
         if (trozos[i][0] == '/' && !outcwd) {
-            printf(ANSI_COLOR_RED "No es posible borrar '%s'. Solo es posible borrar carpetas en el CWD. "
-                   "Esto no es un error, es una característica diseña para evitar que en un "
-                   "desliz elimine root. Pero puedes usar -outcwd para eliminar fuera del CWD."
-                   ANSI_COLOR_RESET "\n", trozos[i]);
+            fprintf(stderr,ANSI_COLOR_RED "No es posible borrar '%s'. Solo es posible borrar carpetas en el CWD. "
+                    "Esto no es un error, es una característica diseña para evitar que en un "
+                    "desliz elimine root. Pero puedes usar -outcwd para eliminar fuera del CWD."
+                    ANSI_COLOR_RESET "\n", trozos[i]);
             continue;
         }
         Aux_delrec(trozos[i]);
@@ -455,7 +454,7 @@ void Cmd_delrec(int NumTrozos, char *trozos[]) {
 
 void Aux_open_lofiles() {
     if (open_file_count == 0) {
-        printf(ANSI_COLOR_RED "No hay archivos abiertos.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("No hay archivos abiertos");
         return;
     }
 

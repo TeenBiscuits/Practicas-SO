@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <limits.h>
 
+#include "auxiliar.h"
 #include "color.h"
 #include "comandos.h"
 #include "hislist.h"
@@ -45,15 +46,15 @@ void imprimirPrompt() {
     char *user = getenv("USER");
     char cwd[PATH_MAX], hostname[HOST_NAME_MAX];
     if (user == NULL) {
-        printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de usuario.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Imposible conseguir el nombre de usuario");
         user = "usuario";
     }
     if (gethostname(hostname, sizeof(hostname)) != 0) {
-        printf(ANSI_COLOR_RED "Error: Imposible conseguir el nombre de la máquina.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Imposible conseguir el nombre de la máquina");
         strcpy(hostname, "maquina");
     }
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        printf(ANSI_COLOR_RED "Error: Imposible conseguir la ruta del directorio actual.\n" ANSI_COLOR_RESET);
+        Aux_general_Imprimir_Error("Imposible conseguir la ruta del directorio actual");
         strcpy(cwd, "NULL");
     } else {
         printf(ANSI_COLOR_MAGENTA "%s@%s" ANSI_COLOR_RESET ":" ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "$ ", user,

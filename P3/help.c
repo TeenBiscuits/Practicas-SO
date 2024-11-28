@@ -56,7 +56,7 @@ void Cmd_help(int NumTrozos, char *trozos[]) {
                 return;
             }
         }
-        printf(ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
+        fprintf(stderr, ANSI_COLOR_RED"Comando '%s' no encontrado.\n"ANSI_COLOR_RESET, trozos[1]);
     }
 }
 
