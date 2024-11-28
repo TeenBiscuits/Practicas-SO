@@ -4,6 +4,8 @@
 #ifndef MEMORIA_H
 #define MEMORIA_H
 
+#define TAMANO 2048 // Tamaño de array en Aux_recurse_Recursiva()
+
 // COMANDOS DE MEMORIA P2
 
 // Asignar memoria
@@ -50,5 +52,7 @@ void Aux_allocate_shared(int NumTrozos, char *trozos[]);
 
 // Desasigna la memoria dada una clave
 void Aux_deallocate_shared(int NumTrozos, char *trozos[]);
+
+void Aux_recurse_Recursiva(int n);
 
 #endif //MEMORIA_H

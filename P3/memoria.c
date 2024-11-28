@@ -87,6 +87,13 @@ void Cmd_write(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_recurse(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1) {
+        if (!strcmp(trozos[1], "-?")) {
+            Help_memory();
+            return;
+        }
+        Aux_recurse_Recursiva(atoi(trozos[1]));
+    }
 }
 
 // Auxiliares
@@ -187,4 +194,14 @@ void Aux_allocate_shared(int NumTrozos, char *trozos[]) {
 void Aux_deallocate_shared(int NumTrozos, char *trozos[]) {
     key_t cl = (key_t) strtoul(trozos[2],NULL, 10);
     MList_remove_shared(cl);
+}
+
+void Aux_recurse_Recursiva(int n) {
+    char automatico[TAMANO];
+    static char estatico[TAMANO];
+
+    printf("parametro:%3d(%p) array %p, arr estatico %p\n", n, &n, automatico, estatico);
+
+    if (n > 0)
+        Aux_recurse_Recursiva(n - 1);
 }

@@ -52,7 +52,7 @@ contenido
 - [ ] writefile [file] [addr] [cont]
 - [ ] read [df] [addr] [cont]
 - [ ] write [df] [addr] [cont]
-- [ ] recurse [n]
+- [x] recurse [n]
 
 ## Errores
 
