@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 // COMANDOS DE MEMORIA P2
 
@@ -87,8 +88,8 @@ void Aux_allocate_malloc(int NumTrozos, char *trozos[]) {
     void *paux;
     if (NumTrozos >= 2) {
         if (atoi(trozos[2]) == 0)
-            printf(ANSI_COLOR_RED "No se asignan bloques de 0 bytes." ANSI_COLOR_RESET "\n");
-        else if ((paux = MList_add_malloc(atoi(trozos[2]))) == NULL) Aux_general_Imprimir_Error();
+            Aux_general_Imprimir_Error("No se asignan bloques de 0 bytes");
+        else if ((paux = MList_add_malloc(atoi(trozos[2]))) == NULL) Aux_general_Imprimir_Error("");
         else printf(ANSI_COLOR_GREEN "Asignados %d bytes en %p" ANSI_COLOR_RESET "\n", atoi(trozos[2]), paux);
     } else MList_print(MALLOC);
 }
@@ -108,7 +109,7 @@ void Aux_allocate_mmap(int NumTrozos, char *trozos[]) {
             if (strchr(perm, 'w') != NULL) protection |= PROT_WRITE;
             if (strchr(perm, 'x') != NULL) protection |= PROT_EXEC;
         }
-        if ((paux = MList_add_mmap(trozos[2], protection)) == NULL) Aux_general_Imprimir_Error();
+        if ((paux = MList_add_mmap(trozos[2], protection)) == NULL) Aux_general_Imprimir_Error("");
         else printf(ANSI_COLOR_GREEN "Fichero %s mapeado en %p" ANSI_COLOR_RESET "\n", trozos[2], paux);
     } else MList_print(MAPPED);
 }

@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #include "memlist.h"
 #include "auxiliar.h"
@@ -51,8 +52,8 @@ void MList_remove_malloc(int size) {
                 return;
             }
         }
-        printf(ANSI_COLOR_RED "No hay bloque de ese tamaño asignado con malloc" ANSI_COLOR_RESET "\n");
-    } else printf(ANSI_COLOR_RED "Asigna memoria primero" ANSI_COLOR_RESET "\n");
+        Aux_general_Imprimir_Error("No hay bloque de ese tamaño asignado con malloc");
+    } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
 
 void MList_remove_mmap(tFNameL dir) {
@@ -66,8 +67,9 @@ void MList_remove_mmap(tFNameL dir) {
                 return;
             }
         }
-        printf(ANSI_COLOR_RED "No hay archivos con ese nombre mapeados en memoria" ANSI_COLOR_RESET "\n");
-    } else printf(ANSI_COLOR_RED "Asigna memoria primero" ANSI_COLOR_RESET "\n");
+        Aux_general_Imprimir_Error("No hay archivos con ese nombre mapeados en memoria");
+    } else Aux_general_Imprimir_Error("Asigna memoria primero");
+}
 }
 
 void MList_delete_all() {
@@ -88,7 +90,8 @@ void MList_delete_all() {
 void MList_print(enum tAllocL type_of_alloc) {
     tPosMemL posaux;
     if (MList_aux_isEmptyList(memorial)) {
-        printf(ANSI_COLOR_RED "No hay bloques de memoria asignados para el proceso %d" ANSI_COLOR_RESET "\n", getpid());
+        fprintf(stderr,ANSI_COLOR_RED "No hay bloques de memoria asignados para el proceso %d" ANSI_COLOR_RESET "\n",
+                getpid());
         return;
     }
     char *allocname = NULL;
