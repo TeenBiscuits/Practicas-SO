@@ -57,6 +57,6 @@ void Aux_deallocate_shared(int NumTrozos, char *trozos[]);
 
 void Aux_recurse_Recursiva(int n);
 
-void Aux_memfill_LlenarMemoria (void *p, size_t cont, unsigned char byte);
+void Aux_memfill_LlenarMemoria(void *p, size_t cont, unsigned char byte);
 
 #endif //MEMORIA_H

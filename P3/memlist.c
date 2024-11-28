@@ -129,7 +129,8 @@ void MList_remove_addr(tAddressL address) {
             }
         }
         printf("%p", address);
-        Aux_general_Imprimir_Error("No se ha encontrado esta dirección de memoria entre las asignadas con malloc, shared o mmap");
+        Aux_general_Imprimir_Error("No se ha encontrado esta dirección de memoria "
+            "entre las asignadas con malloc, shared o mmap");
     } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
 

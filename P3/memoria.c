@@ -46,20 +46,16 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
     if (!strcmp(trozos[1], "-malloc")) {
         if (NumTrozos >= 2) Aux_deallocate_malloc(NumTrozos, trozos);
         else MList_print(MALLOC);
-    }
-    else if (!strcmp(trozos[1], "-mmap")) {
+    } else if (!strcmp(trozos[1], "-mmap")) {
         if (NumTrozos >= 2) Aux_deallocate_mmap(NumTrozos, trozos);
         else MList_print(MAPPED);
-    }
-    else if (!strcmp(trozos[1], "-shared")) {
+    } else if (!strcmp(trozos[1], "-shared")) {
         if (NumTrozos >= 2) Aux_deallocate_shared(NumTrozos, trozos);
         else MList_print(SHARED);
-    }
-    else if (!strcmp(trozos[1], "-delkey")) {
+    } else if (!strcmp(trozos[1], "-delkey")) {
         if (NumTrozos >= 2) Aux_deallocate_delkey(NumTrozos, trozos);
         else MList_print(SHARED);
-    }
-    else {
+    } else {
         tAddressL address = (void *) strtol(trozos[1], NULL, 16);
         MList_remove_addr(address);
     }
@@ -70,7 +66,7 @@ void Cmd_memfill(int NumTrozos, char *trozos[]) {
         Help_memfill();
         return;
     }
-    void * address = (void *) strtol(trozos[1], NULL, 16);
+    void *address = (void *) strtol(trozos[1], NULL, 16);
     Aux_memfill_LlenarMemoria(address, atoi(trozos[3]), trozos[2][0]);
 }
 
@@ -216,12 +212,11 @@ void Aux_recurse_Recursiva(int n) {
         Aux_recurse_Recursiva(n - 1);
 }
 
-void Aux_memfill_LlenarMemoria (void *p, size_t cont, unsigned char ch)
-{
-    unsigned char *arr=(unsigned char *) p;
+void Aux_memfill_LlenarMemoria(void *p, size_t cont, unsigned char ch) {
+    unsigned char *arr = (unsigned char *) p;
     size_t i;
 
-    printf("Llenando %ld bytes de memoria con el byte %c(%d) a partir de la dirección %p\n",cont,ch,ch,p);
-    for (i=0; i<cont;i++)
-        arr[i]=ch;
+    printf("Llenando %ld bytes de memoria con el byte %c(%d) a partir de la dirección %p\n", cont, ch, ch, p);
+    for (i = 0; i < cont; i++)
+        arr[i] = ch;
 }

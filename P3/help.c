@@ -186,7 +186,8 @@ void Help_deallocate() {
 }
 
 void Help_memfill() {
-    printf("memfill addr ch cont \tLlena la memoria con el carácter ch, empezando en la dirección addr, durante cont bytes.\n");
+    printf("memfill addr ch cont \tLlena la memoria con el carácter ch, empezando en la dirección addr, "
+        "durante cont bytes.\n");
 }
 
 void Help_memdump() {
