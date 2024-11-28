@@ -10,6 +10,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <errno.h>
 
 #include "memlist.h"
@@ -42,6 +44,33 @@ void *MList_add_mmap(tFNameL dir, int protection) {
     return p;
 }
 
+void *MList_add_shared(key_t clave, size_t tam) {
+    void *p;
+    int aux, id, flags = 0777;
+    struct shmid_ds s;
+
+    if (tam) /*tam distito de 0 indica crear */
+        flags = flags | IPC_CREAT | IPC_EXCL; /*cuando no es crear pasamos de tamano 0*/
+    if (clave == IPC_PRIVATE) /*no nos vale*/
+    {
+        errno = EINVAL;
+        return NULL;
+    }
+    if ((id = shmget(clave, tam, flags)) == -1)
+        return (NULL);
+    if ((p = shmat(id,NULL, 0)) == (void *) -1) {
+        aux = errno;
+        if (tam)
+            shmctl(id,IPC_RMID,NULL);
+        errno = aux;
+        return (NULL);
+    }
+    shmctl(id,IPC_STAT, &s); /* si no es crear, necesitamos el tamano, que es s.shm_segsz*/
+    tFNameL empty = "";
+    MList_aux_insertItem(p, s.shm_segsz, time(NULL), SHARED, clave, empty, -1, MNULL, &memorial);
+    return (p);
+}
+
 void MList_remove_malloc(int size) {
     if (!MList_aux_isEmptyList(memorial)) {
         for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
@@ -61,7 +90,7 @@ void MList_remove_mmap(tFNameL dir) {
         for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
             if (posaux->alloc == MAPPED && !strcmp(posaux->file_name, dir)) {
                 // Archivo encontrado
-                close(posaux->file_desc);
+                close(posaux->file_desc); // Cerrar archivo
                 munmap(posaux->address, posaux->size); // Liberamos la memoria
                 MList_aux_deleteAtPosition(posaux, &memorial); // Eliminamos los registros
                 return;
@@ -70,6 +99,19 @@ void MList_remove_mmap(tFNameL dir) {
         Aux_general_Imprimir_Error("No hay archivos con ese nombre mapeados en memoria");
     } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
+
+void MList_remove_shared(key_t key) {
+    if (!MList_aux_isEmptyList(memorial)) {
+        for (tPosMemL posaux = MList_aux_first(memorial); posaux != NULL; posaux = MList_aux_next(posaux, memorial)) {
+            if (posaux->alloc == SHARED && posaux->smb_key == key) {
+                // Dirección encontrada
+                shmdt(posaux->address); // Liberar memoria
+                MList_aux_deleteAtPosition(posaux, &memorial); // Eliminamos los registros
+                return;
+            }
+        }
+        Aux_general_Imprimir_Error("No hay bloque de ese tamaño asignado con malloc");
+    } else Aux_general_Imprimir_Error("Asigna memoria primero");
 }
 
 void MList_delete_all() {
@@ -83,6 +125,7 @@ void MList_delete_all() {
             close(posaux->file_desc);
             munmap(posaux->address, posaux->size);
         }
+        if (posaux->alloc == SHARED) shmdt(posaux->address);
         MList_aux_deleteAtPosition(posaux, &memorial);
     }
 }

@@ -29,7 +29,7 @@ struct tNodeMem {
     int size; // Tamaño en bits de la memoria asignada
     time_t time; // Fecha de asignación de memoria
     enum tAllocL alloc; // Tipo de asignación de memoria. Valores válidos: MALLOC, SHARED, MAPPED
-    int smb_key; // Clave para memory blocks
+    key_t smb_key; // Clave para memory blocks
     tFNameL file_name; // Nombre del archivo para archivos mapeados
     int file_desc; // Descriptor del archivo para archivos mapeados
     tPosMemL siguiente; // Puntero al siguiente nodo de la lista
@@ -47,11 +47,15 @@ void *MList_add_malloc(int size);
 
 void *MList_add_mmap(tFNameL dir, int perm);
 
+void *MList_add_shared(key_t clave, size_t tam);
+
 // Elimina la primera dirección asignada con malloc que encuentre del mismo tamaño size
 // Si no lo encuentra imprime por pantalla un error
 void MList_remove_malloc(int size);
 
 void MList_remove_mmap(tFNameL dir);
+
+void MList_remove_shared(key_t key);
 
 // Libera toda la memoria asignada y borra el memorial completo
 void MList_delete_all();

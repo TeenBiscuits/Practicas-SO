@@ -10,6 +10,8 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 // COMANDOS DE MEMORIA P2
 
@@ -48,6 +50,10 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
             else MList_print(MAPPED);
         }
         if (!strcmp(trozos[1], "-shared")) {
+            if (NumTrozos >= 2) Aux_deallocate_shared(NumTrozos, trozos);
+            else MList_print(SHARED);
+        }
+        if (!strcmp(trozos[1], "-delkey")) {
             if (NumTrozos >= 2) Aux_deallocate_delkey(NumTrozos, trozos);
             else MList_print(SHARED);
         }
@@ -119,17 +125,65 @@ void Aux_deallocate_mmap(int NumTrozos, char *trozos[]) {
 }
 
 void Aux_allocate_createshared(int NumTrozos, char *trozos[]) {
+    key_t cl;
+    size_t tam;
+    void *p;
 
+    if (trozos[2] == NULL || trozos[3] == NULL) {
+        MList_print(SHARED);
+        return;
+    }
+
+    cl = (key_t) strtoul(trozos[2],NULL, 10);
+    tam = (size_t) strtoul(trozos[3],NULL, 10);
+    if (tam == 0) {
+        Aux_general_Imprimir_Error("No se asignan bloques de 0 bytes");
+        return;
+    }
+    if ((p = MList_add_shared(cl, tam)) != NULL)
+        printf(ANSI_COLOR_GREEN "Asignados %lu bytes en %p\n" ANSI_COLOR_RESET, (unsigned long) tam, p);
+    else
+        fprintf(stderr,ANSI_COLOR_RED "Imposible asignar memoria compartida clave %lu: %s\n" ANSI_COLOR_RESET,
+                (unsigned long) cl, strerror(errno));
 }
 
 void Aux_deallocate_delkey(int NumTrozos, char *trozos[]) {
+    key_t clave;
+    int id;
+    char *key = trozos[2];
 
+    if (key == NULL || (clave = (key_t) strtoul(key,NULL, 10)) == IPC_PRIVATE) {
+        Aux_general_Imprimir_Error("delkey necesita clave válida");
+        return;
+    }
+    if ((id = shmget(clave, 0, 0666)) == -1) {
+        Aux_general_Imprimir_Error("shmget: imposible obtener memoria compartida");
+        return;
+    }
+    if (shmctl(id,IPC_RMID,NULL) == -1)
+        Aux_general_Imprimir_Error("shmctl: imposible eliminar memoria compartida");
 }
 
 void Aux_allocate_shared(int NumTrozos, char *trozos[]) {
+    key_t cl;
+    void *p;
 
+    if (trozos[2] == NULL) {
+        MList_print(SHARED);
+        return;
+    }
+
+    cl = (key_t) strtoul(trozos[2],NULL, 10);
+
+    if ((p = MList_add_shared(cl, 0)) != NULL)
+        printf(ANSI_COLOR_GREEN "Asignada memoria compartida de clave %lu en %p\n" ANSI_COLOR_RESET,
+               (unsigned long) cl, p);
+    else
+        fprintf(stderr,ANSI_COLOR_RED "Imposible asignar memoria compartida clave %lu: %s\n" ANSI_COLOR_RESET,
+                (unsigned long) cl, strerror(errno));
 }
 
 void Aux_deallocate_shared(int NumTrozos, char *trozos[]) {
-
+    key_t cl = (key_t) strtoul(trozos[2],NULL, 10);
+    MList_remove_shared(cl);
 }
