@@ -14,7 +14,7 @@ run: p2.o
 
 # Con "make test" para comprobar los comandos
 test: debug
-	valgrind --leak-check=full --show-reachable=yes ./p2.o < tests.txt
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes ./p2.o < tests.txt
 # Con "make flechas" para compilar y ejecutar con rlwrap
 # Existe un bug en rlwrap que elimna el promt luego de escribir algo se soluciona así:
 # $ sudo nano /etc/inputrc
@@ -25,7 +25,7 @@ flechas: p2.o
 
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
 leaks: debug
-	valgrind --leak-check=full --show-reachable=yes ./p2.o
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes ./p2.o
 
 # Con "make clean" borrar el archivo
 clean:
