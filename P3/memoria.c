@@ -66,6 +66,12 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_memfill(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && (!strcmp(trozos[1], "-?") || NumTrozos < 3))) {
+        Help_memfill();
+        return;
+    }
+    void * address = (void *) strtol(trozos[1], NULL, 16);
+    Aux_memfill_LlenarMemoria(address, atoi(trozos[3]), trozos[2][0]);
 }
 
 void Cmd_memdump(int NumTrozos, char *trozos[]) {
@@ -208,4 +214,14 @@ void Aux_recurse_Recursiva(int n) {
 
     if (n > 0)
         Aux_recurse_Recursiva(n - 1);
+}
+
+void Aux_memfill_LlenarMemoria (void *p, size_t cont, unsigned char ch)
+{
+    unsigned char *arr=(unsigned char *) p;
+    size_t i;
+
+    printf("Llenando %ld bytes de memoria con el byte %c(%d) a partir de la dirección %p\n",cont,ch,ch,p);
+    for (i=0; i<cont;i++)
+        arr[i]=ch;
 }

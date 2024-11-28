@@ -45,7 +45,7 @@ contenido
 
 - [x] allocate [-malloc|-mmap|-createshared|-shared]
 - [x] deallocate [-malloc|-mmap|-shared|-delkey]
-- [ ] memfill [addr] [ch cont|cont]
+- [x] memfill [addr] [ch cont|cont]
 - [ ] memdump [addr] [cont]
 - [ ] memory [-funcs|-vars|-blocks|-all|-pmap]
 - [ ] readfile [file] [addr] [cont]
