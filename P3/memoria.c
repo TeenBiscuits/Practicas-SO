@@ -102,9 +102,10 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
                     break; // Escapar comilla simple
                 case '\"': printf(" \\\"");
                     break; // Escapar comilla doble
+                case 0: printf("   ");
+                    break; // Espacios en blanco
                 default:
                     if (c >= 32 && c <= 126) printf("%3c", c);
-                    else if (c == 0) printf("   ");
                     else printf("  .");
             }
         }
