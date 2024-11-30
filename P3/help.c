@@ -110,8 +110,11 @@ void Help_help() {
 void Help_default() {
     printf("help [cmd|-lt|-T|-all]\tMuestra ayuda sobre los comandos\n");
     printf("Comandos disponibles:\n");
-    printf(
-        "authors, pid, ppid, cd, date, historic, open, close, dup, infosys, help, quit, exit, bye, makefile, listfile, cwd, listdir, reclist, revlist, erase, delrec.\n");
+    for (int i = 1; i < sizeof(CH) / sizeof(CH[0]); i++) {
+        printf("%s", CH[i].comando);
+        if (i < (sizeof(CH) / sizeof(CH[0])-1)) printf(", ");
+    }
+    printf(".\n");
 }
 
 void Help_historic() {
