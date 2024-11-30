@@ -59,4 +59,10 @@ void Aux_recurse_Recursiva(int n);
 
 void Aux_memfill_LlenarMemoria(void *p, size_t cont, unsigned char byte);
 
+void Aux_memory_dopmap(void);
+
+void Aux_memory_funcs();
+
+void Aux_memory_vars();
+
 #endif //MEMORIA_H

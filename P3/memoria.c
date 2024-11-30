@@ -11,8 +11,11 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 // COMANDOS DE MEMORIA P2
 
@@ -80,8 +83,8 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
     unsigned char *address = (unsigned char *) strtol(trozos[1], NULL, 16);
 
     for (int i = 1, j = 0; i <= atoi(trozos[2]); i++) {
-        if (j == 0) printf("%2c ", address[i-1]);
-        if (j == 1) printf("%2x ", address[i-1]);
+        if (j == 0) printf("%2c ", address[i - 1]);
+        if (j == 1) printf("%2x ", address[i - 1]);
         if (i % 16 == 0) {
             if (j == 0) i -= 16;
             j = (j + 1) % 2;
@@ -89,14 +92,20 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
         }
     }
     printf("\n");
-
 }
 
 void Cmd_memory(int NumTrozos, char *trozos[]) {
-    if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
-        Help_memory();
+    if (NumTrozos < 1 || !strcmp(trozos[1], "-all")) {
+        Aux_memory_vars();
+        Aux_memory_funcs();
+        MList_print(-1);
         return;
     }
+    if (!strcmp(trozos[1], "-?")) Help_memory();
+    if (!strcmp(trozos[1], "-blocks")) MList_print(-1);
+    if (!strcmp(trozos[1], "-funcs")) Aux_memory_funcs();
+    if (!strcmp(trozos[1], "-vars")) Aux_memory_vars();
+    if (!strcmp(trozos[1], "-pmap")) Aux_memory_dopmap();
 }
 
 void Cmd_readfile(int NumTrozos, char *trozos[]) {
@@ -238,4 +247,63 @@ void Aux_memfill_LlenarMemoria(void *p, size_t cont, unsigned char ch) {
     printf("Llenando %ld bytes de memoria con el byte %c(%x) a partir de la dirección %p\n", cont, ch, ch, p);
     for (i = 0; i < cont; i++)
         arr[i] = ch;
+}
+
+void Aux_memory_dopmap(void) {
+    pid_t pid; /*hace el pmap (o equivalente) del proceso actual*/
+    char elpid[32];
+    char *argv[4] = {"pmap", elpid,NULL};
+
+    sprintf(elpid, "%d", (int) getpid());
+    if ((pid = fork()) == -1) {
+        Aux_general_Imprimir_Error("Imposible crear proceso");
+        return;
+    }
+    if (pid == 0) {
+        if (execvp(argv[0], argv) == -1)
+            Aux_general_Imprimir_Error("cannot execute pmap (linux, solaris)");
+
+        argv[0] = "procstat";
+        argv[1] = "vm";
+        argv[2] = elpid;
+        argv[3] = NULL;
+        if (execvp(argv[0], argv) == -1) /*No hay pmap, probamos procstat FreeBSD */
+            Aux_general_Imprimir_Error("cannot execute procstat (FreeBSD)");
+
+        argv[0] = "procmap", argv[1] = elpid;
+        argv[2] = NULL;
+        if (execvp(argv[0], argv) == -1) /*probamos procmap OpenBSD*/
+            Aux_general_Imprimir_Error("cannot execute procmap (OpenBSD)");
+
+        argv[0] = "vmmap";
+        argv[1] = "-interleave";
+        argv[2] = elpid;
+        argv[3] = NULL;
+        if (execvp(argv[0], argv) == -1) /*probamos vmmap Mac-OS*/
+            Aux_general_Imprimir_Error("cannot execute vmmap (Mac-OS)");
+        exit(1);
+    }
+    waitpid(pid,NULL, 0);
+}
+
+void Aux_memory_funcs() {
+    printf("Funciones programa\t\t%p,\t%p,\t%p\n", Aux_general_Imprimir_Error, MList_print, Cmd_allocate);
+    printf("Funciones libreria\t\t%p,\t%p,\t%p\n", printf, getpid, wait);
+}
+
+
+int externia = 1, externia2 = 2, externia3 = 3;
+int externa, externb, externc;
+
+void Aux_memory_vars() {
+    extern int externia, externia2, externia3;
+    extern int externa, externb, externc;
+    static int statica = 1, staticb = 2, staticc = 3;
+    static int staticia, staticib, staticicc;
+    auto int autoa = 1, autob = 2, autoc = 3;
+    printf("Variables externas\t\t%p,\t%p,\t%p\n", &externia, &externia2, &externia3);
+    printf("Variables (N.I.) externas\t%p,\t%p,\t%p\n", &externa, &externb, &externc);
+    printf("Variables estáticas\t\t%p,\t%p,\t%p\n", &staticia, &staticib, &staticicc);
+    printf("Variables (N.I.) estáticas\t%p,\t%p,\t%p\n", &statica, &staticb, &staticc);
+    printf("Variables automáticas\t\t%p,\t%p,\t%p\n", &autoa, &autob, &autoc);
 }
