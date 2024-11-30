@@ -54,21 +54,22 @@ contenido
 - [ ] write [df] [addr] [cont]
 - [x] recurse [n]
 
-## Errores
+### P3
 
-> Los que encontré por ahora
-
-- [x] El comando "date" provoca un leak de memoria
-- [x] Warnings varios en Cmd_date
-- [x] El comando help no ha sido actualizado a todos los comandos
-- [x] El comando help cuando emite un error imprime el comando help y no el comando mandado
-- [x] Cuando se manda un comando -? debemos imprimir la ayuda de ese comando
-- [x] Authors no imprime correctamente
-- [x] El comando listdir puede ser llamado con ls
-- [x] Open tienen memory leaks
-- [x] erase no borra más de un archivo
-- [x] listfile -link no funciona correctamente (como en shell referencia)
-- [x] reclist no imprime correctamente (como en shell referencia)
-- [x] revlist no imprime correctamente (como en shell referencia)
-- [x] delrec no elimina
- 
+- [ ] getuid
+- [ ] setuid [-l] id
+- [ ] showvar v1 v2 ..
+- [ ] changevar [-a|-e|-p] var val
+- [ ] subsvar [-a|-e] v1 v2 val
+- [ ] environ [-environ|-addr]
+- [ ] fork
+- [ ] search [-add dir|-del dir|-clear|-path]
+- [ ] exec progspec
+- [ ] exec-pri prio progspec
+- [ ] fg progspe
+- [ ] fgpri prio progspec
+- [ ] back progspec
+- [ ] backpri prio progspec
+- [ ] listjobs
+- [ ] deljobs -term|-sig
+- [ ] \*****
