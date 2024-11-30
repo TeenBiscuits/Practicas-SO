@@ -83,17 +83,35 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
     }
 
     unsigned char *address = (unsigned char *) strtol(trozos[1], NULL, 16);
-
-    for (int i = 1, j = 0; i <= atoi(trozos[2]); i++) {
-        if (j == 0) printf("%2c ", address[i - 1]);
-        if (j == 1) printf("%2x ", address[i - 1]);
-        if (i % 16 == 0) {
-            if (j == 0) i -= 16;
-            j = (j + 1) % 2;
-            printf("\n");
+    int i = 0, j = 0;
+    while (i <= atoi(trozos[2])) {
+        for (int k = 0; k < 16 && i <= atoi(trozos[2]); i++, k++) {
+            unsigned char c = address[i];
+            switch (c) {
+                // Este precioso switch me los escribió ChatGPT porque para
+                // una tarea tan mecánica, pues la IA util un rato es.
+                case '\n': printf(" \\n");
+                    break; // Escapar salto de línea
+                case '\t': printf(" \\t");
+                    break; // Escapar tabulación
+                case '\r': printf(" \\r");
+                    break; // Escapar retorno de carro
+                case '\\': printf(" \\\\");
+                    break; // Escapar barra invertida
+                case '\'': printf(" \\\'");
+                    break; // Escapar comilla simple
+                case '\"': printf(" \\\"");
+                    break; // Escapar comilla doble
+                default:
+                    if (c >= 32 && c <= 126) printf("%3c", c);
+                    else if (c == 0) printf("   ");
+                    else printf("  .");
+            }
         }
+        printf("\n");
+        for (int k = 0; k < 16 && j <= atoi(trozos[2]); j++, k++) printf(" %02x", address[j]);
+        printf("\n");
     }
-    printf("\n");
 }
 
 void Cmd_memory(int NumTrozos, char *trozos[]) {
