@@ -39,7 +39,8 @@ debug: main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o
 	$(CC) $(CFLAGS) -g -O0 -c -o auxiliar.o auxiliar.c
 	$(CC) $(CFLAGS) -g -O0 -c -o comandos.o comandos.c
 	$(CC) $(CFLAGS) -g -O0 -c -o memoria.o memoria.c
-	$(CC) $(CFLAGS) -g -O0 -o p3.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o color.h
+	$(CC) $(CFLAGS) -g -O0 -c -o procesos.o procesos.c
+	$(CC) $(CFLAGS) -g -O0 -o p3.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o procesos.o color.h
 
 # Compilación normal
 help.o: help.c
@@ -60,8 +61,11 @@ comandos.o: comandos.c
 memoria.o: memoria.c
 	$(CC) $(CFLAGS) -c -o memoria.o memoria.c
 
-p3.o: main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o
-	$(CC) $(CFLAGS) -o p3.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o color.h
+procesos.o: procesos.c
+	$(CC) $(CFLAGS) -c -o procesos.o procesos.c
+
+p3.o: main.c help.o hislist.o memlist.o auxiliar.o comandos.o procesos.o memoria.o
+	$(CC) $(CFLAGS) -o p3.o main.c help.o hislist.o memlist.o auxiliar.o comandos.o memoria.o procesos.o color.h
 
 # Se declara que las ejecuciones no son archivos
 .PHONY: all run flechas leaks debug clean

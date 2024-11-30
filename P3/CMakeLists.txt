@@ -16,4 +16,6 @@ add_executable(P3 main.c
         auxiliar.c
         auxiliar.h
         memlist.c
-        memlist.h)
+        memlist.h
+        procesos.c
+        procesos.h)

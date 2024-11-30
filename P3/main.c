@@ -15,6 +15,7 @@
 #include "hislist.h"
 #include "help.h"
 #include "memoria.h"
+#include "procesos.h"
 
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
@@ -103,7 +104,23 @@ struct CMD C[] = {
     {"writefile", Cmd_writefile},
     {"read", Cmd_read},
     {"write", Cmd_write},
-    {"recurse", Cmd_recurse}
+    {"recurse", Cmd_recurse},
+    {"getuid", Cmd_getuid},
+    {"setuid", Cmd_setuid},
+    {"showvar", Cmd_showvar},
+    {"changevar", Cmd_changevar},
+    {"subsvar", Cmd_subsvar},
+    {"environ", Cmd_environ},
+    {"fork", Cmd_fork},
+    {"search", Cmd_search},
+    {"exec", Cmd_exec},
+    {"execpri", Cmd_execpri},
+    {"fg", Cmd_fg},
+    {"fgpri", Cmd_fgpri},
+    {"back", Cmd_back},
+    {"backpri", Cmd_backpri},
+    {"listjobs", Cmd_listjobs},
+    {"deljobs", Cmd_deljobs}
 };
 
 void procesarEntrada(char comando[MAXITEM]) {

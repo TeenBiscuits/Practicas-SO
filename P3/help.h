@@ -111,4 +111,36 @@ void Help_write();
 // Imprime por pantalla la ayuda de recurse
 void Help_recurse();
 
+void Help_getuid();
+
+void Help_setuid();
+
+void Help_showvar();
+
+void Help_changevar();
+
+void Help_subsvar();
+
+void Help_environ();
+
+void Help_fork();
+
+void Help_search();
+
+void Help_exec();
+
+void Help_execpri();
+
+void Help_fg();
+
+void Help_fgpri();
+
+void Help_back();
+
+void Help_backpri();
+
+void Help_listjobs();
+
+void Help_deljobs();
+
 #endif //HELP_H

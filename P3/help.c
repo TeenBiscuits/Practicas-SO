@@ -42,7 +42,23 @@ struct CMDHELP CH[] = {
     {"writefile", Help_writefile},
     {"read", Help_read},
     {"write", Help_write},
-    {"recurse", Help_recurse}
+    {"recurse", Help_recurse},
+    {"getuid", Help_getuid},
+    {"setuid", Help_setuid},
+    {"showvar", Help_showvar},
+    {"changevar", Help_changevar},
+    {"subsvar", Help_subsvar},
+    {"environ", Help_environ},
+    {"fork", Help_fork},
+    {"search", Help_search},
+    {"exec", Help_exec},
+    {"execpri", Help_execpri},
+    {"fg", Help_fg},
+    {"fgpri", Help_fgpri},
+    {"back", Help_back},
+    {"backpri", Help_backpri},
+    {"listjobs", Help_listjobs},
+    {"deljobs", Help_deljobs}
 };
 
 void Cmd_help(int NumTrozos, char *trozos[]) {
@@ -112,7 +128,7 @@ void Help_default() {
     printf("Comandos disponibles:\n");
     for (int i = 1; i < sizeof(CH) / sizeof(CH[0]); i++) {
         printf("%s", CH[i].comando);
-        if (i < (sizeof(CH) / sizeof(CH[0])-1)) printf(", ");
+        if (i < (sizeof(CH) / sizeof(CH[0]) - 1)) printf(", ");
     }
     printf(".\n");
 }
@@ -224,4 +240,52 @@ void Help_write() {
 
 void Help_recurse() {
     printf("recurse [n] \tInvoca a la funcion recursiva n veces\n");
+}
+
+void Help_getuid() {
+}
+
+void Help_setuid() {
+}
+
+void Help_showvar() {
+}
+
+void Help_changevar() {
+}
+
+void Help_subsvar() {
+}
+
+void Help_environ() {
+}
+
+void Help_fork() {
+}
+
+void Help_search() {
+}
+
+void Help_exec() {
+}
+
+void Help_execpri() {
+}
+
+void Help_fg() {
+}
+
+void Help_fgpri() {
+}
+
+void Help_back() {
+}
+
+void Help_backpri() {
+}
+
+void Help_listjobs() {
+}
+
+void Help_deljobs() {
 }
