@@ -10,10 +10,12 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -109,6 +111,26 @@ void Cmd_memory(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_readfile(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_readfile();
+        return;
+    }
+
+    void *p;
+    size_t cont = -1; /*si no pasamos tamano se lee entero */
+    ssize_t n;
+    if (trozos[1] == NULL || trozos[2] == NULL) {
+        Aux_general_Imprimir_Error("faltan parámetros");
+        return;
+    }
+    p = (void *) strtol(trozos[2], NULL, 16); /*convertimos de cadena a puntero*/
+    if (trozos[3] != NULL)
+        cont = (size_t) atoll(trozos[3]);
+
+    if ((n = Aux_readfile_LeerFichero(trozos[1], p, cont)) == -1)
+        Aux_general_Imprimir_Error("Imposible leer fichero");
+    else
+        printf(ANSI_COLOR_GREEN "leidos %lld bytes de %s en %p\n" ANSI_COLOR_RESET, (long long) n, trozos[1], p);
 }
 
 void Cmd_writefile(int NumTrozos, char *trozos[]) {
@@ -306,4 +328,23 @@ void Aux_memory_vars() {
     printf("Variables estáticas\t\t%p,\t%p,\t%p\n", &staticia, &staticib, &staticicc);
     printf("Variables (N.I.) estáticas\t%p,\t%p,\t%p\n", &statica, &staticb, &staticc);
     printf("Variables automáticas\t\t%p,\t%p,\t%p\n", &autoa, &autob, &autoc);
+}
+
+ssize_t Aux_readfile_LeerFichero(char *f, void *p, size_t cont) {
+    struct stat s;
+    ssize_t n;
+    int df, aux;
+
+    if (stat(f, &s) == -1 || (df = open(f, O_RDONLY)) == -1)
+        return -1;
+    if (cont == -1) /* si pasamos -1 como bytes a leer lo leemos entero*/
+        cont = s.st_size;
+    if ((n = read(df, p, cont)) == -1) {
+        aux = errno;
+        close(df);
+        errno = aux;
+        return -1;
+    }
+    close(df);
+    return n;
 }

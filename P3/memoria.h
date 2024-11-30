@@ -5,6 +5,7 @@
 #define MEMORIA_H
 
 #include <stddef.h>
+#include <sys/types.h>
 
 #define TAMANO 2048 // Tamaño de array en Aux_recurse_Recursiva()
 
@@ -64,5 +65,7 @@ void Aux_memory_dopmap(void);
 void Aux_memory_funcs();
 
 void Aux_memory_vars();
+
+ssize_t Aux_readfile_LeerFichero(char *f, void *p, size_t cont);
 
 #endif //MEMORIA_H

@@ -48,7 +48,7 @@ contenido
 - [x] memfill [addr] [ch cont|cont]
 - [x] memdump [addr] [cont]
 - [x] memory [-funcs|-vars|-blocks|-all|-pmap]
-- [ ] readfile [file] [addr] [cont]
+- [x] readfile [file] [addr] [cont]
 - [ ] writefile [file] [addr] [cont]
 - [ ] read [df] [addr] [cont]
 - [ ] write [df] [addr] [cont]
