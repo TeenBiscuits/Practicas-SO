@@ -243,49 +243,85 @@ void Help_recurse() {
 }
 
 void Help_getuid() {
+    printf("getuid  Muestra las credenciales del proceso que ejecuta el shell\n");
 }
 
 void Help_setuid() {
+    printf("setuid [-l] id  Cambia las credenciales del proceso que ejecuta el shell\n"
+        "\tid: establece la credencial al valor numerico id\n"
+        "\t-l id: establece la credencial a login id\n");
 }
 
 void Help_showvar() {
+    printf("showvar var\tMuestra el valor y las direcciones de la variable de entorno var\n");
 }
 
 void Help_changevar() {
+    printf("changevar [-a|-e|-p] var valor  Cambia el valor de una variable de entorno\n"
+        "\t-a: accede por el tercer arg de main\n"
+        "\t-e: accede mediante environ\n"
+        "\t-p: accede mediante putenv\n");
 }
 
 void Help_subsvar() {
+    printf("subsvar [-a|-e] var1 var2 valor Sustituye la variable de entorno var1\n"
+        "\tcon var2=valor\n"
+        "\t-a: accede por el tercer arg de main\n"
+        "\t-e: accede mediante environ\n");
 }
 
 void Help_environ() {
+    printf("environ [-environ|-addr]\tMuestra el entorno del proceso\n"
+        "\t-environ: accede usando environ (en lugar del tercer arg de main)\n"
+        "\t-addr: muestra el valor y donde se almacenan environ y el 3er arg main\n");
 }
 
 void Help_fork() {
+    printf("fork\tEl shell hace fork y queda en espera a que su hijo termine\n");
 }
 
 void Help_search() {
+    printf("search [-add|-del|-clear|-path]..\tManipula o muestra la ruta de busqueda del shell (path)\n"
+        "\t-add dir: aniade dir a la ruta de busqueda(equiv +dir)\n"
+        "\t-del dir: elimina dir de la ruta de busqueda (equiv -dir)\n"
+        "\t-clear: vacia la ruta de busqueda\n"
+        "\t-path: importa el PATH en la ruta de busqueda\n");
 }
 
 void Help_exec() {
+    printf("exec VAR1 VAR2 ..prog args....[@pri]\tEjecuta, sin crear proceso,prog con argumentos\n"
+        "\ten un entorno que contiene solo las variables VAR1, VAR2...\n");
 }
 
 void Help_execpri() {
+    printf("execpri prio prog args....\tEjecuta, sin crear proceso, prog con argumentos con la "
+        "prioridad cambiada a prio\n");
 }
 
 void Help_fg() {
+    printf("fg prog args... Crea un proceso que ejecuta en primer plano prog con argumentos\n");
 }
 
 void Help_fgpri() {
+    printf("fgpri prio prog args... Crea un proceso que ejecuta en primer plano prog con "
+        "argumentos  con la prioridad cambiada a prio\n");
 }
 
 void Help_back() {
+    printf("back prog args...\tCrea un proceso que ejecuta en segundo plano prog con argumentos\n");
 }
 
 void Help_backpri() {
+    printf("backpri prio prog args...\tCrea un proceso que ejecuta en segundo plano prog con "
+        "argumentos con la prioridad cambiada a prio\n");
 }
 
 void Help_listjobs() {
+    printf("listjobs\tLista los procesos en segundo plano\n");
 }
 
 void Help_deljobs() {
+    printf("deljobs [-term][-sig]   Elimina los procesos de la lista procesos en sp\n"
+        "\t-term: los terminados\n"
+        "\t-sig: los terminados por senal\n");
 }
