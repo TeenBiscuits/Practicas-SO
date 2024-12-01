@@ -6,7 +6,18 @@
 #include "auxiliar.h"
 #include "color.h"
 
+#include <stdio.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <string.h>
+
 void Cmd_getuid(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_getuid();
+        return;
+    }
+    printf("Credencial real: %d, (%s)\n", getuid(), getpwuid(getuid())->pw_name);
+    printf("Credencial efectiva: %d, (%s)\n", geteuid(), getpwuid(geteuid())->pw_name);
 }
 
 void Cmd_setuid(int NumTrozos, char *trozos[]) {
