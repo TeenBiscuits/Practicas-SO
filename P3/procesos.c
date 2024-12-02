@@ -11,6 +11,7 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 
 void Cmd_getuid(int NumTrozos, char *trozos[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
@@ -43,6 +44,13 @@ void Cmd_environ(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_fork(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_fork();
+        return;
+    }
+    pid_t pid = fork();
+    if (pid == -1) Aux_general_Imprimir_Error("No se pudo crear el proceso");
+    else waitpid(pid, NULL, 0);
 }
 
 void Cmd_search(int NumTrozos, char *trozos[]) {
