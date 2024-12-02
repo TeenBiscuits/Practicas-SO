@@ -1,10 +1,9 @@
 // Pablo Portas López           pablo.portas
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
-#include <stdlib.h>
-
 #include "proclist.h"
 
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
