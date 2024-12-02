@@ -56,13 +56,13 @@ contenido
 
 ### P3
 
-- [ ] getuid
-- [ ] setuid [-l] id
+- [x] getuid
+- [x] setuid [-l] id
 - [ ] showvar v1 v2 ..
 - [ ] changevar [-a|-e|-p] var val
 - [ ] subsvar [-a|-e] v1 v2 val
 - [ ] environ [-environ|-addr]
-- [ ] fork
+- [x] fork
 - [ ] search [-add dir|-del dir|-clear|-path]
 - [ ] exec progspec
 - [ ] execpri prio progspec
