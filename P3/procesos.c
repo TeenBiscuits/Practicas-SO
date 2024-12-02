@@ -49,6 +49,13 @@ void Cmd_search(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_exec(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
+        Help_exec();
+        return;
+    }
+
+    execv(trozos[1], &trozos[1]);
+    exit(255);
 }
 
 void Cmd_execpri(int NumTrozos, char *trozos[]) {
