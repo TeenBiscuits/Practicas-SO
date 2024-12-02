@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <stdlib.h>
 #include <string.h>
 
 void Cmd_getuid(int NumTrozos, char *trozos[]) {
@@ -21,6 +22,12 @@ void Cmd_getuid(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_setuid(int NumTrozos, char *trozos[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_setuid();
+        return;
+    }
+    if (NumTrozos == 0) Cmd_getuid(0, trozos);
+    else if (setuid(atoi(trozos[1])) == -1) Aux_general_Imprimir_Error("Imposible cambiar credencial");
 }
 
 void Cmd_showvar(int NumTrozos, char *trozos[]) {
