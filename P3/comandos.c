@@ -113,7 +113,8 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
         return;
     }
     if (NumTrozos < 2) {
-        Aux_general_Imprimir_Error("Proporciona un descriptor válido. Usa 'open fich [df]'");
+        Aux_general_Imprimir_Error(
+            "Proporciona un modo válido. Usa 'open [file] mode', con 'help open' puedes ver los modos válidos.");
         return;
     }
 
