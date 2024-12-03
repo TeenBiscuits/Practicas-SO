@@ -10,6 +10,14 @@
 // Variable global del buscatal
 tSearchList buscatal = {-1,NULL};
 
+tPosSearchL SList_first() {
+    return SList_aux_first(buscatal);
+}
+
+tPosSearchL SList_next(tPosSearchL pos) {
+    return SList_aux_next(pos,buscatal);
+}
+
 void SList_add(char path[PATH_MAX]) {
     SList_aux_insertItem(path,LNULL, &buscatal);
 }

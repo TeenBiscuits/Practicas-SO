@@ -28,6 +28,10 @@ typedef struct tSearchList {
     tPosSearchL start;
 } tSearchList;
 
+tPosSearchL SList_first();
+
+tPosSearchL SList_next(tPosSearchL pos);
+
 // Añade un input al final del buscatal
 void SList_add(tPathL path);
 

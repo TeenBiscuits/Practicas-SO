@@ -65,7 +65,7 @@ contenido
 - [x] fork
 - [ ] search [-add dir|-del dir|-clear|-path]
 - [ ] exec progspec
-- [ ] execpri prio progspec
+- [x] execpri prio progspec
 - [ ] fg progspe
 - [ ] fgpri prio progspec
 - [ ] back progspec

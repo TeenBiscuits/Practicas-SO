@@ -42,5 +42,9 @@ void Cmd_deljobs(int NumTrozos, char *trozos[]);
 
 // Auxiliares
 
+char *Aux_procesos_Ejecutable(char *s);
+
+int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio);
+
 
 #endif //PROCESOS_H
