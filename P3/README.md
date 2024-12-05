@@ -66,8 +66,8 @@ contenido
 - [ ] search [-add dir|-del dir|-clear|-path]
 - [ ] exec progspec
 - [x] execpri prio progspec
-- [ ] fg progspe
-- [ ] fgpri prio progspec
+- [x] fg progspe
+- [x] fgpri prio progspec
 - [ ] back progspec
 - [ ] backpri prio progspec
 - [ ] listjobs

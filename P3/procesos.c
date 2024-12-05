@@ -83,9 +83,36 @@ void Cmd_execpri(int NumTrozos, char *trozos[]) {
 }
 
 void Cmd_fg(int NumTrozos, char *trozos[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
+        Help_fg();
+        return;
+    }
+    pid_t pid = fork();
+
+    if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
+    else if (pid == 0) {
+        // Proceso hijo
+        Aux_procesos_Execpve(&trozos[1],NULL,NULL);
+        Aux_general_Imprimir_Error("");
+        exit(1);
+    } else waitpid(pid, NULL, 0); // Proceso padre
 }
 
 void Cmd_fgpri(int NumTrozos, char *trozos[]) {
+    if (NumTrozos < 2) {
+        Help_fgpri();
+        return;
+    }
+    pid_t pid = fork();
+    int prio = atoi(trozos[1]);
+
+    if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
+    else if (pid == 0) {
+        // Proceso hijo
+        Aux_procesos_Execpve(&trozos[2],NULL,&prio);
+        Aux_general_Imprimir_Error("");
+        exit(1);
+    } else waitpid(pid, NULL, 0); // Proceso padre
 }
 
 void Cmd_back(int NumTrozos, char *trozos[]) {
