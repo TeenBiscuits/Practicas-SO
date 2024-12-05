@@ -64,7 +64,7 @@ contenido
 - [ ] environ [-environ|-addr]
 - [x] fork
 - [ ] search [-add dir|-del dir|-clear|-path]
-- [ ] exec progspec
+- [ ] exec VAR1 VAR2 progspec
 - [x] execpri prio progspec
 - [x] fg progspe
 - [x] fgpri prio progspec
