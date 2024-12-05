@@ -64,12 +64,12 @@ contenido
 - [ ] environ [-environ|-addr]
 - [x] fork
 - [ ] search [-add dir|-del dir|-clear|-path]
-- [ ] exec VAR1 VAR2 progspec
-- [x] execpri prio progspec
-- [x] fg progspe
-- [x] fgpri prio progspec
-- [ ] back progspec
-- [ ] backpri prio progspec
+- [ ] exec [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [x] execpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [x] fg [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [x] fgpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [ ] back [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [ ] backpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
 - [ ] listjobs
 - [ ] deljobs -term|-sig
 - [ ] \*****
