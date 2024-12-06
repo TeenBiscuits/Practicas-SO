@@ -172,7 +172,7 @@ void Cmd_writefile(int NumTrozos, char *trozos[]) {
     if ((n= Aux_readfile_LeerFichero(trozos[1], p, cont)) == -1){
         Aux_general_Imprimir_Error("Imposible escribir en el fichero");
     }else{
-        printf(ANSI_COLOR_GREEN "Escritos %lld bytes desde %p en %s\n", ANSI_COLOR_RESET, (long long)n, p, trozos[1]);
+        printf(ANSI_COLOR_GREEN "Escritos %lld bytes desde %p en %s\n" ANSI_COLOR_RESET, (long long)n, p, trozos[1]);
     }
 }
 
