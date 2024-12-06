@@ -19,6 +19,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+extern char **environ;
+
 void Cmd_getuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_getuid();
@@ -38,6 +40,24 @@ void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env
 }
 
 void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos == 0) {
+        Help_showvar();
+        return;
+    }
+
+    for (int i = 1; i <= NumTrozos; i++) {
+        if (getenv(trozos[i]) == NULL) Aux_general_Imprimir_Error("Variable no encontrada");
+        else {
+            size_t longitud_var = strlen(trozos[i]);
+            for (int j = 0; env[j] != NULL; j++)
+                if (!strncmp(trozos[i], env[j], longitud_var))
+                    printf("Con arg3 main %s(%p) @%p\n", env[j], env[j], env);
+            for (int j = 0; environ[j] != NULL; j++)
+                if (!strncmp(trozos[i], environ[j], longitud_var))
+                    printf("  Con environ %s(%p) @%p\n", environ[j], environ[j], environ);
+            printf("   Con getenv %s\n", getenv(trozos[i]));
+        }
+    }
 }
 
 void Cmd_changevar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -47,6 +67,12 @@ void Cmd_subsvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 }
 
 void Cmd_environ(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos == 0) Aux_environ_show(env, "main arg3");
+    else {
+        if (!strcmp(trozos[1], "-?")) Help_environ();
+        if (!strcmp(trozos[1], "-environ")) Aux_environ_show(environ, "environ");
+        if (!strcmp(trozos[1], "-addr")) Aux_environ_show(env, "main arg3");
+    }
 }
 
 void Cmd_fork(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -109,7 +135,7 @@ void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
         // Proceso hijo
-        Aux_procesos_Execpve(&trozos[2],NULL,&prio);
+        Aux_procesos_Execpve(&trozos[2],NULL, &prio);
         Aux_general_Imprimir_Error("");
         exit(1);
     } else waitpid(pid, NULL, 0); // Proceso padre
@@ -172,4 +198,14 @@ int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio) {
         return execv(p, tr);
     else
         return execve(p, tr, NewEnv);
+}
+
+void Aux_environ_show(char **env, char *nombre_entorno) {
+    int i = 0;
+
+    while (env[i] != NULL) {
+        printf("%p->%s[%d]=(%p) %s\n", &env[i],
+               nombre_entorno, i, env[i], env[i]);
+        i++;
+    }
 }

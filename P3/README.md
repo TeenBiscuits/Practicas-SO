@@ -58,7 +58,7 @@ contenido
 
 - [x] getuid
 - [x] setuid [-l] id
-- [ ] showvar v1 v2 ..
+- [x] showvar v1 v2 ..
 - [ ] changevar [-a|-e|-p] var val
 - [ ] subsvar [-a|-e] v1 v2 val
 - [ ] environ [-environ|-addr]
