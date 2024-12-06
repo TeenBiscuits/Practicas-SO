@@ -40,7 +40,7 @@ void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env
 }
 
 void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (NumTrozos == 0) {
+    if (NumTrozos == 0 || !strcmp(trozos[1], "-?")) {
         Help_showvar();
         return;
     }
