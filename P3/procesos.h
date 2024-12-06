@@ -46,6 +46,6 @@ char *Aux_procesos_Ejecutable(char *s);
 
 int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio);
 
-void Aux_environ_show(char **env, char * nombre_entorno);
+void Aux_processos_show(char **env, char * nombre_entorno);
 
 #endif //PROCESOS_H

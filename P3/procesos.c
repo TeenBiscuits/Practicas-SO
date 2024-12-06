@@ -40,11 +40,14 @@ void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env
 }
 
 void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (NumTrozos == 0 || !strcmp(trozos[1], "-?")) {
+    if (NumTrozos == 0) {
+        Aux_processos_show(env,"main arg3");
+        return;
+    }
+    if (!strcmp(trozos[1], "-?")) {
         Help_showvar();
         return;
     }
-
     for (int i = 1; i <= NumTrozos; i++) {
         if (getenv(trozos[i]) == NULL) Aux_general_Imprimir_Error("Variable no encontrada");
         else {
@@ -67,11 +70,11 @@ void Cmd_subsvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 }
 
 void Cmd_environ(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (NumTrozos == 0) Aux_environ_show(env, "main arg3");
+    if (NumTrozos == 0) Aux_processos_show(env, "main arg3");
     else {
         if (!strcmp(trozos[1], "-?")) Help_environ();
-        if (!strcmp(trozos[1], "-environ")) Aux_environ_show(environ, "environ");
-        if (!strcmp(trozos[1], "-addr")) Aux_environ_show(env, "main arg3");
+        if (!strcmp(trozos[1], "-environ")) Aux_processos_show(environ, "environ");
+        if (!strcmp(trozos[1], "-addr")) Aux_processos_show(env, "main arg3");
     }
 }
 
@@ -200,7 +203,7 @@ int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio) {
         return execve(p, tr, NewEnv);
 }
 
-void Aux_environ_show(char **env, char *nombre_entorno) {
+void Aux_processos_show(char **env, char *nombre_entorno) {
     int i = 0;
 
     while (env[i] != NULL) {
