@@ -19,7 +19,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-void Cmd_getuid(int NumTrozos, char *trozos[]) {
+void Cmd_getuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_getuid();
         return;
@@ -28,28 +28,28 @@ void Cmd_getuid(int NumTrozos, char *trozos[]) {
     printf("Credencial efectiva: %d, (%s)\n", geteuid(), getpwuid(geteuid())->pw_name);
 }
 
-void Cmd_setuid(int NumTrozos, char *trozos[]) {
+void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_setuid();
         return;
     }
-    if (NumTrozos == 0) Cmd_getuid(0, trozos);
+    if (NumTrozos == 0) Cmd_getuid(0, trozos, argc, argv, env);
     else if (setuid(atoi(trozos[1])) == -1) Aux_general_Imprimir_Error("Imposible cambiar credencial");
 }
 
-void Cmd_showvar(int NumTrozos, char *trozos[]) {
+void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_changevar(int NumTrozos, char *trozos[]) {
+void Cmd_changevar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_subsvar(int NumTrozos, char *trozos[]) {
+void Cmd_subsvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_environ(int NumTrozos, char *trozos[]) {
+void Cmd_environ(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_fork(int NumTrozos, char *trozos[]) {
+void Cmd_fork(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_fork();
         return;
@@ -59,10 +59,10 @@ void Cmd_fork(int NumTrozos, char *trozos[]) {
     else waitpid(pid, NULL, 0);
 }
 
-void Cmd_search(int NumTrozos, char *trozos[]) {
+void Cmd_search(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_exec(int NumTrozos, char *trozos[]) {
+void Cmd_exec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
         Help_exec();
         return;
@@ -71,7 +71,7 @@ void Cmd_exec(int NumTrozos, char *trozos[]) {
     if (Aux_procesos_Execpve(&trozos[1],NULL,NULL) < 0) Aux_general_Imprimir_Error("");
 }
 
-void Cmd_execpri(int NumTrozos, char *trozos[]) {
+void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 2) {
         Help_execpri();
         return;
@@ -82,7 +82,7 @@ void Cmd_execpri(int NumTrozos, char *trozos[]) {
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
 }
 
-void Cmd_fg(int NumTrozos, char *trozos[]) {
+void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
         Help_fg();
         return;
@@ -98,7 +98,7 @@ void Cmd_fg(int NumTrozos, char *trozos[]) {
     } else waitpid(pid, NULL, 0); // Proceso padre
 }
 
-void Cmd_fgpri(int NumTrozos, char *trozos[]) {
+void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 2) {
         Help_fgpri();
         return;
@@ -115,16 +115,16 @@ void Cmd_fgpri(int NumTrozos, char *trozos[]) {
     } else waitpid(pid, NULL, 0); // Proceso padre
 }
 
-void Cmd_back(int NumTrozos, char *trozos[]) {
+void Cmd_back(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_backpri(int NumTrozos, char *trozos[]) {
+void Cmd_backpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_listjobs(int NumTrozos, char *trozos[]) {
+void Cmd_listjobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_deljobs(int NumTrozos, char *trozos[]) {
+void Cmd_deljobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
 // Auxiliares

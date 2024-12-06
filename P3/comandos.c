@@ -36,7 +36,7 @@ int open_file_count = 0; //Esto es el contador de archivos abiertos
 
 // P0
 
-void Cmd_authors(int NumTrozos, char *trozos[]) {
+void Cmd_authors(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0) {
         // Si solo se introduce "authors", imprime ambos nombres y correos
         printf("Pablo Portas López: pablo.portas@udc.es\n");
@@ -60,17 +60,17 @@ void Cmd_authors(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_pid(int NumTrozos, char *trozos[]) {
+void Cmd_pid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_pid();
     else printf("El identificador del proceso es %d\n", getpid());
 }
 
-void Cmd_ppid(int NumTrozos, char *trozos[]) {
+void Cmd_ppid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) Help_ppid();
     else printf("El identificador del proceso padre es %d\n", getppid());
 }
 
-void Cmd_cd(int NumTrozos, char *trozos[]) {
+void Cmd_cd(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     // Si no se pasa argumento (NumTrozos >= 1), cambiamos al directorio HOME del usuario
     if (NumTrozos == 0) {
         char *home = getenv("HOME"); // Obtener el directorio home del usuario
@@ -79,7 +79,7 @@ void Cmd_cd(int NumTrozos, char *trozos[]) {
     else if (chdir(trozos[1]) != 0) Aux_general_Imprimir_Error("");
 }
 
-void Cmd_date(int NumTrozos, char *trozos[]) {
+void Cmd_date(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     time_t t;
     char buffer[80];
     time(&t); // Inicializa t con el tiempo actual
@@ -103,7 +103,7 @@ void Cmd_date(int NumTrozos, char *trozos[]) {
     } else if (strcmp(trozos[1], "-?") == 0) Help_date();
 }
 
-void Cmd_open(int NumTrozos, char *trozos[]) {
+void Cmd_open(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0) {
         Aux_open_lofiles();
         return;
@@ -141,7 +141,7 @@ void Cmd_open(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_close(int NumTrozos, char *trozos[]) {
+void Cmd_close(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_close();
         return;
@@ -169,7 +169,7 @@ void Cmd_close(int NumTrozos, char *trozos[]) {
     fprintf(stderr, ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, desc);
 }
 
-void Cmd_dup(int NumTrozos, char *trozos[]) {
+void Cmd_dup(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0 || atoi(trozos[1]) < 0) {
         Aux_general_Imprimir_Error("Proporciona un descriptor válido. Usa 'dup [df]'");
         return;
@@ -201,7 +201,7 @@ void Cmd_dup(int NumTrozos, char *trozos[]) {
     fprintf(stderr,ANSI_COLOR_RED "Error: Descriptor %d no encontrado.\n" ANSI_COLOR_RESET, old_desc);
 }
 
-void Cmd_infosys(int NumTrozos, char *trozos[]) {
+void Cmd_infosys(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_infosys();
         return;
@@ -219,7 +219,7 @@ void Cmd_infosys(int NumTrozos, char *trozos[]) {
            sys_info.version);
 }
 
-void Cmd_historic(int NumTrozos, char *trozos[]) {
+void Cmd_historic(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0) {
         HList_show_all();
         return;
@@ -238,7 +238,7 @@ void Cmd_historic(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_exit(int NumTrozos, char *trozos[]) {
+void Cmd_exit(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_exit();
         return;
@@ -251,7 +251,7 @@ void Cmd_exit(int NumTrozos, char *trozos[]) {
 
 // P1
 
-void Cmd_makefile(int NumTrozos, char *trozos[]) {
+void Cmd_makefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 1) return;
 
     if (strcmp(trozos[1], "-?") == 0) {
@@ -268,7 +268,7 @@ void Cmd_makefile(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_makedir(int NumTrozos, char *trozos[]) {
+void Cmd_makedir(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 1) return;
 
     if (strcmp(trozos[1], "-?") == 0) {
@@ -283,7 +283,7 @@ void Cmd_makedir(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_listfile(int NumTrozos, char *trozos[]) {
+void Cmd_listfile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 1) return;
 
     if (strcmp(trozos[1], "-?") == 0) {
@@ -305,7 +305,7 @@ void Cmd_listfile(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_cwd(int NumTrozos, char *trozos[]) {
+void Cmd_cwd(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_cwd();
         return;
@@ -319,7 +319,7 @@ void Cmd_cwd(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_listdir(int NumTrozos, char *trozos[]) {
+void Cmd_listdir(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_listdir();
         return;
@@ -361,7 +361,7 @@ void Cmd_listdir(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_reclist(int NumTrozos, char *trozos[]) {
+void Cmd_reclist(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_reclist();
         return;
@@ -383,7 +383,7 @@ void Cmd_reclist(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_revlist(int NumTrozos, char *trozos[]) {
+void Cmd_revlist(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_revlist();
         return;
@@ -404,7 +404,7 @@ void Cmd_revlist(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_erase(int NumTrozos, char *trozos[]) {
+void Cmd_erase(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 2) return;
     if (!strcmp(trozos[1], "-?")) {
         Help_erase();
@@ -426,7 +426,7 @@ void Cmd_erase(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_delrec(int NumTrozos, char *trozos[]) {
+void Cmd_delrec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_erase();
         return;

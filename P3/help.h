@@ -13,7 +13,7 @@ struct CMDHELP {
 
 // Imprime una lista de los comandos disponibles o la ayuda
 // de un comando dado
-void Cmd_help(int NumTrozos, char *trozos[]);
+void Cmd_help(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla la ayuda de authors
 void Help_authors();

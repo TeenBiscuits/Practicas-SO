@@ -22,7 +22,7 @@
 
 // COMANDOS DE MEMORIA P2
 
-void Cmd_allocate(int NumTrozos, char *trozos[]) {
+void Cmd_allocate(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_allocate();
         return;
@@ -39,7 +39,7 @@ void Cmd_allocate(int NumTrozos, char *trozos[]) {
     if (strcmp(trozos[1], "-shared") == 0) Aux_allocate_shared(NumTrozos, trozos);
 }
 
-void Cmd_deallocate(int NumTrozos, char *trozos[]) {
+void Cmd_deallocate(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && strcmp(trozos[1], "-?") == 0) {
         Help_deallocate();
         return;
@@ -68,7 +68,7 @@ void Cmd_deallocate(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_memfill(int NumTrozos, char *trozos[]) {
+void Cmd_memfill(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 3) {
         Help_memfill();
         return;
@@ -77,7 +77,7 @@ void Cmd_memfill(int NumTrozos, char *trozos[]) {
     Aux_memfill_LlenarMemoria(address, atoi(trozos[3]), trozos[2][0]);
 }
 
-void Cmd_memdump(int NumTrozos, char *trozos[]) {
+void Cmd_memdump(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 2) {
         Help_memdump();
         return;
@@ -116,7 +116,7 @@ void Cmd_memdump(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_memory(int NumTrozos, char *trozos[]) {
+void Cmd_memory(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos < 1 || !strcmp(trozos[1], "-all")) {
         Aux_memory_vars();
         Aux_memory_funcs();
@@ -130,7 +130,7 @@ void Cmd_memory(int NumTrozos, char *trozos[]) {
     if (!strcmp(trozos[1], "-pmap")) Aux_memory_dopmap();
 }
 
-void Cmd_readfile(int NumTrozos, char *trozos[]) {
+void Cmd_readfile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_readfile();
         return;
@@ -153,7 +153,7 @@ void Cmd_readfile(int NumTrozos, char *trozos[]) {
         printf(ANSI_COLOR_GREEN "leidos %lld bytes de %s en %p\n" ANSI_COLOR_RESET, (long long) n, trozos[1], p);
 }
 
-void Cmd_writefile(int NumTrozos, char *trozos[]) {
+void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")){
         Help_writefile();
         return;
@@ -176,13 +176,13 @@ void Cmd_writefile(int NumTrozos, char *trozos[]) {
     }
 }
 
-void Cmd_read(int NumTrozos, char *trozos[]) {
+void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_write(int NumTrozos, char *trozos[]) {
+void Cmd_write(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
 }
 
-void Cmd_recurse(int NumTrozos, char *trozos[]) {
+void Cmd_recurse(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos >= 1) {
         if (!strcmp(trozos[1], "-?")) {
             Help_recurse();

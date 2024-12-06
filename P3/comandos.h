@@ -22,49 +22,49 @@ typedef struct {
 struct CMD {
     char *comando;
 
-    void (*funcion)(int, char **);
+    void (*funcion)(int, char **, int, char **, char **);
 };
 
 // Estructura de una función de comandos
-// void comando(int NumTrozos, char *trozos[]);
+// void comando(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // P0
 
 // Imprime por pantalla los autores del proyecto. Acepta dos parámetros:
 // [-l|-n] Solo logins y solo nombres respectivamente
-void Cmd_authors(int NumTrozos, char *trozos[]);
+void Cmd_authors(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla el pid del shell
-void Cmd_pid(int NumTrozos, char *trozos[]);
+void Cmd_pid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla el ppid del shell
-void Cmd_ppid(int NumTrozos, char *trozos[]);
+void Cmd_ppid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Cambia el cwd del shell al path específicado [dir]
-void Cmd_cd(int NumTrozos, char *trozos[]);
+void Cmd_cd(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla la fecha actual. Acepta dos parámetros:
 // [-t|-d] Solo hora y solo fecha respectivamente
-void Cmd_date(int NumTrozos, char *trozos[]);
+void Cmd_date(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Lista los archivos abiertos o abre el archivo especificado
 // dado un path y un modo. Los modos aceptados son:
 // cr, ap, ex, ro, rw, wo, tr.
-void Cmd_open(int NumTrozos, char *trozos[]);
+void Cmd_open(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Cierra el archivo especificado dado un file descriptor
-void Cmd_close(int NumTrozos, char *trozos[]);
+void Cmd_close(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Duplica el file descriptor especificado
-void Cmd_dup(int NumTrozos, char *trozos[]);
+void Cmd_dup(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla la información del equipo
-void Cmd_infosys(int NumTrozos, char *trozos[]);
+void Cmd_infosys(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime por pantalla el historial de todos los inputs del usuario
 // Acepta dos parámetros: [N|-N] Imprimir el comando N o imprimir los
 // últimos N comandos
-void Cmd_historic(int NumTrozos, char *trozos[]);
+void Cmd_historic(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Termina con el shell y borra el historial
 void Cmd_exit();
@@ -72,33 +72,33 @@ void Cmd_exit();
 // P1
 
 // Crea un archivo
-void Cmd_makefile(int NumTrozos, char *trozos[]);
+void Cmd_makefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Crea un directorio
-void Cmd_makedir(int NumTrozos, char *trozos[]);
+void Cmd_makedir(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Da la información de un archivo o un directorio
-void Cmd_listfile(int NumTrozos, char *trozos[]);
+void Cmd_listfile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime el directorio de trabajo actual
-void Cmd_cwd(int NumTrozos, char *trozos[]);
+void Cmd_cwd(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime los contenidos de una carpeta
-void Cmd_listdir(int NumTrozos, char *trozos[]);
+void Cmd_listdir(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime los contenidos de un directorio de forma recursiva
 // (subdirectorios después)
-void Cmd_reclist(int NumTrozos, char *trozos[]);
+void Cmd_reclist(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Imprime los contenidos de un directorio de forma recursiva
 // (subdirectorios antes)
-void Cmd_revlist(int NumTrozos, char *trozos[]);
+void Cmd_revlist(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Elimina archivos o directorios vacios
-void Cmd_erase(int NumTrozos, char *trozos[]);
+void Cmd_erase(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Elimina archivos y/o directorios no vacíos recursivamente
-void Cmd_delrec(int NumTrozos, char *trozos[]);
+void Cmd_delrec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // FUNCIONES AUXILIARES
 

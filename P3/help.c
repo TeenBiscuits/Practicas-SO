@@ -61,7 +61,7 @@ struct CMDHELP CH[] = {
     {"deljobs", Help_deljobs}
 };
 
-void Cmd_help(int NumTrozos, char *trozos[]) {
+void Cmd_help(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0) {
         Help_default();
     }

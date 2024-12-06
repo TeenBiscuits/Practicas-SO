@@ -12,26 +12,26 @@
 // COMANDOS DE MEMORIA P2
 
 // Asignar memoria
-void Cmd_allocate(int NumTrozos, char *trozos[]);
+void Cmd_allocate(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Desasignar memoria
-void Cmd_deallocate(int NumTrozos, char *trozos[]);
+void Cmd_deallocate(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_memfill(int NumTrozos, char *trozos[]);
+void Cmd_memfill(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_memdump(int NumTrozos, char *trozos[]);
+void Cmd_memdump(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_memory(int NumTrozos, char *trozos[]);
+void Cmd_memory(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_readfile(int NumTrozos, char *trozos[]);
+void Cmd_readfile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_writefile(int NumTrozos, char *trozos[]);
+void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_read(int NumTrozos, char *trozos[]);
+void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_write(int NumTrozos, char *trozos[]);
+void Cmd_write(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
-void Cmd_recurse(int NumTrozos, char *trozos[]);
+void Cmd_recurse(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]);
 
 // Auxiliares
 

@@ -29,19 +29,19 @@ void imprimirPrompt();
 void leerEntrada(char comando[MAXITEM]);
 
 // De no ser nulo el comando recibido, se añade al histórico y se envían los parámetros a la función correcta
-void procesarEntrada(char comando[MAXITEM]);
+void procesarEntrada(char comando[MAXITEM], int argc, char * argv[], char *env[]);
 
 // Dado un comando con sus parámetros (ya sean válidos o no) trocearlo en segmentos.
 // El primero es la línea de texto sin procesar y el segundo un array de arrays de chars. Siendo [0] el comando y los siguientes los parámetros
 int dividir_comando(char *input, char **trozos);
 
-int main() {
+int main(int argc, char * argv[], char *env[]) {
     signal(SIGSEGV, Aux_general_handler);
     while (true) {
         char comando[MAXITEM];
         imprimirPrompt();
         leerEntrada(comando);
-        procesarEntrada(comando);
+        procesarEntrada(comando, argc, argv, env);
     }
 }
 
@@ -123,7 +123,7 @@ struct CMD C[] = {
     {"deljobs", Cmd_deljobs}
 };
 
-void procesarEntrada(char comando[MAXITEM]) {
+void procesarEntrada(char comando[MAXITEM], int argc, char * argv[], char *env[]) {
     if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
 
     HList_add(comando);
@@ -133,7 +133,7 @@ void procesarEntrada(char comando[MAXITEM]) {
 
     for (int i = 0; i < sizeof(C) / sizeof(C[0]); i++) {
         if (strcmp(Trozos[0], C[i].comando) == 0) {
-            C[i].funcion(NumeroT, Trozos);
+            C[i].funcion(NumeroT, Trozos, argc, argv, env);
             return;
         }
     }
