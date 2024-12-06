@@ -154,25 +154,25 @@ void Cmd_readfile(int NumTrozos, char *trozos[], int argc, char *argv[], char *e
 }
 
 void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")){
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
         Help_writefile();
         return;
     }
     void *p; //puntero que almacena una dirección de memoria pasada por el usuario
-    size_t cont;  //número de bytes que se escribirán desde la memoria
+    size_t cont; //número de bytes que se escribirán desde la memoria
     ssize_t n; //resiltado de la función auxiliar escribir fichero
 
-    if (trozos[0]==NULL || trozos[1]==NULL || trozos[2]==NULL){
+    if (trozos[0] == NULL || trozos[1] == NULL || trozos[2] == NULL) {
         Aux_general_Imprimir_Error("Faltan parámetros");
         return;
     }
     p = (void *) strtol(trozos[2], NULL, 16);
     cont = (size_t) atoll(trozos[3]); //convierte los bytes a un valor de tipo size_t
 
-    if ((n= Aux_readfile_LeerFichero(trozos[1], p, cont)) == -1){
+    if ((n = Aux_readfile_LeerFichero(trozos[1], p, cont)) == -1) {
         Aux_general_Imprimir_Error("Imposible escribir en el fichero");
-    }else{
-        printf(ANSI_COLOR_GREEN "Escritos %lld bytes desde %p en %s\n" ANSI_COLOR_RESET, (long long)n, p, trozos[1]);
+    } else {
+        printf(ANSI_COLOR_GREEN "Escritos %lld bytes desde %p en %s\n" ANSI_COLOR_RESET, (long long) n, p, trozos[1]);
     }
 }
 
@@ -389,14 +389,14 @@ ssize_t Aux_readfile_LeerFichero(char *f, void *p, size_t cont) {
     return n;
 }
 
-ssize_t Aux_writefile_EscribirFichero(char *f, void *p, ssize_t cont){
+ssize_t Aux_writefile_EscribirFichero(char *f, void *p, ssize_t cont) {
     ssize_t n;
     int df, aux;
 
-    if ((df = open(f, O_WRONLY |O_CREAT|O_TRUNC, 0644))==-1){
+    if ((df = open(f, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1) {
         return -1;
     }
-    if((n = write(df, p, cont))==-1){
+    if ((n = write(df, p, cont)) == -1) {
         aux = errno;
         close(df);
         errno = aux;
@@ -405,4 +405,3 @@ ssize_t Aux_writefile_EscribirFichero(char *f, void *p, ssize_t cont){
     close(df);
     return n;
 }
-
