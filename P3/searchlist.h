@@ -35,8 +35,12 @@ tPosSearchL SList_next(tPosSearchL pos);
 // Añade un input al final del buscatal
 void SList_add(tPathL path);
 
+void SList_delete(tPathL path);
+
 // Muestra todas las entradas del historial en orden ascendente
 void SList_show_all();
+
+void SList_import_path();
 
 // Muestra la entrada n
 void SList_show_n(int n);

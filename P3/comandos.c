@@ -23,6 +23,7 @@
 #include "memlist.h"
 #include "color.h"
 #include "auxiliar.h"
+#include "searchlist.h"
 
 // COMANDOS BÁSICOS P0 + P1
 
@@ -246,6 +247,7 @@ void Cmd_exit(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
     printf(ANSI_COLOR_YELLOW "Saliendo del shell...\n" ANSI_COLOR_RESET);
     HList_delete_all();
     MList_delete_all();
+    SList_delete_all();
     exit(0);
 }
 

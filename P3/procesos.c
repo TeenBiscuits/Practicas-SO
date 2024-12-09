@@ -139,6 +139,15 @@ void Cmd_fork(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
 }
 
 void Cmd_search(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos == 0) {
+        SList_show_all();
+        return;
+    }
+    if (!strcmp(trozos[1], "-?")) Help_search();
+    if (!strcmp(trozos[1], "-clear")) SList_delete_all();
+    if (!strcmp(trozos[1], "-path")) SList_import_path();
+    if (!strcmp(trozos[1], "-add") && NumTrozos >= 2) SList_add(trozos[2]);
+    if (!strcmp(trozos[1], "-del") && NumTrozos >= 2) SList_delete(trozos[2]);
 }
 
 void Cmd_exec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {

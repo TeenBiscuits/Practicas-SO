@@ -2,6 +2,7 @@
 // Pablo Míguez Mouiño          pablo.miguez.moino
 
 #include "searchlist.h"
+#include "auxiliar.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,11 +16,21 @@ tPosSearchL SList_first() {
 }
 
 tPosSearchL SList_next(tPosSearchL pos) {
-    return SList_aux_next(pos,buscatal);
+    return SList_aux_next(pos, buscatal);
 }
 
-void SList_add(char path[PATH_MAX]) {
+void SList_add(tPathL path) {
     SList_aux_insertItem(path,LNULL, &buscatal);
+}
+
+void SList_delete(tPathL path) {
+    tPosSearchL aux;
+    if ((aux = SList_first()) == NULL) return;
+    while (strcmp(aux->path, path) != 0) {
+        aux = SList_aux_next(aux, buscatal);
+        if (aux == NULL) return;
+    }
+    SList_aux_deleteAtPosition(aux, &buscatal);
 }
 
 void SList_show_all() {
@@ -28,6 +39,25 @@ void SList_show_all() {
         printf("%s\n", posaux->path);
         posaux = SList_aux_next(posaux, buscatal);
     }
+}
+
+void SList_import_path() {
+    char *path = getenv("PATH");
+    int i = 0, j = -1;
+    tPathL aux;
+
+    if (path == NULL) {
+        Aux_general_Imprimir_Error("No se ha podido importar el PATH");
+        return;
+    }
+    do {
+        j++;
+        for (i = 0; path[j] != '\0' && path[j] != ':'; i++, j++) {
+            aux[i] = path[j];
+        }
+        aux[i] = '\0';
+        SList_add(aux);
+    } while (path[j] != '\0');
 }
 
 void SList_show_n(int n) {
