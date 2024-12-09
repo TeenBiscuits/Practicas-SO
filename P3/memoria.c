@@ -177,9 +177,39 @@ void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *
 }
 
 void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (trozos[1]==NULL | trozos[2]==NULL | trozos[3]==NULL){
+        fprintf(stderr, "Faltan parámetros (df, addr, cont)\n");
+    }
+    int fd = atoi(trozos[1]);
+    void *addr = (void *) strtol(trozos[2], NULL, 16);
+    size_t cont = (size_t) atoll(trozos[3]);
+
+    if (fd<0 || addr == NULL){
+        fprintf(stderr, "Error: parámetros incorrectos\n");
+    }
+
+    ssize_t bytes_read = read(fd, addr, cont);
+    if (bytes_read == -1){
+        fprintf(stderr, "Error al leer del descriptor del archivo: %s\n", strerror(errno));
+    }else{
+        printf("Leídos %zd bytes desde el descriptor %d a la dirección %p\n", bytes_read, fd, addr);
+    }
 }
 
 void Cmd_write(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (trozos[1]==NULL | trozos[2]==NULL | trozos[3]==NULL){
+        fprintf(stderr, "Faltan parámetros (df, addr, cont)\n");
+    }
+    int fd = atoi(trozos[1]);
+    void *addr = (void *)strtol(trozos[2], NULL, 16);
+    size_t cont = (size_t)atoll(trozos[3]);
+
+    ssize_t bytes_written = write(fd, addr, cont);
+    if (bytes_written == -1){
+        fprintf(stderr, "Error al escribir en el descriptor del archivo: %s\n", strerror(errno));
+    }else{
+        printf("Escritos %zd bytes desde la dirección %p al descriptor %d\n", bytes_written, addr, fd);
+    }
 }
 
 void Cmd_recurse(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
