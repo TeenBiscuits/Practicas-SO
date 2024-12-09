@@ -41,7 +41,7 @@ void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env
 
 void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
     if (NumTrozos == 0) {
-        Aux_processos_show(env,"main arg3");
+        Aux_processos_show(env, "main arg3");
         return;
     }
     if (!strcmp(trozos[1], "-?")) {
@@ -64,9 +64,59 @@ void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 }
 
 void Cmd_changevar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos < 3) {
+        Help_changevar();
+        return;
+    }
+
+    size_t longitud_var = strlen(trozos[2]);
+    char newenv[1024]; // Por poner un valor
+    strcpy(newenv, trozos[2]);
+    strcat(newenv, "=");
+    strcat(newenv, trozos[3]);
+    char *aux = NULL;
+    char **environment = NULL;
+
+    if (!strcmp(trozos[1], "-a") || !strcmp(trozos[1], "-e")) {
+        if (!strcmp(trozos[1], "-a")) environment = env;
+        if (!strcmp(trozos[1], "-e")) environment = environ;
+        if (environment == NULL) return;
+
+        for (int i = 0; environment[i] != NULL; i++)
+            if (!strncmp(trozos[2], environment[i], longitud_var))
+                aux = environment[i];
+
+        if (aux == NULL) Aux_general_Imprimir_Error("Variable no encontrada");
+        else strcpy(aux, newenv);
+    }
+    if (!strcmp(trozos[1], "-p") && putenv(newenv) != 0)
+        Aux_general_Imprimir_Error("");
 }
 
 void Cmd_subsvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos < 4) {
+        Help_subsvar();
+        return;
+    }
+
+    size_t longitud_var = strlen(trozos[2]);
+    char newenv[1024]; // Por poner un valor
+    strcpy(newenv, trozos[3]);
+    strcat(newenv, "=");
+    strcat(newenv, trozos[4]);
+    char *aux = NULL;
+    char **environment = NULL;
+
+    if (!strcmp(trozos[1], "-a")) environment = env;
+    if (!strcmp(trozos[1], "-e")) environment = environ;
+    if (environment == NULL) return;
+
+    for (int i = 0; environment[i] != NULL; i++)
+        if (!strncmp(trozos[2], environment[i], longitud_var))
+            aux = environment[i];
+
+    if (aux == NULL) Aux_general_Imprimir_Error("Variable no encontrada");
+    else strcpy(aux, newenv);
 }
 
 void Cmd_environ(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {

@@ -59,8 +59,8 @@ contenido
 - [x] getuid
 - [x] setuid [-l] id
 - [x] showvar v1 v2 ..
-- [ ] changevar [-a|-e|-p] var val
-- [ ] subsvar [-a|-e] v1 v2 val
+- [x] changevar [-a|-e|-p] var val
+- [x] subsvar [-a|-e] v1 v2 val
 - [x] environ [-environ|-addr]
 - [x] fork
 - [ ] search [-add dir|-del dir|-clear|-path]
