@@ -69,6 +69,10 @@ void Aux_memory_vars();
 
 ssize_t Aux_readfile_LeerFichero(char *f, void *p, size_t cont);
 
-bool Aux_validar_Parámetros (int fd, void *addr, size_t count);
+bool Aux_validar_Parametros (int fd, void *addr, size_t count);
+
+ssize_t Aux_write_DesdeDescriptor(int fd, void *p, ssize_t cont);
+
+ssize_t Aux_read_DesdeDescriptor(int fd, void *p, ssize_t cont);
 
 #endif //MEMORIA_H
