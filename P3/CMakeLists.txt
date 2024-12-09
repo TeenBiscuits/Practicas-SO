@@ -22,4 +22,6 @@ add_executable(P3 main.c
         searchlist.c
         searchlist.h
         proclist.c
-        proclist.h)
+        proclist.h
+        PDFs/P3/ayudaP3-25.c
+        PDFs/P3/ayudaP3-25.c)

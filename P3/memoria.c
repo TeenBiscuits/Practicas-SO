@@ -177,7 +177,7 @@ void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *
 }
 
 void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (trozos[1]==NULL | trozos[2]==NULL | trozos[3]==NULL){
+    if (trozos[1] == NULL || trozos[2] == NULL || trozos[3] == NULL){
         fprintf(stderr, "Faltan parámetros (df, addr, cont)\n");
     }
     int fd = atoi(trozos[1]);
@@ -197,12 +197,18 @@ void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
 }
 
 void Cmd_write(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (trozos[1]==NULL | trozos[2]==NULL | trozos[3]==NULL){
+    if (trozos[1] == NULL || trozos[2] == NULL || trozos[3] == NULL) {
         fprintf(stderr, "Faltan parámetros (df, addr, cont)\n");
+        return;
     }
+
     int fd = atoi(trozos[1]);
     void *addr = (void *)strtol(trozos[2], NULL, 16);
     size_t cont = (size_t)atoll(trozos[3]);
+
+    if (!Aux_validar_Parámetros(fd, addr, cont)) {
+        return;
+    }
 
     ssize_t bytes_written = write(fd, addr, cont);
     if (bytes_written == -1){
@@ -434,4 +440,23 @@ ssize_t Aux_writefile_EscribirFichero(char *f, void *p, ssize_t cont) {
     }
     close(df);
     return n;
+}
+
+bool Aux_validar_Parámetros (int fd, void *addr, size_t count){
+    if(fd<0){
+        fprintf(stderr, "Error: descriptor del archivo inválido\n");
+        return false;
+    }
+
+    if (addr == NULL){
+        fprintf(stderr, "Error: dirección inválida (NULL)\n");
+        return false;
+    }
+
+    if(count == 0){
+        fprintf(stderr, "Error: tamaño de escritura inválido inválido\n");
+        return false;
+    }
+
+    return true;
 }
