@@ -177,19 +177,24 @@ void Cmd_writefile(int NumTrozos, char *trozos[], int argc, char *argv[], char *
 }
 
 void Cmd_read(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_read();
+        return;
+    }
     if (trozos[1] == NULL || trozos[2] == NULL || trozos[3] == NULL){
-        fprintf(stderr, "Faltan parámetros (df, addr, cont)\n");
+        Aux_general_Imprimir_Error("Faltan parámetros (df, addr, cont)");
+        return;
     }
     int fd = atoi(trozos[1]);
     void *addr = (void *) strtol(trozos[2], NULL, 16);
     size_t cont = (size_t) atoll(trozos[3]);
 
-    if (!Aux_validar_Parametros (fd, addr, cont)) {
+    if (!Aux_memory_validarparam (fd, addr, cont)) {
         return;
     }
     ssize_t bytes_read = Aux_read_DesdeDescriptor(fd, addr, cont);
     if (bytes_read == -1) {
-        fprintf(stderr, "Error al leer del descriptor del archivo: %s\n", strerror(errno));
+        Aux_general_Imprimir_Error("Error al leer del descriptor del archivo");
     } else {
         printf("Leídos %zd bytes desde el descriptor %d a la dirección %p\n", bytes_read, fd, addr);
     }
@@ -205,13 +210,13 @@ void Cmd_write(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
     void *addr = (void *)strtol(trozos[2], NULL, 16);
     size_t cont = (size_t)atoll(trozos[3]);
 
-    if (!Aux_validar_Parametros(fd, addr, cont)) {
+    if (!Aux_memory_validarparam(fd, addr, cont)) {
         return;
     }
 
     ssize_t bytes_written = Aux_write_DesdeDescriptor(fd, addr, cont);
     if (bytes_written == -1) {
-        fprintf(stderr, "Error al escribir en el descriptor del archivo: %s\n", strerror(errno));
+        Aux_general_Imprimir_Error("Error al escribir en el descriptor del archivo");
     } else {
         printf("Escritos %zd bytes desde la dirección %p al descriptor %d\n", bytes_written, addr, fd);
     }
@@ -441,7 +446,7 @@ ssize_t Aux_writefile_EscribirFichero(char *f, void *p, ssize_t cont) {
     return n;
 }
 
-bool Aux_validar_Parametros (int fd, void *addr, size_t count){
+bool Aux_memory_validarparam (int fd, void *addr, size_t count){
     if(fd<0){
         fprintf(stderr, "Error: descriptor del archivo inválido\n");
         return false;

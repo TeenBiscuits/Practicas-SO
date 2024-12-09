@@ -49,9 +49,9 @@ contenido
 - [x] memdump [addr] [cont]
 - [x] memory [-funcs|-vars|-blocks|-all|-pmap]
 - [x] readfile [file] [addr] [cont]
-- [ ] writefile [file] [addr] [cont]
-- [ ] read [df] [addr] [cont]
-- [ ] write [df] [addr] [cont]
+- [x] writefile [file] [addr] [cont]
+- [x] read [df] [addr] [cont]
+- [x] write [df] [addr] [cont]
 - [x] recurse [n]
 
 ### P3
