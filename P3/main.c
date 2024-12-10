@@ -17,6 +17,7 @@
 #include "help.h"
 #include "memoria.h"
 #include "procesos.h"
+#include "searchlist.h"
 
 #define MAX_ARG 1000
 #ifndef HOST_NAME_MAX
@@ -37,7 +38,13 @@ void procesarEntrada(char comando[MAXITEM], int argc, char *argv[], char *env[])
 int dividir_comando(char *input, char **trozos);
 
 int main(int argc, char *argv[], char *env[]) {
+    // Aprendí a hacer esto en teóricas de procesos y creo que demuestra mi entendimiento de la materia
     signal(SIGSEGV, Aux_general_handler);
+
+    // Lo implementé por la pereza de hacer search -path, y hay que decir que es muy cómodo.
+    // Tomando inspiración del shell de referencia
+    if (argc >= 1 && !strcmp(argv[1], "-p")) SList_import_path();
+
     while (true) {
         char comando[MAXITEM];
         imprimirPrompt();

@@ -24,10 +24,10 @@ all: $(PROGRAMITA)
 # Con "make run" para compilar y ejecutar
 run: $(PROGRAMITA)
 	@if command -v rlwrap >/dev/null 2>&1; then \
-		rlwrap ./$(PROGRAMITA); \
+		rlwrap ./$(PROGRAMITA) -p; \
 	else \
 		echo "rlwrap no está instalado, ejecutando sin rlwrap..."; \
-		./$(PRORGAMITA); \
+		./$(PRORGAMITA) -p; \
 	fi
 
 # Con "make test" para comprobar los comandos
@@ -37,10 +37,10 @@ test: debug
 # Con "make leaks" se compila y se procede a comprobar leaks de memoria con valgrind
 leaks: debug
 	@if command -v rlwrap >/dev/null 2>&1; then \
-		rlwrap valgrind $(VALGRINDFLAGS) ./$(PROGRAMITA); \
+		rlwrap valgrind $(VALGRINDFLAGS) ./$(PROGRAMITA) -p; \
 	else \
 		echo "rlwrap no está instalado, ejecutando sin rlwrap..."; \
-		valgrind $(VALGRINDFLAGS) ./$(PROGRAMITA); \
+		valgrind $(VALGRINDFLAGS) ./$(PROGRAMITA) -p; \
 	fi
 
 # Para la compilación debug, añadimos a las CFLAGS las DEBUGFLAGS
