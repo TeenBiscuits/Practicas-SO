@@ -63,7 +63,7 @@ contenido
 - [x] subsvar [-a|-e] v1 v2 val
 - [x] environ [-environ|-addr]
 - [x] fork
-- [ ] search [-add dir|-del dir|-clear|-path]
+- [x] search [-add dir|-del dir|-clear|-path]
 - [ ] exec [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
 - [x] execpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
 - [x] fg [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
