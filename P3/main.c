@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <limits.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 #include "auxiliar.h"
 #include "color.h"
@@ -29,13 +30,13 @@ void imprimirPrompt();
 void leerEntrada(char comando[MAXITEM]);
 
 // De no ser nulo el comando recibido, se añade al histórico y se envían los parámetros a la función correcta
-void procesarEntrada(char comando[MAXITEM], int argc, char * argv[], char *env[]);
+void procesarEntrada(char comando[MAXITEM], int argc, char *argv[], char *env[]);
 
 // Dado un comando con sus parámetros (ya sean válidos o no) trocearlo en segmentos.
 // El primero es la línea de texto sin procesar y el segundo un array de arrays de chars. Siendo [0] el comando y los siguientes los parámetros
 int dividir_comando(char *input, char **trozos);
 
-int main(int argc, char * argv[], char *env[]) {
+int main(int argc, char *argv[], char *env[]) {
     signal(SIGSEGV, Aux_general_handler);
     while (true) {
         char comando[MAXITEM];
@@ -123,7 +124,7 @@ struct CMD C[] = {
     {"deljobs", Cmd_deljobs}
 };
 
-void procesarEntrada(char comando[MAXITEM], int argc, char * argv[], char *env[]) {
+void procesarEntrada(char comando[MAXITEM], int argc, char *argv[], char *env[]) {
     if (strcmp(comando, "\0") == 0) return; // De ser un comando nulo, ni se procesa ni se añade al histórico
 
     HList_add(comando);
@@ -138,7 +139,7 @@ void procesarEntrada(char comando[MAXITEM], int argc, char * argv[], char *env[]
         }
     }
 
-    printf(ANSI_COLOR_YELLOW "Comando no reconocido...\n" ANSI_COLOR_RESET);
+    Aux_procesos_Ejecutar_General(NumeroT, Trozos);
 };
 
 int dividir_comando(char *input, char **trozos) {

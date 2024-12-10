@@ -42,10 +42,20 @@ void Cmd_deljobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 
 // Auxiliares
 
+void Aux_procesos_Ejecutar_General(int NumTrozos, char *trozos[]);
+
 char *Aux_procesos_Ejecutable(char *s);
 
 int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio);
 
-void Aux_processos_show(char **env, char * nombre_entorno);
+void Aux_processos_show(char **env, char *nombre_entorno);
+
+// Busca una variable en el entorno indicado en **env y devuelve
+// la primera coincidencia.
+char *Aux_procesos_search_env(char *variable, char **env);
+
+// Analiza trozos del elemento 0 a NumTrozos buscando variables de entorno que guarda en newenv
+// Devuelve la posición del primer elemento no variable de entorno
+int Aux_procesos_progspec(int NumTrozos, char **trozos, char **newenv);
 
 #endif //PROCESOS_H

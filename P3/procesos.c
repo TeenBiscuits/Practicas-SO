@@ -155,8 +155,10 @@ void Cmd_exec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
         Help_exec();
         return;
     }
-    // TODO: CAMBIAR VARIABLES DE ENTORNO
-    if (Aux_procesos_Execpve(&trozos[1],NULL,NULL) < 0) Aux_general_Imprimir_Error("");
+
+    char *newenv[MAX_INPUT];
+    int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
+    if (Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL) < 0) Aux_general_Imprimir_Error("");
 }
 
 void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -165,7 +167,9 @@ void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
         return;
     }
     int prio = atoi(trozos[1]);
-    int aux = Aux_procesos_Execpve(&trozos[2],NULL, &prio);
+    char *newenv[MAX_INPUT];
+    int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
+    int aux = Aux_procesos_Execpve(&trozos[i],NULL, &prio);
     if (aux == -1) Aux_general_Imprimir_Error("");
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
 }
@@ -179,11 +183,12 @@ void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) 
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        // Proceso hijo
-        Aux_procesos_Execpve(&trozos[1],NULL,NULL);
+        char *newenv[MAX_INPUT];
+        int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
+        Aux_procesos_Execpve(&trozos[i],NULL,NULL);
         Aux_general_Imprimir_Error("");
         exit(1);
-    } else waitpid(pid, NULL, 0); // Proceso padre
+    } else waitpid(pid, NULL, 0);
 }
 
 void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -196,11 +201,12 @@ void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        // Proceso hijo
-        Aux_procesos_Execpve(&trozos[2],NULL, &prio);
+        char *newenv[MAX_INPUT];
+        int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
+        Aux_procesos_Execpve(&trozos[i],NULL, &prio);
         Aux_general_Imprimir_Error("");
         exit(1);
-    } else waitpid(pid, NULL, 0); // Proceso padre
+    } else waitpid(pid, NULL, 0);
 }
 
 void Cmd_back(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -216,6 +222,19 @@ void Cmd_deljobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 }
 
 // Auxiliares
+
+void Aux_procesos_Ejecutar_General(int NumTrozos, char *trozos[]) {
+    pid_t pid = fork();
+
+    if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
+    else if (pid == 0) {
+        char *newenv[MAX_INPUT];
+        int i = Aux_procesos_progspec(NumTrozos, trozos, newenv);
+        Aux_procesos_Execpve(&trozos[i], newenv,NULL);
+        Aux_general_Imprimir_Error("");
+        exit(1);
+    } else waitpid(pid, NULL, 0); // Proceso padre
+}
 
 char *Aux_procesos_Ejecutable(char *s) {
     static char path[PATH_MAX];
@@ -270,4 +289,22 @@ void Aux_processos_show(char **env, char *nombre_entorno) {
                nombre_entorno, i, env[i], env[i]);
         i++;
     }
+}
+
+char *Aux_procesos_search_env(char *variable, char **env) {
+    size_t longitud_var = strlen(variable);
+    for (int i = 0; env[i] != NULL; i++) {
+        if (!strncmp(variable, env[i], longitud_var)) return env[i];
+    }
+    return NULL;
+}
+
+int Aux_procesos_progspec(int NumTrozos, char **trozos, char **newenv) {
+    char *aux;
+    for (int i = 0; i <= NumTrozos; i++) {
+        if ((aux = Aux_procesos_search_env(trozos[i], environ)) == NULL) {
+            return i;
+        } else newenv[i] = aux;
+    }
+    return 0;
 }
