@@ -23,6 +23,7 @@
 #include "memlist.h"
 #include "color.h"
 #include "auxiliar.h"
+#include "proclist.h"
 #include "searchlist.h"
 
 // COMANDOS BÁSICOS P0 + P1
@@ -248,6 +249,7 @@ void Cmd_exit(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
     HList_delete_all();
     MList_delete_all();
     SList_delete_all();
+    PList_delete_all();
     exit(0);
 }
 

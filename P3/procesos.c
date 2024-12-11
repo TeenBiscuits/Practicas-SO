@@ -18,6 +18,7 @@
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <time.h>
 
 extern char **environ;
 
@@ -169,7 +170,7 @@ void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
     int prio = atoi(trozos[1]);
     char *newenv[MAX_INPUT];
     int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-    int aux = Aux_procesos_Execpve(&trozos[i],NULL, &prio);
+    int aux = Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
     if (aux == -1) Aux_general_Imprimir_Error("");
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
 }
@@ -185,9 +186,10 @@ void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) 
     else if (pid == 0) {
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
-        Aux_procesos_Execpve(&trozos[i],NULL,NULL);
+        printf("%d", i);
+        Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
         Aux_general_Imprimir_Error("");
-        exit(1);
+        exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
 }
 
@@ -203,22 +205,75 @@ void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
     else if (pid == 0) {
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-        Aux_procesos_Execpve(&trozos[i],NULL, &prio);
+        Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
         Aux_general_Imprimir_Error("");
-        exit(1);
+        exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
 }
 
 void Cmd_back(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos == 0 || (NumTrozos >= 1 && !strcmp(trozos[1], "-?"))) {
+        Help_back();
+        return;
+    }
+    pid_t pid = fork();
+
+    char *newenv[MAX_INPUT];
+    int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
+
+    if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
+    else if (pid == 0) {
+        pid_t sid = setsid();
+        if (sid < 0) {
+            Aux_general_Imprimir_Error("Error al crear una nueva sesión");
+            exit(EXIT_FAILURE);
+        }
+        Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
+        Aux_general_Imprimir_Error("");
+        exit(EXIT_FAILURE);
+    } else PList_add(pid, ACTIVE, &trozos[i + 1]);
 }
 
 void Cmd_backpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos < 2) {
+        Help_backpri();
+        return;
+    }
+    pid_t pid = fork();
+    int prio = atoi(trozos[1]);
+
+    char *newenv[MAX_INPUT];
+    int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
+
+    if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
+    else if (pid == 0) {
+        pid_t sid = setsid();
+        if (sid < 0) {
+            Aux_general_Imprimir_Error("Error al crear una nueva sesión");
+            exit(EXIT_FAILURE);
+        }
+        Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+        Aux_general_Imprimir_Error("");
+        exit(EXIT_FAILURE);
+    } else PList_add(pid, ACTIVE, &trozos[i + 2]);
 }
 
 void Cmd_listjobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+        Help_listjobs();
+        return;
+    }
+    PList_print_all();
 }
 
 void Cmd_deljobs(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
+    if (NumTrozos == 0) {
+    } else if (!strcmp(trozos[1], "-?")) {
+        Help_deljobs();
+        return;
+    } else if (!strcmp(trozos[1], "-term")) PList_delete(FINISHED);
+    else if (!strcmp(trozos[1], "-sig")) PList_delete(SIGNALED);
+    PList_print_all();
 }
 
 // Auxiliares

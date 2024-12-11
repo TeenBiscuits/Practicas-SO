@@ -68,8 +68,8 @@ contenido
 - [x] execpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
 - [x] fg [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
 - [x] fgpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
-- [ ] back [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
-- [ ] backpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
-- [ ] listjobs
-- [ ] deljobs -term|-sig
+- [x] back [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [x] backpri prio [VAR1 VAR2 VAR3 ...] executablefile [arg1 arg2 ...]
+- [x] listjobs
+- [x] deljobs -term|-sig
 - [x] \*****

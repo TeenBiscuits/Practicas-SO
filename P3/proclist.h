@@ -6,6 +6,8 @@
 
 #include <stdbool.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <stdlib.h>
 
 #define PNULL NULL              // Elemento nulo de la lista, equivalente pero no reemplazable por NULL
 #define MAX_PLIST_SIZE 1000     // Tamaño máximo de la lista
@@ -24,6 +26,7 @@ struct tNodeProc {
     pid_t pid; // PID
     time_t time; // Fecha de lanzamiento
     enum tStatusL status; // Estado
+    int *wstatus; // WStatus
     tCommandLine command; // Command Line
     tPosProcL siguiente; // Puntero al siguiente nodo de la lista
 };
@@ -34,6 +37,20 @@ typedef struct tProcList {
     tPosProcL start;
 } tProcList;
 
+typedef struct SEN {
+    char *nombre;
+    int senal;
+} SEN;
+
+void PList_add(pid_t pid, enum tStatusL status, char *trozos[]);
+
+void PList_update();
+
+void PList_print_all();
+
+void PList_delete(enum tStatusL status);
+
+void PList_delete_all();
 
 // AUXILIARES / INTERNAS
 
@@ -57,9 +74,12 @@ tPosProcL PList_aux_previous(tPosProcL posicion, tProcList lista);
 
 // Inserta un item en la posición indicada, de no indicarse ninguna (MNULL) se añade al final de la lista.
 // Devuelve true/false dependiendo de si se ha podido o no insertar a la lista. El tamaño máximo es 1000.
-bool PList_aux_insertItem(pid_t pid, time_t time, tCommandLine command, tPosProcL posicion, tProcList *lista);
+bool PList_aux_insertItem(pid_t pid, time_t time, enum tStatusL status, tCommandLine command, tPosProcL posicion,
+                          tProcList *lista);
 
 // Elimina el elemento de la posición indicada. No se devuelve si la eliminación fue ejecutada.
 void PList_aux_deleteAtPosition(tPosProcL posicion, tProcList *lista);
+
+void PList_aux_printNode(tPosProcL posicion);
 
 #endif //PROLIST_H
