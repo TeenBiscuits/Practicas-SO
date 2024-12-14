@@ -159,8 +159,13 @@ void Cmd_exec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
     }
 
     char *newenv[MAX_INPUT];
+    int aux;
     int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
-    if (Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL) < 0) Aux_general_Imprimir_Error("");
+
+    if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
+    else aux = Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
+
+    if (aux < 0) Aux_general_Imprimir_Error("");
 }
 
 void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -170,8 +175,13 @@ void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
     }
     int prio = atoi(trozos[1]);
     char *newenv[MAX_INPUT];
+    int aux;
+
     int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-    int aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
+
+    if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+    else aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
+
     if (aux == -1) Aux_general_Imprimir_Error("");
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
 }
