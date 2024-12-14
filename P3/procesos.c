@@ -346,13 +346,12 @@ int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio) {
         return -2;
     }
 
-    if (NewEnv == NULL) {
-        Aux_general_clean_all();
+    Aux_general_clean_all();
+
+    if (NewEnv == NULL)
         return execv(p, tr);
-    } else {
-        Aux_general_clean_all();
+    else
         return execve(p, tr, NewEnv);
-    }
 }
 
 void Aux_processos_show(char **env, char *nombre_entorno) {
