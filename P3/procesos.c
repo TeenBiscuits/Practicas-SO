@@ -171,7 +171,7 @@ void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
     int prio = atoi(trozos[1]);
     char *newenv[MAX_INPUT];
     int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-    int aux = Aux_procesos_Execpve(&trozos[i + 2],newenv, &prio);
+    int aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
     if (aux == -1) Aux_general_Imprimir_Error("");
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
 }
@@ -185,11 +185,11 @@ void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) 
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        Aux_general_clean_all(); // Evitamos leaks de memoria
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
         printf("%d", i);
-        Aux_procesos_Execpve(&trozos[i + 1],newenv,NULL);
+        if (i == 0) Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
+        else Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
@@ -205,10 +205,10 @@ void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        Aux_general_clean_all(); // Evitamos leaks de memoria
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-        Aux_procesos_Execpve(&trozos[i + 2],newenv, &prio);
+        if (i == 0) Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+        else Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
@@ -226,14 +226,13 @@ void Cmd_back(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        Aux_general_clean_all(); // Evitamos leaks de memoria
         pid_t sid = setsid();
         if (sid < 0) {
             Aux_general_Imprimir_Error("Error al crear una nueva sesión");
             exit(EXIT_FAILURE);
         }
         if (i == 0) Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
-        else Aux_procesos_Execpve(&trozos[i + 1],newenv,NULL);
+        else Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else PList_add(pid, ACTIVE, &trozos[i + 1]);
@@ -252,13 +251,13 @@ void Cmd_backpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        Aux_general_clean_all(); // Evitamos leaks de memoria
         pid_t sid = setsid();
         if (sid < 0) {
             Aux_general_Imprimir_Error("Error al crear una nueva sesión");
             exit(EXIT_FAILURE);
         }
-        Aux_procesos_Execpve(&trozos[i + 2],newenv, &prio);
+        if (i == 0) Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+        else Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else PList_add(pid, ACTIVE, &trozos[i + 2]);
@@ -289,10 +288,10 @@ void Aux_procesos_Ejecutar_General(int NumTrozos, char *trozos[]) {
 
     if (pid == -1) Aux_general_Imprimir_Error("Error al crear el proceso");
     else if (pid == 0) {
-        Aux_general_clean_all(); // Evitamos leaks de memoria
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec(NumTrozos, trozos, newenv);
-        Aux_procesos_Execpve(&trozos[i], newenv,NULL);
+        if (i == 0) Aux_procesos_Execpve(&trozos[i], NULL,NULL);
+        else Aux_procesos_Execpve(&trozos[i], newenv,NULL);
         Aux_general_Imprimir_Error("");
         exit(1);
     } else waitpid(pid, NULL, 0); // Proceso padre
@@ -337,10 +336,13 @@ int Aux_procesos_Execpve(char *tr[], char **NewEnv, int *pprio) {
         return -2;
     }
 
-    if (NewEnv == NULL)
+    if (NewEnv == NULL) {
+        Aux_general_clean_all();
         return execv(p, tr);
-    else
+    } else {
+        Aux_general_clean_all();
         return execve(p, tr, NewEnv);
+    }
 }
 
 void Aux_processos_show(char **env, char *nombre_entorno) {
@@ -365,11 +367,6 @@ int Aux_procesos_progspec(int NumTrozos, char **trozos, char **newenv) {
     char *aux;
     for (int i = 0; i <= NumTrozos; i++) {
         if ((aux = Aux_procesos_search_env(trozos[i], environ)) == NULL) {
-            if (i == 0) {
-                // De no encontrarse ninguna variable de entorno necesitamos
-                // un entorno nulo para evitar memory leaks
-                *newenv = NULL;
-            }
             return i;
         } else newenv[i] = aux;
     }
