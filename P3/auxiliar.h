@@ -15,4 +15,7 @@ void Aux_general_Imprimir_Error(char *msg);
 
 void Aux_general_handler(int sig);
 
+// Para cuando se haga un fork el valgrind no me diga que hay un montón de memory leaks
+void Aux_general_clean_all();
+
 #endif //AUXILIAR_H

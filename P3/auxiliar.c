@@ -5,12 +5,14 @@
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
-
-#include "auxiliar.h"
-
 #include <stdlib.h>
 
+#include "auxiliar.h"
 #include "color.h"
+#include "hislist.h"
+#include "memlist.h"
+#include "proclist.h"
+#include "searchlist.h"
 
 void Aux_general_Imprimir_Error(char *msg) {
     if (errno == 0) {
@@ -37,4 +39,11 @@ void Aux_general_handler(int sig) {
                 ANSI_COLOR_RESET);
         exit(EXIT_FAILURE);
     }
+}
+
+void Aux_general_clean_all() {
+    HList_delete_all();
+    MList_delete_all();
+    SList_delete_all();
+    PList_delete_all();
 }

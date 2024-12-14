@@ -4,6 +4,8 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include <stdbool.h>
+
 // Implementación de una lista enlazada sencilla
 
 #define MAXITEM 2048    // Tamaño máximo de un elemento
