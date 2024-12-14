@@ -28,11 +28,12 @@ void PList_add(pid_t pid, enum tStatusL status, char *trozos[]) {
 void PList_update() {
     tPosProcL aux = PList_aux_first(procedural);
     while (aux != NULL) {
-        if (waitpid(aux->pid, aux->wstatus, WNOHANG|WUNTRACED) == aux->pid) {
+        if (waitpid(aux->pid, aux->wstatus, WNOHANG | WUNTRACED | WCONTINUED) == aux->pid) {
             if (WIFEXITED(*(aux->wstatus))) aux->status = FINISHED;
             if (WIFSIGNALED(*(aux->wstatus))) aux->status = SIGNALED;
             if (WIFSTOPPED(*(aux->wstatus))) aux->status = STOPPED;
-        } else aux->status = ACTIVE;
+            if (WIFCONTINUED(*(aux->wstatus))) aux->status = ACTIVE;
+        }
         aux = PList_aux_next(aux, procedural);
     }
 }
