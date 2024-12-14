@@ -32,12 +32,13 @@ void Cmd_getuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env
 }
 
 void Cmd_setuid(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
-    if (NumTrozos >= 1 && !strcmp(trozos[1], "-?")) {
+    if (NumTrozos == 1 && (!strcmp(trozos[1], "-?") || !strcmp(trozos[1], "-l")))
         Help_setuid();
-        return;
-    }
-    if (NumTrozos == 0) Cmd_getuid(0, trozos, argc, argv, env);
-    else if (setuid(atoi(trozos[1])) == -1) Aux_general_Imprimir_Error("Imposible cambiar credencial");
+    else if (NumTrozos == 1 && setuid(atoi(trozos[1])) == -1)
+        Aux_general_Imprimir_Error("Imposible cambiar credencial");
+    else if (NumTrozos >= 2 && !strcmp(trozos[1], "-l") && seteuid(getpwnam(trozos[2])->pw_uid) == -1)
+        Aux_general_Imprimir_Error("Imposible cambiar credencial");
+    else Cmd_getuid(0, trozos, argc, argv, env);
 }
 
 void Cmd_showvar(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
