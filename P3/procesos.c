@@ -159,13 +159,12 @@ void Cmd_exec(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
     }
 
     char *newenv[MAX_INPUT];
-    int aux;
     int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
 
-    if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
-    else aux = Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
+    if (i == 0) Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
+    else Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
 
-    if (aux < 0) Aux_general_Imprimir_Error("");
+    Aux_general_Imprimir_Error("");
 }
 
 void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -182,8 +181,8 @@ void Cmd_execpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
     if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
     else aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
 
-    if (aux == -1) Aux_general_Imprimir_Error("");
     if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
+    else Aux_general_Imprimir_Error("");
 }
 
 void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) {
@@ -197,9 +196,10 @@ void Cmd_fg(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]) 
     else if (pid == 0) {
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 1), &trozos[1], newenv);
-        printf("%d", i);
+
         if (i == 0) Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
         else Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
+
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
@@ -217,9 +217,13 @@ void Cmd_fgpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[
     else if (pid == 0) {
         char *newenv[MAX_INPUT];
         int i = Aux_procesos_progspec((NumTrozos - 2), &trozos[2], newenv);
-        if (i == 0) Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
-        else Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
-        Aux_general_Imprimir_Error("");
+
+        int aux;
+        if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+        else aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
+
+        if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
+        else Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else waitpid(pid, NULL, 0);
 }
@@ -241,8 +245,10 @@ void Cmd_back(int NumTrozos, char *trozos[], int argc, char *argv[], char *env[]
             Aux_general_Imprimir_Error("Error al crear una nueva sesión");
             exit(EXIT_FAILURE);
         }
+
         if (i == 0) Aux_procesos_Execpve(&trozos[i + 1],NULL,NULL);
         else Aux_procesos_Execpve(&trozos[i + 1], newenv,NULL);
+
         Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else PList_add(pid, ACTIVE, &trozos[i + 1]);
@@ -266,9 +272,13 @@ void Cmd_backpri(int NumTrozos, char *trozos[], int argc, char *argv[], char *en
             Aux_general_Imprimir_Error("Error al crear una nueva sesión");
             exit(EXIT_FAILURE);
         }
-        if (i == 0) Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
-        else Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
-        Aux_general_Imprimir_Error("");
+
+        int aux;
+        if (i == 0) aux = Aux_procesos_Execpve(&trozos[i + 2],NULL, &prio);
+        else aux = Aux_procesos_Execpve(&trozos[i + 2], newenv, &prio);
+
+        if (aux == -2) Aux_general_Imprimir_Error("Imposible cambiar prioridad");
+        else Aux_general_Imprimir_Error("");
         exit(EXIT_FAILURE);
     } else PList_add(pid, ACTIVE, &trozos[i + 2]);
 }
