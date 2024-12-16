@@ -43,7 +43,7 @@ int main(int argc, char *argv[], char *env[]) {
 
     // Lo implementé por la pereza de hacer search -path, y hay que decir que es muy cómodo.
     // Tomando inspiración del shell de referencia
-    if (argc >= 1 && !strcmp(argv[1], "-p")) SList_import_path();
+    if (argc > 1 && !strcmp(argv[1], "-p")) SList_import_path();
 
     while (true) {
         char comando[MAXITEM];
