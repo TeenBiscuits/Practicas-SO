@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
-project(P3 C)
+project(Practicas-SO C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(P3 main.c
+add_executable(Shell main.c
         hislist.c
         hislist.h
         color.h
