@@ -1,5 +1,5 @@
 // Pablo Portas López           pablo.portas
-// Pablo Míguez Mouiño          pablo.miguez.moino
+// Pablo Míguez Muiño           pablo.miguez.moino
 
 #include <stdio.h>
 #include <string.h>

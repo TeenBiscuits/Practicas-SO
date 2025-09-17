@@ -1,5 +1,5 @@
 // Pablo Portas López           pablo.portas
-// Pablo Míguez Mouiño          pablo.miguez.moino
+// Pablo Míguez Muiño           pablo.miguez.moino
 
 #ifndef PROLIST_H
 #define PROLIST_H
