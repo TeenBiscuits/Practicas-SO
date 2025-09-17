@@ -1,4 +1,4 @@
-# Prácticas SO
+# 💻 Prácticas SO
 
 > To get acquainted with the C programming language we’ll start to code a
 > shell
@@ -6,7 +6,7 @@
 Un _shell_ con un set de comandos para interactuar con tu sistema operativo. Última versión (entrega) de la práctica
 para la asignatura de Sistemas Operativos.
 
-## Compilación y Ejecución
+## ⛏️ Compilación y Ejecución
 
 > [!IMPORTANT]  
 > Este shell fue desarrollado para sistemas unix. Recomendamos encarecidamente compilarlo y ejecutarlo en **Linux**.
@@ -59,7 +59,7 @@ para la asignatura de Sistemas Operativos.
    ```
 6. Para salir ejecuta el comando `exit` o mata el proceso con **Ctrl + C**
 
-## Comandos
+## 🛠️ Comandos
 
 > [!NOTE]  
 > Esta breve lista fue usada para llevar un registro de los comandos que fueron implementados durante el desarrollo y
@@ -68,7 +68,7 @@ para la asignatura de Sistemas Operativos.
 > Para ver en detalle que hace cada comando y las notas sobre ellos consulta
 > la [Wiki (Comandos)](https://github.com/TeenBiscuits/Practicas-SO/wiki/Comandos).
 
-### P0 - Comandos básicos
+### [🕹️ P0 - Comandos básicos](https://github.com/TeenBiscuits/Practicas-SO/wiki/comandos.c)
 
 <details>
 
@@ -93,7 +93,7 @@ historic list if they want so (See the NOTES ON LIST IMPLEMENTATIONS at the end 
 
 </details>
 
-### P1 - Sistema de Ficheros
+### [🗂️ P1 - Sistema de Ficheros](https://github.com/TeenBiscuits/Practicas-SO/wiki/memoria.c)
 
 <details>
 
@@ -117,7 +117,7 @@ contenido
 
 </details>
 
-### P2 - Gestión de Memoria
+### [💾 P2 - Gestión de Memoria](https://github.com/TeenBiscuits/Practicas-SO/wiki/memoria.c)
 
 <details>
 
@@ -136,7 +136,7 @@ contenido
 
 </details>
 
-### P3 - Gestión de Procesos
+### [👾 P3 - Gestión de Procesos](https://github.com/TeenBiscuits/Practicas-SO/wiki/procesos.c)
 
 <details>
 
@@ -162,7 +162,7 @@ contenido
 
 </details>
 
-## Documentación
+## 📖 Documentación
 
 En la carpeta de [documentación](/docs) puedes consultar los PDFs y los archivos auxiliares que seguimos para realizar
 las 4 entregas de la prácitca.
@@ -170,6 +170,6 @@ las 4 entregas de la prácitca.
 En la [Wiki de este repositorio](https://github.com/TeenBiscuits/Practicas-SO/wiki) puedes leer más sobre como funciona
 el código de este shell. Esperamos que esto te ayude a entender como implementar la práctica.
 
-## Créditos
+## 😎 Créditos
 
 Licenciado bajo [Apache License 2.0](/LICENSE) por Pablo Portas López y Pablo Míguez Muiño.
