@@ -27,7 +27,7 @@ run: $(PROGRAMITA)
 		rlwrap ./$(PROGRAMITA) -p; \
 	else \
 		echo "rlwrap no está instalado, ejecutando sin rlwrap..."; \
-		./$(PRORGAMITA) -p; \
+		./$(PROGRAMITA) -p; \
 	fi
 
 # Con "make test" para comprobar los comandos
