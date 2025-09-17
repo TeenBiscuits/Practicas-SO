@@ -52,6 +52,17 @@ para la asignatura de Sistemas Operativos.
     ```shell
     ./shell 
     ```
+   <details>
+   
+   <summary>Otros parámetros</summary>
+   
+   Si ejecutas el script con el parámetro `-p` así:
+   ```shell
+   ./shell -p
+   ```
+   Importarás automaticamente el _path_ a la lista de busqueda. Como si ejecutaras `search -path` nada más empezar.
+   
+   </details>
 5. Tras esto el prompt de tu terminal debería haber cambiado a uno con el mismo formato que Ubuntu pero con usuario y el
    hostname de la máquina en morado. Ejemplo:
    ```
