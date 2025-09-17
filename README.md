@@ -6,6 +6,10 @@
 Un _shell_ con un set de comandos para interactuar con tu sistema operativo. Última versión (entrega) de la práctica
 para la asignatura de Sistemas Operativos.
 
+> [!NOTE]
+> Para ver un resumen de como funciona esta shell entra a la [Wiki](https://github.com/TeenBiscuits/Practicas-SO/wiki/).
+
+
 ## ⛏️ Compilación y Ejecución
 
 > [!IMPORTANT]  
