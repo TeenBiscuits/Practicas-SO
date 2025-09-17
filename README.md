@@ -59,7 +59,7 @@ para la asignatura de Sistemas Operativos.
 > sus diferentes parámetros.
 >
 > Para ver en detalle que hace cada comando y las notas sobre ellos consulta
-> la [Wiki](https://github.com/TeenBiscuits/Practicas-SO/wiki).
+> la [Wiki (Comandos)](https://github.com/TeenBiscuits/Practicas-SO/wiki/Comandos).
 
 ### P0 - Comandos básicos
 
