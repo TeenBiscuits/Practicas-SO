@@ -1,7 +1,7 @@
 # Pablo Portas López           pablo.portas
 # Pablo Míguez Mouiño          pablo.miguez.moino
 
-PROGRAMITA = p3
+PROGRAMITA = shell
 
 # Usar el compilador gcc con las cflags
 CC = gcc
