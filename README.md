@@ -13,6 +13,13 @@ para la asignatura de Sistemas Operativos.
 >
 > Es posible compilarlo para Mac, pero debe cambiar las librerías debido a las diferencias entre ambos sistemas.
 
+> [!CAUTION]
+> No trates de compilar y ejecutar la práctica directamente desde el CLion u otro editor que use ``CMakeLists.txt``.
+> Este archivo está presente en el repositorio para permitir el **correcto** procesado del archivo por el IDE.
+>
+> **Usa el ``Makefile`` como flujo de compilación.**
+
+
 1. Primero clona este repositorio
     ```shell
     git clone https://github.com/TeenBiscuits/Practicas-SO.git
@@ -60,12 +67,6 @@ para la asignatura de Sistemas Operativos.
 >
 > Para ver en detalle que hace cada comando y las notas sobre ellos consulta
 > la [Wiki (Comandos)](https://github.com/TeenBiscuits/Practicas-SO/wiki/Comandos).
-
-> [!CAUTION]
-> No trates de compilar y ejecutar la práctica directamente desde el CLion u otro editor que use ``CMakeLists.txt``.
-> Este archivo está presente en el repositorio para permitir el **correcto** procesado del archivo por el IDE.
-> 
-> **Usa el ``Makefile`` como flujo de compilación.**
 
 ### P0 - Comandos básicos
 
