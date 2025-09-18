@@ -9,6 +9,10 @@ para la asignatura de Sistemas Operativos.
 > [!NOTE]
 > Para ver un resumen de como funciona esta shell entra a la [Wiki](https://github.com/TeenBiscuits/Practicas-SO/wiki/).
 
+> [!WARNING]
+> "¿Estoy en la primera entrega tengo que hacer todo esto?" Puedes descargar cada
+> entrega [más abajo](#-antiguas-versiones).
+
 ## ⛏️ Compilación y Ejecución
 
 > [!IMPORTANT]  
@@ -188,7 +192,8 @@ el código de este shell. Esperamos que esto te ayude a entender como implementa
 El repositorio fue reformado para su publicación, si cambia a la rama ``old-repo`` puedes ver como era antes del cambio.
 
 El código que aquí se muestra es de **después de la última entrega**, corrigiendo todos los errores de todas las
-entregas. Puedes descargar cada una de las entregas en la sección de [releases](https://github.com/TeenBiscuits/Practicas-SO/releases).
+entregas. Puedes descargar cada una de las entregas en la sección
+de [releases](https://github.com/TeenBiscuits/Practicas-SO/releases).
 
 ## 😎 Créditos
 
