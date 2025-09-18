@@ -9,7 +9,6 @@ para la asignatura de Sistemas Operativos.
 > [!NOTE]
 > Para ver un resumen de como funciona esta shell entra a la [Wiki](https://github.com/TeenBiscuits/Practicas-SO/wiki/).
 
-
 ## ⛏️ Compilación y Ejecución
 
 > [!IMPORTANT]  
@@ -22,7 +21,6 @@ para la asignatura de Sistemas Operativos.
 > Este archivo está presente en el repositorio para permitir el **correcto** procesado del archivo por el IDE.
 >
 > **Usa el ``Makefile`` como flujo de compilación.**
-
 
 1. Primero clona este repositorio
     ```shell
@@ -57,15 +55,15 @@ para la asignatura de Sistemas Operativos.
     ./shell 
     ```
    <details>
-   
+
    <summary>Otros parámetros</summary>
-   
+
    Si ejecutas el script con el parámetro `-p` así:
    ```shell
    ./shell -p
    ```
    Importarás automaticamente el _path_ a la lista de busqueda. Como si ejecutaras `search -path` nada más empezar.
-   
+
    </details>
 5. Tras esto el prompt de tu terminal debería haber cambiado a uno con el mismo formato que Ubuntu pero con usuario y el
    hostname de la máquina en morado. Ejemplo:
@@ -184,6 +182,13 @@ las 4 entregas de la prácitca.
 
 En la [Wiki de este repositorio](https://github.com/TeenBiscuits/Practicas-SO/wiki) puedes leer más sobre como funciona
 el código de este shell. Esperamos que esto te ayude a entender como implementar la práctica.
+
+## 🔩 Antiguas versiones
+
+El repositorio fue reformado para su publicación, si cambia a la rama ``old-repo`` puedes ver como era antes del cambio.
+
+El código que aquí se muestra es de **después de la última entrega**, corrigiendo todos los errores de todas las
+entregas. Puedes descargar cada una de las entregas en la sección de [releases](https://github.com/TeenBiscuits/Practicas-SO/releases).
 
 ## 😎 Créditos
 
